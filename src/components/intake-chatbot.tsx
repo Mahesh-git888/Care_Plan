@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useEffectEvent, useMemo, useReducer, useRef } from "react";
 
 import {
@@ -242,10 +243,12 @@ export function IntakeChatbot({
   vertical,
   triggerLabel,
   triggerClassName,
+  triggerContent,
 }: {
   vertical: VerticalConfig;
   triggerLabel?: string;
   triggerClassName?: string;
+  triggerContent?: ReactNode;
 }) {
   const storageKey = useMemo(() => `portea-intake:${vertical.slug}`, [vertical.slug]);
   const [state, dispatch] = useReducer(reducer, storageKey, createInitialState);
@@ -392,7 +395,7 @@ export function IntakeChatbot({
           `inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white transition ${vertical.theme.accentStrong} shadow-lg`
         }
       >
-        {triggerLabel || vertical.ctaLabel}
+        {triggerContent || triggerLabel || vertical.ctaLabel}
       </button>
 
       {state.isOpen ? (

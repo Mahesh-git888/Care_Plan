@@ -42,14 +42,18 @@ export type VerticalConfig = {
   name: string;
   shortName: string;
   headline: string;
+  accentPhrase: string;
   subheadline: string;
   heroLabel: string;
   overview: string;
   ctaLabel: string;
+  responseNote: string;
   image: {
     src: string;
     alt: string;
   };
+  imageAspect: string;
+  imagePosition: string;
   imageSlotLabel: string;
   quickFacts: string[];
   highlights: Highlight[];
@@ -86,22 +90,26 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     slug: "elder-care",
     name: "Elder Care",
     shortName: "Elder care",
-    headline: "Compassionate daily care for your loved one at home",
+    headline: "Daily elder care at home, with one team guiding every step.",
+    accentPhrase: "with one team guiding every step.",
     subheadline:
-      "Structured home support for mobility, hygiene, meals, medication routines, and companionship, designed to reduce family stress without making care feel clinical.",
+      "A dedicated care manager, trained caregivers, dependable routines, and updates that help the whole family feel more in control from the very first week.",
     heroLabel: "Managed elder care",
     overview:
       "For families who want dependable day-to-day support and a care manager who can keep everyone aligned from the very first call.",
-    ctaLabel: "Chat with a care guide",
+    ctaLabel: "Talk to a care manager",
+    responseNote: "A care manager will usually call back within 4 hours for active inquiries.",
     image: {
       src: "/elder-care-home.webp",
       alt: "A Portea caregiver supporting an older woman at home.",
     },
-    imageSlotLabel: "Space reserved for an additional family-approved elder care image",
+    imageAspect: "5 / 4",
+    imagePosition: "center 58%",
+    imageSlotLabel: "Reserved for another elder-care image or a family moment.",
     quickFacts: [
-      "One care manager as the family's single point of contact",
+      "Single care manager for the family",
       "Day 1 caregiver briefing and placement check",
-      "Twice-weekly care updates once routines stabilise",
+      "Twice-weekly updates once care stabilises",
     ],
     highlights: [
       {
@@ -122,9 +130,9 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     ],
     trustSignals: [
       "Home-care planning shaped around safety, comfort, and continuity",
-      "Family communication routed through a care manager, not fragmented across vendors",
-      "Escalation pathways for routine, urgent, and emergency situations",
-      "Designed to work for local and NRI families who need dependable updates",
+      "Family communication routed through one care manager instead of fragmented follow-ups",
+      "Escalation paths for routine, urgent, and emergency situations",
+      "Useful for both local families and children coordinating care from another city",
     ],
     forWho: {
       title: "Who this is for",
@@ -228,22 +236,26 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     slug: "dementia",
     name: "Dementia Care",
     shortName: "Dementia care",
-    headline: "Specialised dementia care by trained caregivers",
+    headline: "Dementia care at home, by a team that understands the condition.",
+    accentPhrase: "by a team that understands the condition.",
     subheadline:
-      "Home support built around memory loss, routines, redirection, safety, and the emotional strain families quietly carry when behaviour and cognition begin to change.",
+      "A dedicated care manager, dementia-aware caregiver, calmer routines, safety cues, and family support designed for the realities of memory loss at home.",
     heroLabel: "Dementia care",
     overview:
       "For families navigating confusion, repetition, wandering risk, resistance, or the need for more predictable calm at home.",
-    ctaLabel: "Speak to a dementia care guide",
+    ctaLabel: "Talk to a care manager",
+    responseNote: "A care manager will usually call back within 4 hours for active inquiries.",
     image: {
       src: "/dementia-care-home.png",
       alt: "A Portea caregiver helping an older woman walk through her home.",
     },
-    imageSlotLabel: "Space reserved for a second dementia-care image or family moment",
+    imageAspect: "4 / 3",
+    imagePosition: "center center",
+    imageSlotLabel: "Reserved for a second dementia-care image or family moment.",
     quickFacts: [
-      "Care routines designed around calm, dignity, and predictability",
-      "Matching that considers behaviour triggers and household dynamics",
-      "Family updates shaped for both nearby and NRI caregivers",
+      "Care routines built around calm and predictability",
+      "Matching that considers behaviour triggers and home dynamics",
+      "Family updates shaped for nearby and NRI caregivers",
     ],
     highlights: [
       {
@@ -263,10 +275,10 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       },
     ],
     trustSignals: [
-      "Caregiver routines designed for memory-care environments at home",
-      "Single care manager for questions, plan changes, and escalation",
+      "Dementia-aware routines adapted for the home, not a generic attendant flow",
+      "One care manager for questions, plan changes, and escalation",
       "Structured matching to reduce avoidable caregiver-family friction",
-      "Useful for families dealing with repetition, sundowning, confusion, or wandering risk",
+      "Useful for repetition, confusion, resistance, wandering risk, or sundowning patterns",
     ],
     forWho: {
       title: "Who this is for",
@@ -370,22 +382,26 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     slug: "post-discharge",
     name: "Post-Discharge Care",
     shortName: "Post-discharge care",
-    headline: "Expert recovery support after hospital discharge",
+    headline: "Recovery at home, planned properly after hospital discharge.",
+    accentPhrase: "planned properly after hospital discharge.",
     subheadline:
-      "Recovery support that helps families handle the uncertain first days at home, from mobility and routines to wound care coordination, medication follow-through, and reassurance.",
+      "For the uncertain first days at home after surgery or hospitalisation, with care planning that covers routines, mobility, wound support, medication follow-through, and family reassurance.",
     heroLabel: "Recovery at home",
     overview:
       "For families who know discharge is not the end of care and want a guided transition from hospital to home.",
-    ctaLabel: "Plan the recovery at home",
+    ctaLabel: "Talk to a care manager",
+    responseNote: "A care manager will usually call back within 4 hours for active recovery inquiries.",
     image: {
       src: "/post-discharge-home.webp",
       alt: "A Portea caregiver checking an older man's blood pressure at home.",
     },
-    imageSlotLabel: "Space reserved for a second post-discharge recovery image",
+    imageAspect: "4 / 3",
+    imagePosition: "center 42%",
+    imageSlotLabel: "Reserved for another recovery-at-home photograph.",
     quickFacts: [
-      "Useful for the uncertain first week at home after discharge",
-      "Built to align caregivers, family, and follow-up needs quickly",
-      "Escalation paths for medical concerns and practical disruptions",
+      "Designed for the uncertain first week after discharge",
+      "Built to align family, caregiver, and follow-up needs quickly",
+      "Escalation support for medical concerns and practical disruptions",
     ],
     highlights: [
       {
@@ -405,7 +421,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       },
     ],
     trustSignals: [
-      "Suitable when the family needs structured support after a hospital stay",
+      "Structured support for the transition from hospital to home",
       "Care planning designed to reduce gaps in the first recovery week",
       "Care manager oversight for changes, setbacks, or service alignment",
       "Helpful when mobility, follow-up visits, or medication routines need more structure",
