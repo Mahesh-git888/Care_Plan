@@ -238,7 +238,15 @@ function currentStepNumber(state: FlowState) {
   return Math.min(state.currentStep + 1, TOTAL_STEPS);
 }
 
-export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
+export function IntakeChatbot({
+  vertical,
+  triggerLabel,
+  triggerClassName,
+}: {
+  vertical: VerticalConfig;
+  triggerLabel?: string;
+  triggerClassName?: string;
+}) {
   const storageKey = useMemo(() => `portea-intake:${vertical.slug}`, [vertical.slug]);
   const [state, dispatch] = useReducer(reducer, storageKey, createInitialState);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
@@ -379,9 +387,12 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
       <button
         type="button"
         onClick={() => dispatch({ type: "OPEN" })}
-        className={`inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white transition ${vertical.theme.accentStrong} ${vertical.theme.glow} shadow-lg`}
+        className={
+          triggerClassName ||
+          `inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white transition ${vertical.theme.accentStrong} shadow-lg`
+        }
       >
-        {vertical.ctaLabel}
+        {triggerLabel || vertical.ctaLabel}
       </button>
 
       {state.isOpen ? (

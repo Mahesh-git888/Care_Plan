@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { HomePage as MarketingHomePage } from "@/components/home-page";
 
-export default function HomePage() {
-  redirect("/elder-care");
+export default function RootPage() {
+  return <MarketingHomePage />;
 }

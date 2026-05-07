@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function BrandLogo() {
   return (
-    <Link href="/elder-care" className="inline-flex items-center">
+    <Link href="/" className="inline-flex items-center">
       <Image
         src="/portea-logo.svg"
         alt="Portea"
