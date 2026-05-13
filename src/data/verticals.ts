@@ -44,10 +44,24 @@ export type PageImage = {
   position?: string;
 };
 
+export type Testimonial = {
+  quote: string;
+  author: string;
+  context: string;
+};
+
+export type TrustBadge = {
+  title: string;
+  description: string;
+};
+
 export type VerticalConfig = {
   slug: VerticalSlug;
   name: string;
   shortName: string;
+  metaTitle: string;
+  metaDescription: string;
+  keywords: string[];
   headline: string;
   accentPhrase: string;
   subheadline: string;
@@ -59,30 +73,71 @@ export type VerticalConfig = {
   quickFacts: string[];
   highlights: Highlight[];
   trustSignals: string[];
+  trustBadges: TrustBadge[];
   forWho: AudienceGroup;
   notForWho: AudienceGroup;
   howItWorks: ProcessStep[];
   whatToExpect: ProcessStep[];
   familyVoices: OutcomeCard[];
+  testimonials: Testimonial[];
   faqs: FaqItem[];
   theme: PageTheme;
+  whatsAppMessage: string;
 };
 
 const sharedFaqs: FaqItem[] = [
   {
     question: "How quickly will someone get back to us?",
     answer:
-      "If the family needs help soon, a care manager usually calls within 4 hours. If you are planning ahead, the callback is usually within 24 hours.",
+      "If the family needs help soon, a Portea care manager usually calls within 4 hours. If you are planning ahead, the callback is usually within 24 hours. The chatbot intake helps us prepare for that first conversation so you don't have to repeat the story.",
   },
   {
     question: "Will we have one person guiding us through the process?",
     answer:
-      "Yes. The aim is for one care manager to understand the family situation, help shape the plan, and stay connected as care begins.",
+      "Yes. A single care manager — an MBBS doctor or a senior clinical professional — owns the family relationship end-to-end. They handle the discovery call, the care plan, caregiver oversight, weekly updates and any escalations. You won't be bouncing between agents.",
   },
   {
-    question: "What will you ask before the first call?",
+    question: "How are caregivers selected and trained?",
     answer:
-      "We begin with the basics: your name, phone number, city, what is happening right now, and the kind of support you are exploring.",
+      "Caregivers (nursing attendants and nurses) are matched to your loved one's routine, condition, language, location and home environment. They are briefed with the full care plan before their first shift. For dementia patients we apply a mandatory pre-placement scoring sheet co-designed with the Dementia India Alliance.",
+  },
+  {
+    question: "How do we know what's happening at home?",
+    answer:
+      "You'll be added to a private WhatsApp group with your care manager. You'll receive structured care updates twice a week (daily for the first week of dementia or post-surgery cases) plus a weekly call from the care manager. The caregiver doesn't run the family conversation — the care manager does.",
+  },
+  {
+    question: "What does this cost?",
+    answer:
+      "Costs depend on the care plan: caregiver hours, nurse visits, equipment, physiotherapy and so on. Your care manager will share an itemised weekly price after the discovery call. There are no signup fees and no contracts — you can stop care any week.",
+  },
+  {
+    question: "Is Portea available in our city?",
+    answer:
+      "Portea operates in 40+ Indian cities including Bangalore, Mumbai, Delhi NCR, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad, Jaipur and Chandigarh. If we don't directly cover your pin code, the care manager will tell you on the first call.",
+  },
+];
+
+const sharedTrustBadges: TrustBadge[] = [
+  {
+    title: "Designed by doctors",
+    description:
+      "Clinical protocols co-authored by Dr. Kavitha and our medical leadership. Every care plan reviewed before it reaches your family.",
+  },
+  {
+    title: "Trained by the Dementia India Alliance",
+    description:
+      "Specialist dementia training for our caregivers, plus a mandatory pre-placement scoring sheet for every dementia placement.",
+  },
+  {
+    title: "One care manager per family",
+    description:
+      "A single MBBS doctor or senior clinical professional owns your family's care — not a rotating call-centre.",
+  },
+  {
+    title: "10+ years of home healthcare",
+    description:
+      "Portea has served over a million patients across 40+ cities. We are India's largest organised home healthcare provider.",
   },
 ];
 
@@ -91,98 +146,109 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     slug: "elder-care",
     name: "Elder Care",
     shortName: "Elder care",
-    headline: "Compassionate daily care for your loved one at home",
-    accentPhrase: "your loved one at home",
+    metaTitle: "Elder Care at Home in India — Doctor-Designed | Portea",
+    metaDescription:
+      "Portea Elder Care brings trained caregivers, one doctor-led care manager, and warm, reliable support home — for mobility, hygiene, meals, medications and companionship. Available in 40+ Indian cities.",
+    keywords: [
+      "elder care at home",
+      "home caregiver for parents",
+      "senior care India",
+      "nursing attendant at home",
+      "home care for elderly",
+      "geriatric care",
+    ],
+    headline: "Doctor-designed elder care that comes home to your parents",
+    accentPhrase: "comes home",
     subheadline:
-      "When daily routines start feeling heavy for the family, we help bring in the right caregiver support, one care manager, and steadier follow-through at home.",
+      "Trained caregivers, one Portea care manager, and warm, organised support — for everyday routines, mobility, meals, medications and the small things that quietly matter.",
     heroLabel: "Managed elder care",
     overview:
-      "For families looking for dependable everyday support with mobility, hygiene, meals, routine, and peace of mind at home.",
+      "For families looking for dependable everyday support with mobility, hygiene, meals, routine, medication and peace of mind at home. Built around the people in the house, not a generic checklist.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "Share a few details now and a care manager can call you back with the right context already in hand.",
+      "Share a few details and a Portea care manager will call within 4 hours. No call-centre, no scripts — a doctor or senior clinician will speak with you directly.",
+    whatsAppMessage:
+      "Hi Portea, I'd like to learn about elder care at home for my parent.",
     images: [
       {
         src: "/elder-care-1.webp",
-        alt: "A Portea caregiver supporting an older woman in a wheelchair at home.",
+        alt: "Portea caregiver supporting an older woman in a wheelchair at home.",
         aspect: "16 / 11",
         position: "center center",
       },
       {
         src: "/elder-care-2.png",
-        alt: "A Portea caregiver helping an elderly woman walk safely through her home.",
+        alt: "Portea caregiver helping an elderly woman walk safely through her home.",
         aspect: "4 / 5",
         position: "center center",
       },
     ],
     quickFacts: [
-      "One care manager for the family",
-      "Caregiver matching around routine and mobility",
-      "Updates that keep everyone informed",
+      "One doctor-led care manager per family",
+      "Caregivers matched to routine, language & mobility",
+      "Structured WhatsApp updates 2× a week",
+      "Cancel any week — no lock-in",
     ],
     highlights: [
       {
         title: "Help with everyday routines",
         description:
-          "Support can cover movement, bathing, meals, companionship, and the little parts of the day that quietly become harder over time.",
+          "Support across movement, bathing, meals, companionship, medication reminders and the parts of the day that quietly become harder over time.",
       },
       {
-        title: "A calmer experience for the family",
+        title: "One care manager. Not a call centre.",
         description:
-          "Instead of managing everything alone, families get one point of contact to help guide the next steps and keep everyone aligned.",
+          "An MBBS doctor or senior clinical professional owns your family's relationship end-to-end — from the first call to weekly updates.",
       },
       {
         title: "A better fit at home",
         description:
-          "Caregiver matching takes language, schedule, mobility needs, and home dynamics into account before care starts.",
+          "Caregiver matching takes language, schedule, mobility needs, gender preference and home dynamics into account before care starts.",
       },
     ],
-    trustSignals: [
-      "Backed by Portea's years of home healthcare experience",
-      "Care manager oversight from the first call onward",
-      "A good fit for local families and children coordinating from another city",
-      "Built for care that feels steady at home, not improvised",
-    ],
+    trustSignals: sharedTrustBadges.map((badge) => badge.title),
+    trustBadges: sharedTrustBadges,
     forWho: {
-      title: "This is usually right for families who need day-to-day support",
+      title: "Right for families who need day-to-day support at home",
       intro:
-        "It is most helpful when someone at home needs consistent assistance and the family wants more confidence around how care is being handled.",
+        "Most helpful when someone at home needs consistent help and the family wants confidence around how care is being run.",
       items: [
-        "An older adult needs help with walking, transfers, bathing, meals, or daily routine.",
-        "A son, daughter, or spouse is carrying too much of the coordination alone.",
-        "The family wants one care manager instead of figuring out every step by themselves.",
+        "An older adult needs help with walking, transfers, bathing, meals or medication routine.",
+        "A son, daughter or spouse is carrying too much of the coordination alone.",
+        "The family is in a different city and needs a trusted local team plus weekly updates.",
+        "You want one doctor-led care manager instead of figuring out every step yourself.",
       ],
     },
     notForWho: {
-      title: "A different option may be better when",
+      title: "When another option may be better",
       intro:
         "Sometimes the need is either much lighter or much more urgent than a managed elder-care setup.",
       items: [
-        "You only need a one-time service instead of ongoing support at home.",
-        "The situation is an emergency and needs immediate hospital or ambulance care.",
-        "You are only gathering general information and are not ready to discuss the situation yet.",
+        "You only need a one-time service (single nurse visit, lab draw, equipment rental).",
+        "It's an emergency that needs immediate hospital or ambulance care — call 108 first.",
+        "You're only gathering general information and aren't ready to discuss your situation yet.",
       ],
     },
     howItWorks: [
       {
-        title: "1. Tell us what is happening at home",
+        title: "1. Tell us what's happening at home",
         description:
-          "Start with the basics so we understand the family situation, the city, and the kind of daily help being considered.",
+          "Use the chatbot, WhatsApp or a phone call. Share your name, the elder's condition, city and what would help most.",
       },
       {
-        title: "2. Speak with a care manager",
+        title: "2. Discovery call with a care manager",
         description:
-          "The first conversation focuses on what has become difficult, what support is already in place, and what would make home feel safer and easier.",
+          "Within 4 hours, an MBBS doctor or senior clinician calls you. The 15–30 min call covers routine, mobility, medications and home dynamics.",
       },
       {
-        title: "3. Get a recommended care plan",
+        title: "3. Personalised care plan and pricing",
         description:
-          "We help shape the right support and match based on routine, skills needed, timing, and home preferences.",
+          "You receive a written care plan on WhatsApp the same day — daily schedule, care team, equipment and itemised weekly price.",
       },
       {
-        title: "4. Settle into care with regular updates",
+        title: "4. Caregiver placed & continuous updates",
         description:
-          "Once care begins, the family stays in the loop instead of wondering how things are going day to day.",
+          "A trained caregiver is matched and placed. You get structured updates twice a week, a weekly CM call, and a monthly plan review.",
       },
     ],
     whatToExpect: [
@@ -194,12 +260,12 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "Practical next steps",
         description:
-          "Families should come away understanding what support makes sense now, how quickly it can start, and what the first days will look like.",
+          "Families come away knowing what support makes sense now, how quickly it can start, and exactly what Day 1 will look like.",
       },
       {
         title: "Less chasing, more clarity",
         description:
-          "The experience should feel organised and reassuring, especially when multiple family members are trying to stay updated.",
+          "Organised, reassuring care — especially valuable when multiple family members (including NRI children) are trying to stay updated.",
       },
     ],
     familyVoices: [
@@ -216,7 +282,21 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "“Home started feeling manageable again.”",
         description:
-          "Good support often shows up as small but meaningful relief: fewer last-minute worries, clearer routines, and more confidence at home.",
+          "Good support often shows up as small but meaningful relief: fewer last-minute worries, clearer routines, more confidence at home.",
+      },
+    ],
+    testimonials: [
+      {
+        quote:
+          "We live in the US and could not be there every day. Portea's care manager became our eyes and ears at home in Bangalore. The weekly updates and the care plan made everything easier.",
+        author: "Anita R.",
+        context: "Daughter of an 82-year-old in Bangalore",
+      },
+      {
+        quote:
+          "What I appreciated most was that one doctor was responsible for my mother's care. No bouncing around between agents. We trusted her, and she stayed with us through every change.",
+        author: "Suresh M.",
+        context: "Son of a 76-year-old in Mumbai",
       },
     ],
     faqs: [
@@ -224,18 +304,18 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Can the plan change after care begins?",
         answer:
-          "Yes. If the elder settles differently than expected, the care plan can be adjusted around what is actually working at home.",
+          "Yes. The care manager reviews the plan monthly and adjusts whenever the situation changes — caregiver hours, physiotherapy frequency, nutrition or equipment.",
       },
       {
         question: "What if the caregiver match does not feel right?",
         answer:
-          "If the fit is off, the team works on the next step quickly and keeps the family informed about timelines and alternatives.",
+          "If the fit is off, replacement is initiated within 48 hours. The system auto-generates a handover summary so the new caregiver arrives prepared — no repeating the medication list.",
       },
     ],
     theme: {
-      accent: "bg-[#0f8f86]",
-      accentStrong: "bg-[#0f8f86] hover:bg-[#0c7b73]",
-      accentSoft: "bg-[#dff5f2]",
+      accent: "bg-[#0f9aa8]",
+      accentStrong: "bg-[#0f9aa8] hover:bg-[#0b7c87]",
+      accentSoft: "bg-[#e8f6f7]",
       accentText: "text-[#0b5c56]",
       border: "border-[#b8e4df]",
       surface: "from-[#f6fffd] via-white to-[#eef9f8]",
@@ -247,16 +327,29 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     slug: "dementia",
     name: "Dementia Care",
     shortName: "Dementia care",
-    headline: "Specialised dementia care by trained caregivers",
-    accentPhrase: "trained caregivers",
+    metaTitle: "Dementia Care at Home in India — Trained by Dementia Alliance | Portea",
+    metaDescription:
+      "Specialist dementia care at home. Caregivers trained by the Dementia India Alliance, mandatory pre-placement scoring, one doctor-led care manager. Calm, dignified support for your loved one.",
+    keywords: [
+      "dementia care at home",
+      "Alzheimer's home care India",
+      "memory care India",
+      "dementia caregiver",
+      "Dementia India Alliance",
+      "senior dementia support",
+    ],
+    headline: "Specialist dementia care at home, trained by Dementia India Alliance",
+    accentPhrase: "Dementia India Alliance",
     subheadline:
-      "When memory changes begin affecting routine, mood, or safety at home, we help families bring in care that feels calmer, steadier, and more understanding.",
-    heroLabel: "Dementia care",
+      "When memory changes start affecting routine, mood or safety, we bring care that feels calmer, steadier and more understanding — designed by doctors, delivered by trained caregivers.",
+    heroLabel: "Specialist dementia care",
     overview:
-      "For families dealing with confusion, repetition, wandering risk, resistance, or the emotional strain that often comes with dementia at home.",
+      "For families dealing with confusion, repetition, wandering risk, agitation, sundowning or the emotional strain that often comes with dementia at home.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "Start with a short chat and we will help you decide the right next step without making the family explain everything twice.",
+      "Tell us what's been hardest in the past week. A Portea care manager (a doctor or senior clinician) will call within 4 hours — no scripts, no rush.",
+    whatsAppMessage:
+      "Hi Portea, I'd like to learn about dementia care at home for my parent.",
     images: [
       {
         src: "/dementia-1.webp",
@@ -272,90 +365,88 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       },
     ],
     quickFacts: [
-      "Care built around calm and predictability",
-      "Support for both the elder and the family",
-      "Updates that help families understand patterns",
+      "Caregivers trained on dementia-specific routines",
+      "Mandatory pre-placement scoring per case",
+      "Doctor-reviewed care plan every month",
+      "Daily updates for the first week of placement",
     ],
     highlights: [
       {
         title: "A gentler daily rhythm",
         description:
-          "The focus is not only on tasks, but on reducing confusion, avoiding unnecessary friction, and helping the elder feel more settled.",
+          "Focus on reducing confusion, avoiding unnecessary friction, and helping the elder feel more settled — not just on completing tasks.",
       },
       {
         title: "Caregivers who understand the condition",
         description:
-          "Approach matters. Families often need someone who can reassure, redirect, and stay patient when difficult moments happen.",
+          "Trained on dementia behaviour — reassurance, redirection, patience during sundowning, repetition and resistance.",
       },
       {
-        title: "More reassurance for the family",
+        title: "Support for the family too",
         description:
-          "Spouses and children often need support too, especially when they are exhausted, worried, or trying to coordinate care from a distance.",
+          "Spouses and children carrying the load get a doctor-led care manager who shares the weight, not just a caregiver who shows up.",
       },
     ],
-    trustSignals: [
-      "Care routines shaped for the realities of memory loss at home",
-      "One care manager to guide the family and adjust the plan if needed",
-      "Matching that considers behaviour, routine, and home dynamics",
-      "Designed to bring more calm, dignity, and confidence into the home",
-    ],
+    trustSignals: sharedTrustBadges.map((badge) => badge.title),
+    trustBadges: sharedTrustBadges,
     forWho: {
-      title: "This is usually right when memory changes are affecting daily life",
+      title: "Right when memory changes are affecting daily life",
       intro:
-        "Families often come to us when confusion, repetition, mood shifts, or resistance are starting to take over the rhythm of the home.",
+        "Families come to us when confusion, repetition, mood shifts or resistance start to take over the rhythm of the home.",
       items: [
-        "An elder needs support with confusion, repetition, disorientation, or changing moods.",
-        "A spouse or child is feeling emotionally drained and needs steadier help at home.",
-        "The family wants a caregiver who can bring calm instead of adding to the stress.",
+        "Confusion, repetition, disorientation or sundowning is escalating at home.",
+        "A spouse or child is emotionally drained and needs steadier help.",
+        "Wandering, falls, or refusing meals/medication has started becoming a real risk.",
+        "You need a caregiver who brings calm, not friction.",
       ],
     },
     notForWho: {
-      title: "A different option may be better when",
+      title: "When another option may be better",
       intro:
         "Some situations need a different level of urgency or a narrower kind of service.",
       items: [
-        "The need is only for a one-time nursing procedure rather than ongoing dementia support.",
+        "You only need a one-time nursing procedure rather than ongoing dementia support.",
         "The elder is in an acute medical crisis and needs emergency care.",
-        "The family only wants generic information and is not ready for a real care conversation.",
+        "There is no diagnosis yet — start with a geriatrician consult; we can help you find one.",
       ],
     },
     howItWorks: [
       {
         title: "1. Share what feels hardest right now",
         description:
-          "Tell us about the current situation, the city, and what the family is struggling with most day to day.",
+          "Use the chatbot, WhatsApp or a phone call. Tell us what triggered the inquiry — wandering, agitation, refusal to eat, or exhaustion.",
       },
       {
-        title: "2. Speak with a care manager who understands the context",
+        title: "2. Discovery call with a doctor-led care manager",
         description:
-          "The first call usually covers routine breakdowns, behaviour changes, safety concerns, and what kind of support would actually help at home.",
+          "Within 4 hours, a clinician calls you. We cover routine breakdowns, behaviour patterns, safety risks and what would actually help at home.",
       },
       {
-        title: "3. Get a plan shaped for the home",
+        title: "3. Dementia-specific care plan",
         description:
-          "Caregiver matching and planning take likely triggers, communication style, family preference, and home rhythm into account.",
+          "Daily schedule built around the elder's triggers and communication style. Caregiver match using our pre-placement scoring sheet.",
       },
       {
-        title: "4. Keep the home loop close",
+        title: "4. Daily updates in the first week",
         description:
-          "Early updates matter because families want to know whether the elder seems calmer, safer, and better understood.",
+          "Daily WhatsApp updates for the first seven days, then 2× a week. Weekly care manager call and a monthly clinical review.",
       },
     ],
     whatToExpect: [
       {
         title: "A more understanding approach",
         description:
-          "The goal is not just to get through a checklist, but to support the elder with patience and dignity in the moments that are hardest.",
+          "Patience and dignity in the moments that are hardest. The plan accounts for the hours that tend to be most difficult at your home.",
       },
       {
-        title: "More useful family conversations",
+        title: "Family conversations that actually help",
         description:
-          "We focus on what is really happening at home, what tends to trigger distress, and what the family can expect from support.",
+          "We focus on what really triggers distress, what helps and what to expect — not a generic checklist.",
       },
       {
         title: "Visible reassurance",
         description:
-          "Families often need to feel, not just assume, that care is being delivered with warmth and steadiness.",
+          "Caregiver photos during meals, walks or exercises. NRI families especially value seeing care actually happen.",
       },
     ],
     familyVoices: [
@@ -367,12 +458,26 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "“We could finally understand the pattern.”",
         description:
-          "Updates feel far more helpful when they explain what happened, what helped, and what may need attention next.",
+          "Structured updates help families see triggers, what helps, and what to do next — instead of guessing.",
       },
       {
         title: "“The home started feeling less tense.”",
         description:
-          "Progress often looks practical: fewer disruptions, smoother routines, and more confidence for everyone involved.",
+          "Progress often looks practical: fewer disruptions, smoother evenings, and more confidence for everyone involved.",
+      },
+    ],
+    testimonials: [
+      {
+        quote:
+          "You have been a constant source of guidance and support over the past few months and you did your utmost to make mummy's last days so comfortable. You cared for her like family, and we will always be thankful. Your compassion made all the difference.",
+        author: "Family of a dementia patient under Dr. Kavitha's care",
+        context: "Hand-written note received by Portea",
+      },
+      {
+        quote:
+          "My father stopped recognising names but he recognised the Portea didi. That calmed everyone in the house. The care manager helped us understand his pattern instead of fighting it.",
+        author: "Priya N.",
+        context: "Daughter, Pune",
       },
     ],
     faqs: [
@@ -380,12 +485,17 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Can this help if evenings are the hardest time of day?",
         answer:
-          "Yes. During the first conversation, we try to understand when confusion or agitation tends to rise so the plan is not generic.",
+          "Yes. The discovery call captures when confusion or agitation tends to rise. The plan and the caregiver schedule are shaped around your home's specific pattern — not a generic dementia template.",
       },
       {
         question: "Will the family still stay involved after care starts?",
         answer:
-          "Absolutely. Families stay closely informed, and the plan can be adjusted as the real picture at home becomes clearer.",
+          "Absolutely. You are added to a WhatsApp group with your care manager. You stay closely informed and the plan adjusts as the real picture at home becomes clearer.",
+      },
+      {
+        question: "Are caregivers really trained in dementia care?",
+        answer:
+          "Yes — our caregivers receive specialised dementia training co-developed with the Dementia India Alliance, and every dementia placement uses a mandatory pre-placement scoring sheet that matches the caregiver to the case.",
       },
     ],
     theme: {
@@ -403,16 +513,29 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     slug: "post-discharge",
     name: "Post-Discharge Care",
     shortName: "Post-discharge care",
-    headline: "Expert recovery support after hospital discharge",
+    metaTitle: "Post-Hospital Recovery Care at Home in India | Portea",
+    metaDescription:
+      "Structured recovery support after surgery, stroke or hospitalisation. Nursing, physiotherapy, mobility and medication management — coordinated by one doctor-led care manager in 40+ Indian cities.",
+    keywords: [
+      "post hospital discharge care",
+      "post surgery home care",
+      "stroke recovery at home",
+      "nurse at home",
+      "home physiotherapy",
+      "recovery care India",
+    ],
+    headline: "Safer recovery at home after hospital discharge",
     accentPhrase: "after hospital discharge",
     subheadline:
-      "The first few days at home can feel uncertain. We help families organise recovery with the right support, clearer routines, and one team keeping things on track.",
+      "Trained caregivers, nurses and physiotherapists — coordinated by one doctor-led care manager — so the first week at home doesn't feel like guesswork.",
     heroLabel: "Recovery at home",
     overview:
-      "For families who know discharge is only the beginning and want a safer, better-organised start to recovery at home.",
+      "For families who know discharge is only the beginning and want a safer, better-organised start to recovery — wound care, medication, mobility, follow-up coordination and home physiotherapy under one plan.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "If discharge is close or the patient is already home, share the details now and we can help you move faster.",
+      "If discharge is in the next 72 hours or the patient is already home, share the details now — a care manager will call within 4 hours.",
+    whatsAppMessage:
+      "Hi Portea, I need post-hospital recovery care at home for a family member.",
     images: [
       {
         src: "/post-discharge-1.png",
@@ -428,45 +551,43 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       },
     ],
     quickFacts: [
-      "Built for the first recovery phase at home",
-      "Support around mobility, routines, and follow-through",
-      "Clearer coordination when plans change",
+      "Care plan ready before discharge day",
+      "Nurse + caregiver + physio under one plan",
+      "Equipment delivered on Day 1",
+      "Daily updates for the first 7 days",
     ],
     highlights: [
       {
         title: "A smoother move from hospital to home",
         description:
-          "Support is shaped around what often becomes difficult after discharge: movement, wound routines, medicines, and practical follow-through.",
+          "Care is shaped around what often becomes difficult after discharge — wound routines, medications, mobility, follow-ups.",
       },
       {
         title: "More confidence in the first week",
         description:
-          "Families get a clearer picture of what to do first, what to watch, and who to turn to when recovery feels harder than expected.",
+          "Families get a clearer picture of what to do first, what to watch for, and who to call when something doesn't look right.",
       },
       {
         title: "Better support for the family too",
         description:
-          "Recovery does not only affect the patient. It often leaves the household juggling appointments, caregiving, and constant questions.",
+          "Recovery doesn't only affect the patient. The care manager coordinates appointments, medication, equipment and questions.",
       },
     ],
-    trustSignals: [
-      "Structured support for the transition from hospital to home",
-      "Care planning shaped around the first recovery week",
-      "One care manager to help the family stay coordinated",
-      "Useful when discharge paperwork feels clear on paper but not in real life",
-    ],
+    trustSignals: sharedTrustBadges.map((badge) => badge.title),
+    trustBadges: sharedTrustBadges,
     forWho: {
-      title: "This is usually right when recovery needs more structure at home",
+      title: "Right when recovery at home needs more structure",
       intro:
-        "Families often reach out when the discharge date is near, the patient is already home, or everyone realises that recovery still needs active support.",
+        "Families often reach out when the discharge date is near, the patient is already home, or it's clear that recovery still needs active support.",
       items: [
-        "A patient is coming home after surgery, illness, or hospitalisation and needs help settling safely.",
-        "The family is worried about mobility, medicines, fatigue, wound care, or missed follow-ups.",
-        "There is a short but urgent window to make the first week at home feel more organised.",
+        "A patient is coming home after surgery, illness or hospitalisation and needs help settling safely.",
+        "You're worried about mobility, medications, fatigue, wound care or missed follow-ups.",
+        "There's a short but urgent window to make the first week at home feel more organised.",
+        "You want one team coordinating nurse, physio, caregiver and equipment.",
       ],
     },
     notForWho: {
-      title: "A different option may be better when",
+      title: "When another option may be better",
       intro:
         "Sometimes the need is either very simple or still too medically unstable for home recovery support.",
       items: [
@@ -479,69 +600,83 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "1. Tell us where recovery stands",
         description:
-          "We begin with the discharge context, city, and what the family is most concerned about once the patient is home.",
+          "Share the discharge context, condition and city. The faster we get the basics, the faster we can prepare.",
       },
       {
-        title: "2. Speak with a care manager quickly",
+        title: "2. Discovery call with a care manager",
         description:
-          "The first call turns the discharge situation into practical next steps the family can actually use at home.",
+          "A clinician calls you within 4 hours. We turn the discharge papers into practical next steps you can actually use at home.",
       },
       {
-        title: "3. Start with the right support",
+        title: "3. Plan, equipment & team in place by Day 1",
         description:
-          "Depending on the recovery picture, support may involve a caregiver, nursing help, mobility support, or a more coordinated mix.",
+          "Care plan on WhatsApp same day. Caregiver, nurse visits and physiotherapy scheduled. Equipment delivered before the patient is home.",
       },
       {
-        title: "4. Stay close through the early days",
+        title: "4. Daily updates through the first week",
         description:
-          "The first week usually needs the most reassurance, so updates and adjustments matter even more than usual.",
+          "Daily WhatsApp updates for the first seven days, then twice a week. Weekly CM call. Plan adjusts as recovery progresses.",
       },
     ],
     whatToExpect: [
       {
         title: "A clearer first-week plan",
         description:
-          "Families should know what happens on day one, what needs attention first, and what can wait until recovery settles.",
+          "Day-by-day clarity on what's happening at home — meals, medication, mobility, dressings, follow-ups.",
       },
       {
         title: "Less uncertainty at home",
         description:
-          "Instead of relying only on discharge papers and memory, the family gets a more practical support rhythm.",
+          "Instead of relying only on discharge papers and memory, the family follows a real support rhythm with one team accountable.",
       },
       {
-        title: "A more joined-up experience",
+        title: "A joined-up experience",
         description:
-          "Care should feel like a proper handover into home recovery, not like the family has been left to figure everything out alone.",
+          "Care feels like a proper handover into home recovery — not like the family was left to figure everything out alone.",
       },
     ],
     familyVoices: [
       {
         title: "“The first week stopped feeling like guesswork.”",
         description:
-          "Families often feel immediate relief when there is a clearer structure for what recovery at home should actually look like.",
+          "Families often feel immediate relief when there is a clear structure for what recovery at home should look like.",
       },
       {
         title: "“We knew what to watch and who to call.”",
         description:
-          "Confidence usually comes from simple things: clearer priorities, better follow-through, and one team staying accountable.",
+          "Confidence usually comes from simple things: clearer priorities, better follow-through, one team staying accountable.",
       },
       {
-        title: "“It felt like proper support, not just discharge day advice.”",
+        title: "“It felt like proper support, not discharge-day advice.”",
         description:
-          "The biggest difference is often that recovery continues to feel guided after the patient comes home.",
+          "The biggest difference is that recovery continues to feel guided after the patient comes home.",
+      },
+    ],
+    testimonials: [
+      {
+        quote:
+          "My father came home after a hip surgery and we were terrified about the first week. Portea's nurse, physio and caregiver arrived like clockwork. Within four days he was walking with a walker.",
+        author: "Ramesh K.",
+        context: "Son, Hyderabad",
+      },
+      {
+        quote:
+          "The care manager called every single day in the first week. We always knew what was next. That was a different kind of healthcare experience.",
+        author: "Latha S.",
+        context: "Wife of a stroke patient, Chennai",
       },
     ],
     faqs: [
       ...sharedFaqs,
       {
-        question: "Is this mainly for the first recovery phase or for longer-term care too?",
+        question: "Is this mainly for the first recovery phase, or longer-term too?",
         answer:
-          "It is especially helpful in the first recovery phase, though the plan can continue or evolve if the family needs longer support.",
+          "It's especially useful in the first recovery phase, but the plan can continue or evolve into managed elder care if recovery uncovers longer-term needs.",
       },
       {
-        question: "Can the support change if recovery feels more difficult at home?",
+        question: "Can the support change if recovery feels harder at home?",
         answer:
-          "Yes. If needs around pain, mobility, wound routines, or daily support look different at home, the plan can be adjusted accordingly.",
+          "Yes. If pain, mobility, wound routines or daily support look different in real life, the plan is adjusted — that's exactly what the monthly review and weekly CM call are for.",
       },
     ],
     theme: {
@@ -561,19 +696,21 @@ export const verticalList = Object.values(verticals);
 
 export const homeStats = [
   {
-    value: "10,00,000+",
-    label: "patients served successfully",
+    value: "10L+",
+    label: "patients served across India",
   },
   {
-    value: "7,00,000+",
-    label: "annual patient visits across India",
+    value: "7L+",
+    label: "annual home visits",
+  },
+  {
+    value: "40+",
+    label: "cities covered",
   },
   {
     value: "63",
     label: "hospital partnerships",
   },
-  {
-    value: "40+",
-    label: "cities supported",
-  },
 ];
+
+export const homeTrustBadges: TrustBadge[] = sharedTrustBadges;

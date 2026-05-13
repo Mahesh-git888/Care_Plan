@@ -1,31 +1,56 @@
+// Chatbot intake — aligned with the Managed Elder Care SOP.
+// The 6 SOP data points: elder's name, condition, high-level needs, phone,
+// city/area, family member name + phone. Plus consent.
+
 export const intakeSteps = [
   {
+    key: "elderName",
+    label: "elder's name",
+    prompt: "Hi, I'm Portea's care assistant. Whom are we caring for? Please share the elder's name.",
+    placeholder: "Elder's full name",
+    type: "text",
+  },
+  {
+    key: "condition",
+    label: "condition or diagnosis",
+    prompt: "Got it. What is happening with their health? A diagnosis or a short description is fine.",
+    placeholder: "e.g. Alzheimer's, post hip-replacement, low mobility",
+    type: "text",
+  },
+  {
+    key: "needs",
+    label: "kind of help needed",
+    prompt: "What kind of help is most needed at home right now?",
+    placeholder: "e.g. caregiver, nurse, physio, full-day support",
+    type: "textarea",
+  },
+  {
+    key: "city",
+    label: "city / area",
+    prompt: "Which city and area is the elder in?",
+    placeholder: "e.g. Indiranagar, Bangalore",
+    type: "text",
+  },
+  {
     key: "name",
-    label: "name",
-    prompt: "Hi, I can help with that. What is your name?",
-    placeholder: "Enter your name",
+    label: "your name",
+    prompt: "Thank you. May I have your name?",
+    placeholder: "Your name",
+    type: "text",
+  },
+  {
+    key: "relationship",
+    label: "relationship to the elder",
+    prompt: "How are you related to the elder?",
+    placeholder: "e.g. Daughter, Son, Spouse",
     type: "text",
   },
   {
     key: "phone",
-    label: "phone",
-    prompt: "Thanks. What phone number should our care team call?",
-    placeholder: "Enter your phone number",
+    label: "phone number",
+    prompt: "What's the best phone number for our care manager to call you on?",
+    placeholder: "10-digit phone number",
     type: "tel",
-  },
-  {
-    key: "city",
-    label: "city",
-    prompt: "Which city do you need care support in?",
-    placeholder: "Enter your city",
-    type: "text",
-  },
-  {
-    key: "situation",
-    label: "situation",
-    prompt: "Please share a little about the care situation so we can prepare.",
-    placeholder: "Describe the care need",
-    type: "textarea",
   },
 ] as const;
 
@@ -41,8 +66,11 @@ export type ChatMessage = {
 };
 
 export const emptyFields: IntakeFields = {
-  name: "",
-  phone: "",
+  elderName: "",
+  condition: "",
+  needs: "",
   city: "",
-  situation: "",
+  name: "",
+  relationship: "",
+  phone: "",
 };
