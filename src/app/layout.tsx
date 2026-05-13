@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 
+import { TrackingProvider } from "@/components/tracking-provider";
+
 import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.portea.com";
@@ -107,6 +109,7 @@ export default function RootLayout({
   return (
     <html lang="en-IN">
       <body>
+        <TrackingProvider />
         {children}
         <Script
           id="ld-organization"

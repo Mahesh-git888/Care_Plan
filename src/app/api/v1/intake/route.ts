@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 
 import { verticals, type VerticalSlug } from "@/data/verticals";
+import { appendLead, maskPhone, type LeadAttribution } from "@/lib/lead-store";
 
 type IntakePayload = {
   full_name?: string;
@@ -16,6 +17,7 @@ type IntakePayload = {
   needs?: string;
   relationship?: string;
   consent_given?: boolean;
+  attribution?: LeadAttribution;
 };
 
 function isVerticalSlug(value: string): value is VerticalSlug {
@@ -64,41 +66,42 @@ export async function POST(request: Request) {
     );
   }
 
-  const submission = {
-    patient_id: randomUUID(),
+  const patientId = randomUUID();
+  const receivedAt = new Date().toISOString();
+
+  await appendLead({
+    id: patientId,
+    kind: "intake",
+    created_at: receivedAt,
+    vertical,
     full_name: fullName,
     phone,
     city,
     situation,
-    vertical,
-    ab_variant: body.ab_variant?.trim() || null,
-    elder_name: body.elder_name?.trim() ?? null,
-    condition: body.condition?.trim() ?? null,
-    needs: body.needs?.trim() ?? null,
-    relationship: body.relationship?.trim() ?? null,
+    ab_variant: body.ab_variant?.trim() || undefined,
+    elder_name: body.elder_name?.trim() || undefined,
+    condition: body.condition?.trim() || undefined,
+    needs: body.needs?.trim() || undefined,
+    relationship: body.relationship?.trim() || undefined,
     consent_given: true,
     status: "PENDING_CM_ASSIGNMENT",
-    received_at: new Date().toISOString(),
-  };
-
-  // Mask phone for logging (PII): keep country + last 2 digits visible.
-  const digits = phone.replace(/\D/g, "");
-  const maskedPhone =
-    digits.length >= 4 ? `${digits.slice(0, 2)}******${digits.slice(-2)}` : "***";
-  // eslint-disable-next-line no-console
-  console.log("[intake]", {
-    patient_id: submission.patient_id,
-    vertical: submission.vertical,
-    ab_variant: submission.ab_variant,
-    city: submission.city,
-    phone: maskedPhone,
-    status: submission.status,
+    attribution: body.attribution ?? {},
   });
 
-  // TODO: forward to upstream FastAPI service when NEXT_PUBLIC_INTAKE_API_URL is configured.
+  // eslint-disable-next-line no-console
+  console.log("[intake]", {
+    patient_id: patientId,
+    vertical,
+    ab_variant: body.ab_variant ?? null,
+    city,
+    phone: maskPhone(phone),
+    utm_source: body.attribution?.utm_source ?? null,
+    utm_campaign: body.attribution?.utm_campaign ?? null,
+  });
+
   return NextResponse.json({
-    patient_id: submission.patient_id,
-    status: submission.status,
-    submittedAt: submission.received_at,
+    patient_id: patientId,
+    status: "PENDING_CM_ASSIGNMENT",
+    submittedAt: receivedAt,
   });
 }

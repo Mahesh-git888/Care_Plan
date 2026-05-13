@@ -98,7 +98,8 @@ export function FloatingContactButtons({ vertical }: { vertical: VerticalConfig 
             <div className="flex flex-col items-end gap-3">
               <a
                 href={phone.href}
-                className="inline-flex items-center gap-3 rounded-full bg-[#10242b] px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-[#0a1a1f]"
+                data-track="call"
+                className="inline-flex items-center gap-3 rounded-full bg-[#0f9aa8] px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-[#0b7c87]"
                 aria-label={`Call Portea on ${phone.label}`}
               >
                 <PhoneIcon className="h-4 w-4" />

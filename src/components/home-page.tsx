@@ -59,7 +59,8 @@ export function HomePage() {
               </a>
               <a
                 href={phone.href}
-                className="inline-flex items-center gap-2 rounded-full bg-[#10242b] px-4 py-2 text-white shadow-sm transition hover:bg-[#0a1a1f]"
+                data-track="call"
+                className="inline-flex items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 text-white shadow-sm transition hover:bg-[#0b7c87]"
               >
                 <PhoneIcon className="h-4 w-4" />
                 <span>{phone.label}</span>
@@ -465,7 +466,8 @@ export function HomePage() {
               <div className="mt-5 flex flex-wrap gap-2">
                 <a
                   href={phone.href}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#10242b] px-4 py-2 text-xs font-semibold text-white"
+                  data-track="call"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 text-xs font-semibold text-white"
                 >
                   <PhoneIcon className="h-3.5 w-3.5" />
                   {phone.label}

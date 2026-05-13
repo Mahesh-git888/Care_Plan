@@ -6,3 +6,11 @@ yarn-error.log*
 pnpm-debug.log*
 .DS_Store
 *.tsbuildinfo
+
+# Local env — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# Local lead store (when PORTEA_LEADS_FILE points inside the repo)
+portea-leads.jsonl

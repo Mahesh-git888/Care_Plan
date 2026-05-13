@@ -12,6 +12,7 @@ import {
 } from "@/lib/chatbot";
 import type { VerticalConfig } from "@/data/verticals";
 import { getIntakeApiUrl } from "@/lib/api";
+import { readAttribution } from "@/lib/utm";
 
 type FlowPhase = "typing" | "awaiting-input" | "consent" | "submitting" | "submitted";
 
@@ -262,6 +263,7 @@ export function IntakeChatbot({
             needs: state.fields.needs,
             relationship: state.fields.relationship,
             consent_given: true,
+            attribution: readAttribution(),
           }),
         });
         const result = (await response.json()) as {

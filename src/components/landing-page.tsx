@@ -122,7 +122,8 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
               })}
               <a
                 href={phone.href}
-                className="ml-2 hidden items-center gap-2 rounded-full bg-[#10242b] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#0a1a1f] lg:inline-flex"
+                data-track="call"
+                className="ml-2 hidden items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#0b7c87] lg:inline-flex"
               >
                 <PhoneIcon className="h-4 w-4" />
                 <span>{phone.label}</span>
