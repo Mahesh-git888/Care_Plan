@@ -64,25 +64,71 @@ async function ensureLeadsFile(filePath: string) {
 
 export async function appendLead(record: LeadRecord) {
   const filePath = leadsFilePath();
-  await ensureLeadsFile(filePath);
-  const line = JSON.stringify(record) + "\n";
-  await fs.appendFile(filePath, line, { encoding: "utf8" });
+  // The JSONL backup file is best-effort — on serverless platforms like Vercel
+  // where /tmp is ephemeral and read-only outside /tmp, a write failure
+  // shouldn't block the intake response or the webhook forward.
+  try {
+    await ensureLeadsFile(filePath);
+    const line = JSON.stringify(record) + "\n";
+    await fs.appendFile(filePath, line, { encoding: "utf8" });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn("[lead-store] local file append failed", err);
+  }
 
   // Best-effort webhook forwarding. Failure does not block the request.
-  const webhook = process.env.PORTEA_LEADS_WEBHOOK_URL?.trim();
-  if (webhook) {
+  const webhookRaw = process.env.PORTEA_LEADS_WEBHOOK_URL?.trim();
+  if (webhookRaw) {
+    // Defensive: a leading/trailing space in the env var would throw on URL
+    // parsing in Node 20+. trim() above + explicit URL() validation here.
+    let webhookUrl: URL;
     try {
-      await fetch(webhook, {
+      webhookUrl = new URL(webhookRaw);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(
+        "[lead-store] PORTEA_LEADS_WEBHOOK_URL is not a valid URL — fix the env var (no leading space):",
+        JSON.stringify(webhookRaw),
+        err,
+      );
+      return;
+    }
+
+    try {
+      const response = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(record),
-        // 3-second cap so a slow webhook can't hold up the intake response.
-        signal: AbortSignal.timeout(3_000),
+        // Apps Script cold-starts can take 4-6s; give them headroom.
+        signal: AbortSignal.timeout(10_000),
+        // Apps Script redirects /exec → /macros/echo/... — follow it.
+        redirect: "follow",
       });
+      if (!response.ok) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          "[lead-store] webhook responded non-2xx",
+          response.status,
+          await response.text().catch(() => ""),
+        );
+      } else {
+        // eslint-disable-next-line no-console
+        console.log(
+          "[lead-store] webhook ok",
+          response.status,
+          "kind:",
+          record.kind,
+          "vertical:",
+          record.vertical ?? "",
+        );
+      }
     } catch (err) {
       // eslint-disable-next-line no-console
       console.warn("[lead-store] webhook forward failed", err);
     }
+  } else {
+    // eslint-disable-next-line no-console
+    console.warn("[lead-store] PORTEA_LEADS_WEBHOOK_URL is empty — not forwarding");
   }
 }
 
