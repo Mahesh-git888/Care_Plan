@@ -209,10 +209,11 @@ async function forwardToPorteaCrm(record: LeadRecord) {
 // doGet endpoint; otherwise we fall back to the local file (handy for local
 // dev).
 
-type SheetRow = Record<string, string | number | boolean | null | undefined>;
+type SheetRow = Record<string, string | number | boolean | Date | null | undefined>;
 
 function asString(value: SheetRow[string]): string | undefined {
   if (value === undefined || value === null || value === "") return undefined;
+  if (value instanceof Date) return value.toISOString();
   return String(value);
 }
 
@@ -342,5 +343,8 @@ export function maskPhone(phone?: string) {
   if (!phone) return "";
   const digits = phone.replace(/\D/g, "");
   if (digits.length < 4) return "***";
+  return `${digits.slice(0, 2)}******${digits.slice(-2)}`;
+}
+";
   return `${digits.slice(0, 2)}******${digits.slice(-2)}`;
 }
