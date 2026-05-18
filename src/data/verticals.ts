@@ -703,4 +703,64 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     testimonials: [
       {
         quote:
-          "
+          "        quote:
+          "My father came home after a hip surgery and we were terrified about the first week. Portea's nurse, physio and caregiver arrived like clockwork. Within four days he was walking with a walker.",
+        author: "Ramesh K.",
+        context: "Son, Hyderabad",
+      },
+      {
+        quote:
+          "The care manager called every single day in the first week. We always knew what was next. That was a different kind of healthcare experience.",
+        author: "Latha S.",
+        context: "Wife of a stroke patient, Chennai",
+      },
+    ],
+    faqs: [
+      ...sharedFaqs,
+      {
+        question: "Is this mainly for the first recovery phase, or longer-term too?",
+        answer:
+          "It's especially useful in the first recovery phase, but the plan can continue or evolve into managed elder care if recovery uncovers longer-term needs.",
+      },
+      {
+        question: "Can the support change if recovery feels harder at home?",
+        answer:
+          "If pain, mobility, wound routines or daily support look different in real life, the plan is adjusted. That's exactly what the monthly review and weekly CM call are for.",
+      },
+    ],
+    theme: {
+      accent: "bg-[#0c7b95]",
+      accentStrong: "bg-[#0c7b95] hover:bg-[#09677d]",
+      accentSoft: "bg-[#def2f7]",
+      accentText: "text-[#0b5365]",
+      border: "border-[#c1e3ec]",
+      surface: "from-[#f7fdff] via-white to-[#eef8fb]",
+      background: "from-[#eef8fc] via-[#fbfdfd] to-[#eef5f7]",
+      tint: "rgba(12,123,149,0.12)",
+    },
+  },
+};
+
+export const verticalList = Object.values(verticals);
+
+export const homeStats = [
+  {
+    value: "10L+",
+    label: "patients served across India",
+  },
+  {
+    value: "7L+",
+    label: "annual home visits",
+  },
+  {
+    value: "40+",
+    label: "cities covered",
+  },
+  {
+    value: "63",
+    label: "hospital partnerships",
+  },
+];
+
+export const homeTrustBadges: TrustBadge[] = sharedTrustBadges;
+] = sharedTrustBadges;
