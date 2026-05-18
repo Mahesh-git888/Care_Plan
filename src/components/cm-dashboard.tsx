@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -70,9 +70,9 @@ function isWithin(window: TimeWindow, iso?: string) {
 }
 
 function timeAgo(iso?: string): string {
-  if (!iso) return "—";
+  if (!iso) return "â€”";
   const d = new Date(iso);
-  if (isNaN(d.getTime())) return "—";
+  if (isNaN(d.getTime())) return "â€”";
   const diff = Date.now() - d.getTime();
   const mins = Math.floor(diff / 60_000);
   if (mins < 1) return "just now";
@@ -156,7 +156,7 @@ export function CmDashboard() {
     return out;
   }, [scoped]);
 
-  // Top stat cards — also respect CM + time window
+  // Top stat cards â€” also respect CM + time window
   const newLeadsCount = counts.new;
   const followUpsToday = scoped.filter(
     (l) => (l.status || "new") === "follow_up" && isToday(l.follow_up_date),
@@ -206,7 +206,7 @@ export function CmDashboard() {
               href="/admin/analytics"
               className="rounded-full border border-[#d7e7ea] bg-white px-4 py-2 text-sm font-medium text-[#0b7c87] hover:bg-[#f7fbfb]"
             >
-              Marketing analytics →
+              Marketing analytics â†’
             </Link>
             <select
               value={cm}
@@ -285,7 +285,7 @@ export function CmDashboard() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name or phone…"
+              placeholder="Search by name or phoneâ€¦"
               className="w-64 rounded-full border border-[#d7e7ea] bg-white px-4 py-2 text-sm outline-none focus:border-[#0f9aa8] focus:ring-2 focus:ring-[#0f9aa8]/20"
             />
           </div>
@@ -294,7 +294,7 @@ export function CmDashboard() {
         {/* Table */}
         <div className="mt-6 overflow-hidden rounded-2xl border border-[#e2e8eb] bg-white shadow-sm">
           {loading ? (
-            <p className="p-8 text-center text-sm text-[#7a8c92]">Loading leads…</p>
+            <p className="p-8 text-center text-sm text-[#7a8c92]">Loading leadsâ€¦</p>
           ) : error ? (
             <p className="p-8 text-center text-sm text-rose-600">{error}</p>
           ) : visible.length === 0 ? (
@@ -310,7 +310,7 @@ export function CmDashboard() {
                     <th className="px-4 py-3">Caller</th>
                     <th className="px-4 py-3">Phone</th>
                     <th className="px-4 py-3">City</th>
-                    <th className="px-4 py-3">Condition · needs</th>
+                    <th className="px-4 py-3">Condition Â· needs</th>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">CM</th>
                     <th className="px-4 py-3">Received</th>
@@ -327,14 +327,14 @@ export function CmDashboard() {
                       >
                         <td className="px-4 py-3">
                           <p className="font-semibold text-[#10242b]">
-                            {lead.elder_name || "—"}
+                            {lead.elder_name || "â€”"}
                           </p>
                           {lead.vertical ? (
                             <p className="text-xs text-[#7a8c92]">{lead.vertical}</p>
                           ) : null}
                         </td>
                         <td className="px-4 py-3 text-sm">
-                          {lead.full_name || "—"}
+                          {lead.full_name || "â€”"}
                           {lead.relationship ? (
                             <p className="text-xs text-[#7a8c92]">{lead.relationship}</p>
                           ) : null}
@@ -349,13 +349,13 @@ export function CmDashboard() {
                               {lead.phone}
                             </a>
                           ) : (
-                            <span className="text-[#7a8c92]">—</span>
+                            <span className="text-[#7a8c92]">â€”</span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-sm">{lead.city || "—"}</td>
+                        <td className="px-4 py-3 text-sm">{lead.city || "â€”"}</td>
                         <td className="px-4 py-3 text-sm">
                           <p className="font-semibold text-[#10242b]">
-                            {lead.condition || "—"}
+                            {lead.condition || "â€”"}
                           </p>
                           {lead.needs ? (
                             <p className="text-xs text-[#7a8c92]">{lead.needs}</p>
@@ -516,7 +516,7 @@ function LeadDetailPanel({
               {lead.elder_name || "Unnamed patient"}
             </h2>
             <p className="mt-0.5 text-sm text-[#7a8c92]">
-              Received {timeAgo(lead.created_at)} · caller {lead.full_name || "—"}
+              Received {timeAgo(lead.created_at)} Â· caller {lead.full_name || "â€”"}
               {lead.relationship ? ` (${lead.relationship})` : ""}
             </p>
           </div>
@@ -541,18 +541,18 @@ function LeadDetailPanel({
                   {lead.phone}
                 </a>
               ) : (
-                "—"
+                "â€”"
               )}
             </Fact>
-            <Fact label="City">{lead.city || "—"}</Fact>
-            <Fact label="Condition">{lead.condition || "—"}</Fact>
-            <Fact label="Needs">{lead.needs || "—"}</Fact>
-            <Fact label="A/B variant">{lead.ab_variant || "—"}</Fact>
-            <Fact label="Source · campaign">
+            <Fact label="City">{lead.city || "â€”"}</Fact>
+            <Fact label="Condition">{lead.condition || "â€”"}</Fact>
+            <Fact label="Needs">{lead.needs || "â€”"}</Fact>
+            <Fact label="A/B variant">{lead.ab_variant || "â€”"}</Fact>
+            <Fact label="Source Â· campaign">
               {lead.attribution?.utm_source ? (
                 <>
                   <span className="font-semibold">{lead.attribution.utm_source}</span>
-                  {lead.attribution.utm_medium ? ` · ${lead.attribution.utm_medium}` : ""}
+                  {lead.attribution.utm_medium ? ` Â· ${lead.attribution.utm_medium}` : ""}
                   {lead.attribution.utm_campaign ? (
                     <p className="mt-0.5 text-xs text-[#7a8c92]">
                       {lead.attribution.utm_campaign}
@@ -636,7 +636,7 @@ function LeadDetailPanel({
               disabled={saving}
               className="rounded-full bg-[#0f9aa8] px-5 py-2 text-sm font-semibold text-white hover:bg-[#0b7c87] disabled:opacity-50"
             >
-              {saving ? "Saving…" : "Save update"}
+              {saving ? "Savingâ€¦" : "Save update"}
             </button>
           </div>
         </div>
@@ -659,295 +659,6 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="block text-xs font-semibold uppercase tracking-[0.16em] text-[#7a8c92]">
-        {label}
-      </span>
-      <span className="mt-1 block">{children}</span>
-    </label>
-  );
-}
- : null}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span
-                            className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_PILL[status]}`}
-                          >
-                            {STATUS_LABELS[status]}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm">
-                          {lead.care_manager || (
-                            <span className="text-[#7a8c92]">Unassigned</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-xs text-[#7a8c92]">
-                          {timeAgo(lead.created_at)}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-
-        <p className="mt-4 text-xs text-[#7a8c92]">
-          Showing {visible.length} of {scoped.length} in {TIME_LABELS[timeWindow].toLowerCase()}.
-          Click any row to open the patient and update status, CM or notes.
-        </p>
-      </section>
-
-      {selectedLead ? (
-        <LeadDetailPanel
-          lead={selectedLead}
-          onClose={() => setSelectedId(null)}
-          onSaved={(u) => {
-            onLeadSaved(u);
-            setSelectedId(null);
-          }}
-        />
-      ) : null}
-    </main>
-  );
-}
-
-function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
-  return (
-    <div className="rounded-2xl border border-[#e2e8eb] bg-white p-5 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7a8c92]">{label}</p>
-      <p className="mt-3 text-3xl font-semibold tracking-[-0.03em]" style={{ color }}>
-        {value}
-      </p>
-    </div>
-  );
-}
-
-function FilterPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-        active
-          ? "bg-[#10242b] text-white shadow"
-          : "border border-[#d7e7ea] bg-white text-[#10242b] hover:bg-[#f7fbfb]"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function LeadDetailPanel({
-  lead,
-  onClose,
-  onSaved,
-}: {
-  lead: LeadRecord;
-  onClose: () => void;
-  onSaved: (l: LeadRecord) => void;
-}) {
-  const [status, setStatus] = useState<LifecycleStatus>(lead.status || "new");
-  const [careManager, setCareManager] = useState<string>(lead.care_manager || "Unassigned");
-  const [followUpDate, setFollowUpDate] = useState<string>(
-    lead.follow_up_date ? lead.follow_up_date.slice(0, 10) : "",
-  );
-  const [notes, setNotes] = useState<string>("");
-  const [saving, setSaving] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null);
-
-  async function save() {
-    setSaving(true);
-    setFeedback(null);
-    try {
-      const res = await fetch("/api/admin/leads/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          received_at: lead.created_at,
-          phone: lead.phone,
-          status,
-          care_manager: careManager,
-          follow_up_date: followUpDate || "",
-          note: notes,
-        }),
-      });
-      const body = (await res.json()) as { ok?: boolean; error?: string };
-      if (!res.ok || !body.ok) throw new Error(body.error || "Save failed");
-      onSaved({
-        ...lead,
-        status,
-        care_manager: careManager,
-        follow_up_date: followUpDate || undefined,
-      });
-    } catch (err) {
-      setFeedback(err instanceof Error ? err.message : "Save failed");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  return (
-    <div className="fixed inset-0 z-40 flex">
-      <div
-        className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden
-      />
-      <aside className="relative ml-auto flex h-full w-full max-w-xl flex-col bg-white shadow-2xl">
-        <div className="flex items-start justify-between border-b border-[#e2e8eb] px-6 py-5">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87]">
-              {lead.vertical || "Patient"}
-            </p>
-            <h2 className="mt-1 text-xl font-semibold text-[#10242b]">
-              {lead.elder_name || "Unnamed patient"}
-            </h2>
-            <p className="mt-0.5 text-sm text-[#7a8c92]">
-              Received {timeAgo(lead.created_at)} · caller {lead.full_name || "—"}
-              {lead.relationship ? ` (${lead.relationship})` : ""}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full border border-[#d7e7ea] px-3 py-1 text-sm text-[#10242b] hover:bg-[#f7fbfb]"
-          >
-            Close
-          </button>
-        </div>
-
-        <div className="flex-1 space-y-6 overflow-y-auto px-6 py-6 text-sm">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3">
-            <Fact label="Phone">
-              {lead.phone ? (
-                <a
-                  href={`tel:${lead.phone.replace(/\D/g, "")}`}
-                  className="font-semibold text-[#0f9aa8] hover:underline"
-                >
-                  {lead.phone}
-                </a>
-              ) : (
-                "—"
-              )}
-            </Fact>
-            <Fact label="City">{lead.city || "—"}</Fact>
-            <Fact label="Condition">{lead.condition || "—"}</Fact>
-            <Fact label="Needs">{lead.needs || "—"}</Fact>
-            <Fact label="A/B variant">{lead.ab_variant || "—"}</Fact>
-            <Fact label="Source · campaign">
-              {lead.attribution?.utm_source ? (
-                <>
-                  <span className="font-semibold">{lead.attribution.utm_source}</span>
-                  {lead.attribution.utm_medium ? ` · ${lead.attribution.utm_medium}` : ""}
-                  {lead.attribution.utm_campaign ? (
-                    <p className="mt-0.5 text-xs text-[#7a8c92]">{lead.attribution.utm_campaign}</p>
-                  ) : null}
-                </>
-              ) : (
-                <span className="text-[#7a8c92]">organic / direct</span>
-              )}
-            </Fact>
-          </div>
-
-          <div className="space-y-4 rounded-2xl border border-[#e2e8eb] bg-[#f7fbfb] p-5">
-            <h3 className="text-sm font-semibold text-[#10242b]">Care manager update</h3>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Field label="Lifecycle status">
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value as LifecycleStatus)}
-                  className="w-full rounded-lg border border-[#d7e7ea] bg-white px-3 py-2 text-sm"
-                >
-                  {LIFECYCLE_STATUSES.map((s) => (
-                    <option key={s} value={s}>
-                      {STATUS_LABELS[s]}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              <Field label="Care manager">
-                <select
-                  value={careManager}
-                  onChange={(e) => setCareManager(e.target.value)}
-                  className="w-full rounded-lg border border-[#d7e7ea] bg-white px-3 py-2 text-sm"
-                >
-                  {CM_OPTIONS.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </Field>
-              <Field label="Follow-up date">
-                <input
-                  type="date"
-                  value={followUpDate}
-                  onChange={(e) => setFollowUpDate(e.target.value)}
-                  className="w-full rounded-lg border border-[#d7e7ea] bg-white px-3 py-2 text-sm"
-                />
-              </Field>
-              <Field label="Quick note (append)">
-                <input
-                  type="text"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="e.g. Spoke with daughter, will call back tomorrow"
-                  className="w-full rounded-lg border border-[#d7e7ea] bg-white px-3 py-2 text-sm"
-                />
-              </Field>
-            </div>
-            {feedback ? (
-              <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{feedback}</p>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="border-t border-[#e2e8eb] bg-white px-6 py-4">
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-full border border-[#d7e7ea] px-4 py-2 text-sm font-medium text-[#10242b] hover:bg-[#f7fbfb]"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={save}
-              disabled={saving}
-              className="rounded-full bg-[#0f9aa8] px-5 py-2 text-sm font-semibold text-white hover:bg-[#0b7c87] disabled:opacity-50"
-            >
-              {saving ? "Saving…" : "Save update"}
-            </button>
-          </div>
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-function Fact({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7a8c92]">{label}</p>
-      <p className="mt-1 text-sm text-[#10242b]">{children}</p>
-    </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="block text-xs font-semibold uppercase tracking-[0.16em] text-[#7a8c92]">
-        {label}
-      </span>
-      <span className="mt-1 block">{children}</span>
-    </label>
-  );
-}
-">
       <span className="block text-xs font-semibold uppercase tracking-[0.16em] text-[#7a8c92]">
         {label}
       </span>
