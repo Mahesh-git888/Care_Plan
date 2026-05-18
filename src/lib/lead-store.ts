@@ -136,16 +136,6 @@ async function forwardToSheetWebhook(record: LeadRecord) {
 
 // ---------------------------------------------------------------------------
 // Forwarder 2 — Portea CRM (production destination).
-//
-// Wire-format (subject to confirmation from engineering — see the
-// "integration brief" doc):
-//
-//   POST {PORTEA_CRM_API_URL}
-//   Authorization: Bearer {PORTEA_CRM_API_KEY}
-//   Content-Type: application/json
-//
-//   { ...LeadRecord, source: "portea-care-plan-lp" }
-//
 // When PORTEA_CRM_API_URL is unset, this is a no-op so the MVP keeps working.
 // ---------------------------------------------------------------------------
 async function forwardToPorteaCrm(record: LeadRecord) {
@@ -343,8 +333,5 @@ export function maskPhone(phone?: string) {
   if (!phone) return "";
   const digits = phone.replace(/\D/g, "");
   if (digits.length < 4) return "***";
-  return `${digits.slice(0, 2)}******${digits.slice(-2)}`;
-}
-";
   return `${digits.slice(0, 2)}******${digits.slice(-2)}`;
 }
