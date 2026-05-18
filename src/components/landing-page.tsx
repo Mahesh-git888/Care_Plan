@@ -208,7 +208,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
 
                 <div className="rounded-[1.8rem] border border-[#d9e8ea] bg-white/95 p-6 shadow-sm">
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87]">
-                    Why families feel reassured
+                    What families have at hand
                   </p>
                   <ul className="mt-4 space-y-3 text-sm font-medium leading-7 text-[#455e67]">
                     {vertical.trustSignals.slice(0, 4).map((signal) => (
@@ -248,8 +248,8 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
       <section id="trust" className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
         <SectionIntro
           label="Why Portea"
-          title="Care that is designed by doctors and delivered with warmth"
-          description="Built for families who want a calmer, more organised experience — not another inbox of appointments."
+          title="Doctors write the protocol. CMs run your case. Caregivers do the work."
+          description="Built for families who want one number to call, one CM who knows the case, and weekly updates that say what's actually happening at home."
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {vertical.trustBadges.map((badge, idx) => {
@@ -281,7 +281,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
           <div className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
             <SectionIntro
               label="How we can help"
-              title="Support at home that feels steadier from the very beginning"
+              title="What lands at home on week one"
               description={vertical.overview}
             />
 
@@ -527,8 +527,8 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
             </h3>
             <p className="mt-4 text-base font-medium leading-8 text-[#445d66]">
               Call if you want to speak right away, message us on WhatsApp if that
-              feels easier, or start with the chatbot so the care manager already
-              knows the basics before reaching out.
+              works for you, or send the chatbot in 90 seconds so the CM has
+              the basics before they call.
             </p>
 
             <div className="mt-7">

@@ -94,22 +94,22 @@ const sharedFaqs: FaqItem[] = [
   {
     question: "Will we have one person guiding us through the process?",
     answer:
-      "Yes. A single care manager — an MBBS doctor or a senior clinical professional — owns the family relationship end-to-end. They handle the discovery call, the care plan, caregiver oversight, weekly updates and any escalations. You won't be bouncing between agents.",
+      "A single care manager (an MBBS doctor or a senior clinical professional) owns the family relationship end-to-end: discovery call, care plan, caregiver oversight, weekly updates, escalations. You won't be bouncing between agents.",
   },
   {
     question: "How are caregivers selected and trained?",
     answer:
-      "Caregivers (nursing attendants and nurses) are matched to your loved one's routine, condition, language, location and home environment. They are briefed with the full care plan before their first shift. For dementia patients we apply a mandatory pre-placement scoring sheet co-designed with the Dementia India Alliance.",
+      "Caregivers are matched to the elder's routine, condition, language and home, and read the full care plan before they walk in on day one. For dementia placements we run them through a mandatory 80-point scoring sheet co-designed with the Dementia India Alliance first.",
   },
   {
     question: "How do we know what's happening at home?",
     answer:
-      "You'll be added to a private WhatsApp group with your care manager. You'll receive structured care updates twice a week (daily for the first week of dementia or post-surgery cases) plus a weekly call from the care manager. The caregiver doesn't run the family conversation — the care manager does.",
+      "You'll be added to a private WhatsApp group with your care manager. You'll receive structured care updates twice a week (daily for the first week of dementia or post-surgery cases) plus a weekly call from the care manager. The caregiver doesn't run the family conversation. The CM does.",
   },
   {
     question: "What does this cost?",
     answer:
-      "Costs depend on the care plan: caregiver hours, nurse visits, equipment, physiotherapy and so on. Your care manager will share an itemised weekly price after the discovery call. There are no signup fees and no contracts — you can stop care any week.",
+      "Costs depend on the care plan: caregiver hours, nurse visits, equipment, physiotherapy and so on. Your care manager will share an itemised weekly price after the discovery call. There are no signup fees and no contracts. You can stop care any week.",
   },
   {
     question: "Is Portea available in our city?",
@@ -127,12 +127,12 @@ const sharedTrustBadges: TrustBadge[] = [
   {
     title: "One care manager per family",
     description:
-      "An MBBS doctor or senior clinical lead handles your discovery call, the plan and weekly updates. Not a rotating call-centre.",
+      "An MBBS doctor or senior clinical lead handles your discovery call, the plan and the weekly updates. The same person, week after week.",
   },
   {
     title: "Updates twice a week on WhatsApp",
     description:
-      "Specific updates — meals, meds, mood, what changed. Plus a weekly call with the CM and a monthly plan review.",
+      "Specific notes on meals, meds, mood and what changed. Plus a weekly call with the CM and a monthly plan review.",
   },
   {
     title: "10 lakh+ patients across 40+ cities",
@@ -157,7 +157,7 @@ const dementiaTrustBadges: TrustBadge[] = [
   {
     title: "Daily updates in week one",
     description:
-      "New dementia placements get a daily WhatsApp update for the first seven days — patterns, triggers, what helped — then twice a week.",
+      "New dementia placements get a daily WhatsApp update for the first seven days (patterns, triggers, what helped). After that it eases to twice a week.",
   },
   {
     title: "One care manager per family",
@@ -194,9 +194,9 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     slug: "elder-care",
     name: "Elder Care",
     shortName: "Elder care",
-    metaTitle: "Elder Care at Home in India — Doctor-Designed | Portea",
+    metaTitle: "Elder Care at Home in India · Doctor-Designed | Portea",
     metaDescription:
-      "Portea Elder Care brings trained caregivers, one doctor-led care manager, and warm, reliable support home — for mobility, hygiene, meals, medications and companionship. Available in 40+ Indian cities.",
+      "Portea Elder Care: a trained caregiver at home, one MBBS care manager who knows your parent's case, twice-a-week WhatsApp updates. Mobility, hygiene, meals, medications. 40+ cities.",
     keywords: [
       "elder care at home",
       "home caregiver for parents",
@@ -208,13 +208,13 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Doctor-designed elder care that comes home to your parents",
     accentPhrase: "comes home",
     subheadline:
-      "One doctor-led care manager. A caregiver matched to your parent's routine and language. Twice-a-week WhatsApp updates that say what actually happened — meals, meds, mood, what changed.",
+      "One doctor-led care manager. A caregiver matched to your parent's routine and language. Twice-a-week WhatsApp updates that say what actually happened: meals, meds, mood, what changed.",
     heroLabel: "Managed elder care",
     overview:
-      "For families looking for dependable everyday support with mobility, hygiene, meals, routine, medication and peace of mind at home. Built around the people in the house, not a generic checklist.",
+      "For families who need help with the everyday: walking, bathing, meals, the medication tray, the small things that have started to slip. The plan is shaped around your parent's actual routine and your home's actual layout.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "Share a few details and a Portea care manager will call within 4 hours. No call-centre, no scripts — a doctor or senior clinician will speak with you directly.",
+      "Share a few details and a Portea care manager will call within 4 hours. No call-centre, no scripts. A doctor or senior clinician will speak with you directly.",
     whatsAppMessage:
       "Hi Portea, I'd like to learn about elder care at home for my parent.",
     images: [
@@ -235,7 +235,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       "One doctor-led care manager per family",
       "Caregivers matched to routine, language & mobility",
       "Structured WhatsApp updates 2× a week",
-      "Cancel any week — no lock-in",
+      "Cancel any week, no lock-in",
     ],
     highlights: [
       {
@@ -246,7 +246,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "One care manager. Not a call centre.",
         description:
-          "An MBBS doctor or senior clinical professional owns your family's relationship end-to-end — from the first call to weekly updates.",
+          "An MBBS doctor or senior clinical professional owns your family's relationship end-to-end, from the first call to weekly updates.",
       },
       {
         title: "A better fit at home",
@@ -273,7 +273,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
         "Sometimes the need is either much lighter or much more urgent than a managed elder-care setup.",
       items: [
         "You only need a one-time service (single nurse visit, lab draw, equipment rental).",
-        "It's an emergency that needs immediate hospital or ambulance care — call 108 first.",
+        "It's an emergency that needs immediate hospital or ambulance care, call 108 first.",
         "You're only gathering general information and aren't ready to discuss your situation yet.",
       ],
     },
@@ -291,7 +291,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "3. Personalised care plan and pricing",
         description:
-          "You receive a written care plan on WhatsApp the same day — daily schedule, care team, equipment and itemised weekly price.",
+          "You receive a written care plan on WhatsApp the same day, daily schedule, care team, equipment and itemised weekly price.",
       },
       {
         title: "4. Caregiver placed & continuous updates",
@@ -301,7 +301,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     ],
     whatToExpect: [
       {
-        title: "A warm first conversation",
+        title: "A 15–30 minute first call",
         description:
           "You do not need to have everything figured out before reaching out. We start with what is happening right now and what feels most difficult.",
       },
@@ -313,19 +313,19 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "Less chasing, more clarity",
         description:
-          "Organised, reassuring care — especially valuable when multiple family members (including NRI children) are trying to stay updated.",
+          "One WhatsApp group, one CM, twice-a-week updates, useful when siblings in three time zones are all trying to keep track.",
       },
     ],
     familyVoices: [
       {
         title: "“It felt like someone finally took charge with us.”",
         description:
-          "Families often feel relieved when they no longer have to repeat the same story to different people just to keep care moving.",
+          "You stop having to retell the medication list, the diagnosis and the family backstory every time you want something done.",
       },
       {
         title: "“The updates made a real difference.”",
         description:
-          "What matters early on is not just that a caregiver arrives, but that the family feels sure the routine is actually being followed.",
+          "In the first week, families want proof the routine is actually running: meds at 8am, walk at 5pm, dinner cleared by 8. Photos in the update help.",
       },
       {
         title: "“Home started feeling manageable again.”",
@@ -352,12 +352,12 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Can the plan change after care begins?",
         answer:
-          "Yes. The care manager reviews the plan monthly and adjusts whenever the situation changes — caregiver hours, physiotherapy frequency, nutrition or equipment.",
+          "The care manager reviews the plan monthly and adjusts whenever something changes: caregiver hours, physiotherapy frequency, nutrition, equipment.",
       },
       {
         question: "What if the caregiver match does not feel right?",
         answer:
-          "If the fit is off, replacement is initiated within 48 hours. The system auto-generates a handover summary so the new caregiver arrives prepared — no repeating the medication list.",
+          "If the fit is off, replacement is initiated within 48 hours. The system auto-generates a handover summary so the new caregiver arrives prepared, no repeating the medication list.",
       },
     ],
     theme: {
@@ -375,9 +375,9 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     slug: "dementia",
     name: "Dementia Care",
     shortName: "Dementia care",
-    metaTitle: "Dementia Care at Home in India — Trained by Dementia Alliance | Portea",
+    metaTitle: "Dementia Care at Home in India · Trained by Dementia Alliance | Portea",
     metaDescription:
-      "Specialist dementia care at home. Caregivers trained by the Dementia India Alliance, mandatory pre-placement scoring, one doctor-led care manager. Calm, dignified support for your loved one.",
+      "Specialist dementia care at home. Caregivers trained by the Dementia India Alliance, an 80-point scoring sheet before placement, daily WhatsApp updates in week one, one MBBS care manager throughout.",
     keywords: [
       "dementia care at home",
       "Alzheimer's home care India",
@@ -389,13 +389,13 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Specialist dementia care at home, trained by Dementia India Alliance",
     accentPhrase: "Dementia India Alliance",
     subheadline:
-      "Caregivers trained on dementia behaviour — sundowning, repetition, resistance — matched through a mandatory scoring sheet. One MBBS care manager owns the plan and tells you what's working week by week.",
+      "Caregivers trained on dementia behaviour, sundowning, repetition, resistance, matched through a mandatory scoring sheet. One MBBS care manager owns the plan and tells you what's working week by week.",
     heroLabel: "Specialist dementia care",
     overview:
       "For families dealing with confusion, repetition, wandering risk, agitation, sundowning or the emotional strain that often comes with dementia at home.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "Tell us what's been hardest in the past week. A Portea care manager (a doctor or senior clinician) will call within 4 hours — no scripts, no rush.",
+      "Tell us what's been hardest in the past week. A Portea care manager (a doctor or senior clinician) will call within 4 hours, no scripts, no rush.",
     whatsAppMessage:
       "Hi Portea, I'd like to learn about dementia care at home for my parent.",
     images: [
@@ -420,19 +420,19 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     ],
     highlights: [
       {
-        title: "A gentler daily rhythm",
+        title: "A schedule built around the rough hours",
         description:
-          "Focus on reducing confusion, avoiding unnecessary friction, and helping the elder feel more settled — not just on completing tasks.",
+          "The day is built around reducing confusion and friction so the elder ends it more settled than they started it. The schedule serves the person ahead of the checklist.",
       },
       {
         title: "Caregivers who understand the condition",
         description:
-          "Trained on dementia behaviour — reassurance, redirection, patience during sundowning, repetition and resistance.",
+          "Trained on dementia behaviour, reassurance, redirection, patience during sundowning, repetition and resistance.",
       },
       {
         title: "Support for the family too",
         description:
-          "Spouses and children carrying the load get a doctor-led care manager who shares the weight, not just a caregiver who shows up.",
+          "Spouses and adult children carrying the load get a doctor-led care manager who shares the planning and the calls. The caregiver in the home is one piece of that.",
       },
     ],
     trustSignals: dementiaTrustBadges.map((badge) => badge.title),
@@ -455,14 +455,14 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       items: [
         "You only need a one-time nursing procedure rather than ongoing dementia support.",
         "The elder is in an acute medical crisis and needs emergency care.",
-        "There is no diagnosis yet — start with a geriatrician consult; we can help you find one.",
+        "There is no diagnosis yet, start with a geriatrician consult; we can help you find one.",
       ],
     },
     howItWorks: [
       {
         title: "1. Share what feels hardest right now",
         description:
-          "Use the chatbot, WhatsApp or a phone call. Tell us what triggered the inquiry — wandering, agitation, refusal to eat, or exhaustion.",
+          "Use the chatbot, WhatsApp or a phone call. Tell us what triggered the inquiry, wandering, agitation, refusal to eat, or exhaustion.",
       },
       {
         title: "2. Discovery call with a doctor-led care manager",
@@ -489,10 +489,10 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "Family conversations that actually help",
         description:
-          "We focus on what really triggers distress, what helps and what to expect — not a generic checklist.",
+          "We focus on what really triggers distress, what helps and what to expect through the day.",
       },
       {
-        title: "Visible reassurance",
+        title: "Photos and specifics, not generic updates",
         description:
           "Caregiver photos during meals, walks or exercises. NRI families especially value seeing care actually happen.",
       },
@@ -506,7 +506,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "“We could finally understand the pattern.”",
         description:
-          "Structured updates help families see triggers, what helps, and what to do next — instead of guessing.",
+          "Structured updates help families see triggers, what helps, and what to do next, instead of guessing.",
       },
       {
         title: "“The home started feeling less tense.”",
@@ -533,7 +533,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Can this help if evenings are the hardest time of day?",
         answer:
-          "Yes. The discovery call captures when confusion or agitation tends to rise. The plan and the caregiver schedule are shaped around your home's specific pattern — not a generic dementia template.",
+          "The discovery call captures when confusion or agitation tends to rise. From there the plan and caregiver schedule are shaped around your home's specific pattern.",
       },
       {
         question: "Will the family still stay involved after care starts?",
@@ -543,7 +543,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Are caregivers really trained in dementia care?",
         answer:
-          "Yes — our caregivers receive specialised dementia training co-developed with the Dementia India Alliance, and every dementia placement uses a mandatory pre-placement scoring sheet that matches the caregiver to the case.",
+          "Our caregivers receive specialised dementia training co-developed with the Dementia India Alliance, and every dementia placement uses a mandatory pre-placement scoring sheet to match the caregiver to the case.",
       },
     ],
     theme: {
@@ -563,7 +563,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     shortName: "Post-discharge care",
     metaTitle: "Post-Hospital Recovery Care at Home in India | Portea",
     metaDescription:
-      "Structured recovery support after surgery, stroke or hospitalisation. Nursing, physiotherapy, mobility and medication management — coordinated by one doctor-led care manager in 40+ Indian cities.",
+      "Structured recovery support after surgery, stroke or hospitalisation. Nursing, physiotherapy, mobility and medication management, coordinated by one doctor-led care manager in 40+ Indian cities.",
     keywords: [
       "post hospital discharge care",
       "post surgery home care",
@@ -575,13 +575,13 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Safer recovery at home after hospital discharge",
     accentPhrase: "after hospital discharge",
     subheadline:
-      "Nurse visits, home physio and a trained caregiver — scheduled before discharge day, run from one plan, with daily WhatsApp updates through week one. Equipment delivered before the patient is home.",
+      "Nurse visits, home physio and a trained caregiver, scheduled before discharge day, run from one plan, with daily WhatsApp updates through week one. Equipment delivered before the patient is home.",
     heroLabel: "Recovery at home",
     overview:
-      "For families who know discharge is only the beginning and want a safer, better-organised start to recovery — wound care, medication, mobility, follow-up coordination and home physiotherapy under one plan.",
+      "For families who know discharge is only the beginning and want a safer, better-organised start to recovery, wound care, medication, mobility, follow-up coordination and home physiotherapy under one plan.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "If discharge is in the next 72 hours or the patient is already home, share the details now — a care manager will call within 4 hours.",
+      "If discharge is in the next 72 hours or the patient is already home, share the details now, a care manager will call within 4 hours.",
     whatsAppMessage:
       "Hi Portea, I need post-hospital recovery care at home for a family member.",
     images: [
@@ -608,7 +608,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "A smoother move from hospital to home",
         description:
-          "Care is shaped around what often becomes difficult after discharge — wound routines, medications, mobility, follow-ups.",
+          "Care is shaped around what often becomes difficult after discharge, wound routines, medications, mobility, follow-ups.",
       },
       {
         title: "More confidence in the first week",
@@ -670,7 +670,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "A clearer first-week plan",
         description:
-          "Day-by-day clarity on what's happening at home — meals, medication, mobility, dressings, follow-ups.",
+          "Day-by-day clarity on what's happening at home, meals, medication, mobility, dressings, follow-ups.",
       },
       {
         title: "Less uncertainty at home",
@@ -680,14 +680,14 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "A joined-up experience",
         description:
-          "Care feels like a proper handover into home recovery — not like the family was left to figure everything out alone.",
+          "Recovery feels handed-over instead of dumped, the team that planned it is the team running week one.",
       },
     ],
     familyVoices: [
       {
         title: "“The first week stopped feeling like guesswork.”",
         description:
-          "Families often feel immediate relief when there is a clear structure for what recovery at home should look like.",
+          "Most families exhale on day three. That's when the schedule, the medication tray and the physio cadence start to look like a coordinated plan.",
       },
       {
         title: "“We knew what to watch and who to call.”",
@@ -697,68 +697,10 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "“It felt like proper support, not discharge-day advice.”",
         description:
-          "The biggest difference is that recovery continues to feel guided after the patient comes home.",
+          "The real difference is the second week, when most home recovery setups go quiet, your CM is still on the line and the physio still shows up.",
       },
     ],
     testimonials: [
       {
         quote:
-          "My father came home after a hip surgery and we were terrified about the first week. Portea's nurse, physio and caregiver arrived like clockwork. Within four days he was walking with a walker.",
-        author: "Ramesh K.",
-        context: "Son, Hyderabad",
-      },
-      {
-        quote:
-          "The care manager called every single day in the first week. We always knew what was next. That was a different kind of healthcare experience.",
-        author: "Latha S.",
-        context: "Wife of a stroke patient, Chennai",
-      },
-    ],
-    faqs: [
-      ...sharedFaqs,
-      {
-        question: "Is this mainly for the first recovery phase, or longer-term too?",
-        answer:
-          "It's especially useful in the first recovery phase, but the plan can continue or evolve into managed elder care if recovery uncovers longer-term needs.",
-      },
-      {
-        question: "Can the support change if recovery feels harder at home?",
-        answer:
-          "Yes. If pain, mobility, wound routines or daily support look different in real life, the plan is adjusted — that's exactly what the monthly review and weekly CM call are for.",
-      },
-    ],
-    theme: {
-      accent: "bg-[#0c7b95]",
-      accentStrong: "bg-[#0c7b95] hover:bg-[#09677d]",
-      accentSoft: "bg-[#def2f7]",
-      accentText: "text-[#0b5365]",
-      border: "border-[#c1e3ec]",
-      surface: "from-[#f7fdff] via-white to-[#eef8fb]",
-      background: "from-[#eef8fc] via-[#fbfdfd] to-[#eef5f7]",
-      tint: "rgba(12,123,149,0.12)",
-    },
-  },
-};
-
-export const verticalList = Object.values(verticals);
-
-export const homeStats = [
-  {
-    value: "10L+",
-    label: "patients served across India",
-  },
-  {
-    value: "7L+",
-    label: "annual home visits",
-  },
-  {
-    value: "40+",
-    label: "cities covered",
-  },
-  {
-    value: "63",
-    label: "hospital partnerships",
-  },
-];
-
-export const homeTrustBadges: TrustBadge[] = sharedTrustBadges;
+          "

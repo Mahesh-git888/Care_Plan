@@ -255,7 +255,7 @@ export function HomePage() {
               Why Portea
             </p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
-              Designed by doctors. Trained by the Dementia India Alliance. Delivered with warmth.
+              Doctors design the plan. The Dementia India Alliance trains the caregivers. Your CM stays the same person.
             </h2>
           </div>
 
