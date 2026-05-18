@@ -122,17 +122,17 @@ const sharedTrustBadges: TrustBadge[] = [
   {
     title: "A plan written by doctors",
     description:
-      "Care protocols co-authored by Dr. Kavitha and Dr. Allia. Every plan is reviewed by your care manager before it reaches you.",
+      "Dr. Kavitha and Dr. Allia co-authored Portea's care protocols, and your care manager reviews every plan before sharing it with you.",
   },
   {
-    title: "One care manager. The same person.",
+    title: "One care manager throughout",
     description:
-      "A qualified doctor or senior clinician handles your first call, the plan and the weekly updates. Same person, week after week.",
+      "A qualified doctor or senior clinician handles your first call, builds your plan and sends your weekly updates. You'll deal with the same person each time.",
   },
   {
     title: "WhatsApp updates twice a week",
     description:
-      "Real notes on meals, medicines, mood and what changed. A weekly call with your care manager and a monthly plan review.",
+      "Specific notes on meals, medicines, mood and what changed at home, with a weekly call from your care manager and a full plan review every month.",
   },
 ];
 

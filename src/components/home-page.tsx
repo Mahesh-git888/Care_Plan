@@ -94,9 +94,12 @@ export function HomePage() {
                 Home care your family can actually <span className="text-[#ff5b2e]">trust</span>.
               </h1>
               <p className="mt-5 max-w-2xl text-lg font-medium leading-9 text-[#445d66]">
-                For ageing parents, dementia care, or recovery after a hospital stay. One
-                doctor-led care manager runs everything from day one. The same caregivers come
-                back each day. Twice-a-week WhatsApp updates that tell you what actually happened.
+                Portea looks after ageing parents at home, supports families through dementia,
+                and helps patients through the weeks after a hospital stay. Your care manager is
+                a doctor who handles your case from the first call onwards. The caregivers who
+                visit on day one are the ones who keep coming back. Every Wednesday and Sunday,
+                you'll get a clear WhatsApp update covering meals, medicines, mood, and what
+                changed at home.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-3">
@@ -163,8 +166,8 @@ export function HomePage() {
                     One number to call
                   </p>
                   <p className="mt-3 text-sm font-medium leading-6 text-[#455e67]">
-                    Your care manager owns the case. No call centres, no rotating agents, no
-                    repeating yourself.
+                    Your care manager handles everything. You won't be passed between agents or
+                    asked to repeat your story to a new person each time.
                   </p>
                 </div>
                 <div className="rounded-[1.7rem] border border-[#d7e7ea] bg-white p-5 shadow-sm">
@@ -172,8 +175,8 @@ export function HomePage() {
                     Updates worth reading
                   </p>
                   <p className="mt-3 text-sm font-medium leading-6 text-[#455e67]">
-                    WhatsApp updates twice a week. A weekly call with your care manager. A
-                    monthly plan review.
+                    Twice-a-week WhatsApp updates, a phone call with your care manager every
+                    week, and a full plan review once a month.
                   </p>
                 </div>
               </div>
@@ -192,11 +195,12 @@ export function HomePage() {
             Care programs
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
-            Three programs. Pick the one that fits your family.
+            Pick the program that fits your family
           </h2>
           <p className="mt-4 text-base font-medium leading-8 text-[#445d66]">
-            Daily elder care. Specialist dementia care. Recovery after a hospital stay. Each
-            program has its own page so you can read, compare and reach out the way you prefer.
+            We run three programs at home: daily elder care, specialist dementia care, and
+            recovery after a hospital stay. Each has its own page so you can read in detail
+            before you decide how to reach out.
           </p>
         </div>
 
@@ -255,7 +259,7 @@ export function HomePage() {
               Why Portea
             </p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
-              Doctors write the plan. Trained caregivers run it. The same care manager stays with you.
+              Doctors write your plan, trained caregivers run it, and the same care manager stays with you week to week.
             </h2>
           </div>
 
@@ -291,11 +295,11 @@ export function HomePage() {
             How it works
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
-            From first message to care at home in four simple steps
+            From first message to care at home, in four steps
           </h2>
           <p className="mt-4 text-base font-medium leading-8 text-[#445d66]">
-            The same process for every family. The same care, whether you live in Bangalore or
-            thousands of miles away.
+            We follow the same process for every family, whether you live down the road in
+            Bangalore or thousands of miles away.
           </p>
         </div>
 
@@ -304,22 +308,22 @@ export function HomePage() {
             {
               title: "Tell us what's happening",
               description:
-                "Use the chatbot, WhatsApp or call us. A few quick details. No long forms, no scripts.",
+                "Use the chatbot, WhatsApp or call us, and share a few details about your situation. There are no long forms to fill or scripts to follow.",
             },
             {
               title: "A doctor calls back in 4 hours",
               description:
-                "A qualified doctor or senior clinician spends 15-30 minutes understanding your situation. No call centre.",
+                "Within four hours, a qualified doctor or senior clinician calls you back. The conversation usually takes 15 to 30 minutes, and it doesn't go through a call centre.",
             },
             {
               title: "A written plan, same day",
               description:
-                "A clear plan on WhatsApp: the daily schedule, who's coming home, what to expect, and an itemised weekly price.",
+                "You'll get a clear care plan on WhatsApp before the day ends. It covers the daily schedule, who'll be in your home, what to expect, and an itemised weekly price.",
             },
             {
-              title: "Care starts. So do the updates.",
+              title: "Care begins and updates start",
               description:
-                "A trained caregiver arrives. WhatsApp updates twice a week, a weekly call with your care manager, a monthly plan review.",
+                "Your matched caregiver arrives. From then on you'll get WhatsApp updates twice a week, a weekly call with your care manager, and a full plan review once a month.",
             },
           ].map((step, idx) => (
             <li
@@ -367,7 +371,7 @@ export function HomePage() {
                   <ul className="mt-3 space-y-2 text-sm leading-7 text-[#3a2c14]">
                     <li className="flex gap-3">
                       <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#ff5b2e]" />
-                      The same care manager from day one. Not a queue, not a call centre.
+                      The same care manager from your first call onwards, never a queue or a call centre.
                     </li>
                     <li className="flex gap-3">
                       <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#ff5b2e]" />
@@ -375,7 +379,7 @@ export function HomePage() {
                     </li>
                     <li className="flex gap-3">
                       <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#ff5b2e]" />
-                      A plan that adjusts as life at home changes. No lock-in, ever.
+                      A plan that adjusts as life at home changes, with no contract and no minimum commitment.
                     </li>
                   </ul>
                 </div>
@@ -408,8 +412,8 @@ export function HomePage() {
                 Dementia care that brings calm home
               </p>
               <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                Caregivers trained on dementia behaviour. An 80-point readiness check before
-                every placement. Doctor-reviewed plan.
+                Our caregivers are trained on dementia behaviour and pass an 80-point readiness
+                check before they're matched to a family. Every plan is reviewed by a doctor.
               </p>
               <Link
                 href="/dementia"
@@ -436,8 +440,9 @@ export function HomePage() {
                 A safer first week home after hospital
               </p>
               <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                Nurse, caregiver, physio and equipment in one plan. Daily WhatsApp updates
-                through the first seven days at home.
+                Your nurse, caregiver, physio and equipment all come under one care plan. You'll
+                get daily WhatsApp updates through the first seven days, which is when most
+                setbacks happen.
               </p>
               <Link
                 href="/post-discharge"
@@ -462,8 +467,8 @@ export function HomePage() {
                 Three easy ways to reach us
               </p>
               <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                Chat with our care assistant. Call our toll-free number. Send a WhatsApp. The
-                same care manager will pick it up, whichever you choose.
+                Chat with our care assistant, call our toll-free number, or send us a WhatsApp.
+                Whichever you choose, the same care manager picks it up at the other end.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
                 <a
@@ -546,7 +551,7 @@ export function HomePage() {
         <div className="border-t border-white/10">
           <div className="mx-auto flex max-w-7xl flex-col justify-between gap-2 px-5 py-5 text-xs text-white/60 sm:flex-row sm:px-6 lg:px-10">
             <p>© {new Date().getFullYear()} Portea Medical. All rights reserved.</p>
-            <p>Doctor-designed, dementia-trained, family-trusted.</p>
+            <p>Doctor-led home care, trusted by families in 40+ Indian cities.</p>
           </div>
         </div>
       </footer>
