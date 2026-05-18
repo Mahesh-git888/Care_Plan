@@ -14,9 +14,17 @@ import {
   StethoscopeIcon,
   WhatsAppIcon,
 } from "@/components/ui-icons";
+import { MobileMenu } from "@/components/mobile-menu";
 import { StatsStrip } from "@/components/stats-strip";
 import { homeTrustBadges, verticalList } from "@/data/verticals";
 import { getPhoneContact, getWhatsAppContact } from "@/lib/contact";
+
+const HOME_NAV_LINKS = [
+  { href: "#programs", label: "Care programs" },
+  { href: "#why-portea", label: "Why Portea" },
+  { href: "#how-it-works", label: "How it works" },
+  { href: "#reviews", label: "Reviews" },
+];
 
 export function HomePage() {
   const [elderCare, dementiaCare, postDischargeCare] = verticalList;
@@ -44,9 +52,9 @@ export function HomePage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 hero-gradient" />
         <div className="relative mx-auto max-w-7xl px-5 py-6 sm:px-6 lg:px-10">
-          <header className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <header className="flex items-center justify-between gap-5">
             <BrandLogo />
-            <nav className="flex flex-wrap items-center gap-3 text-sm font-semibold text-[#4b656d]" aria-label="Primary">
+            <nav className="hidden flex-wrap items-center gap-3 text-sm font-semibold text-[#4b656d] lg:flex" aria-label="Primary">
               <a href="#programs" className="transition hover:text-[#10242b]">
                 Care programs
               </a>
@@ -68,6 +76,12 @@ export function HomePage() {
                 <span>{phone.label}</span>
               </a>
             </nav>
+            <MobileMenu
+              links={HOME_NAV_LINKS}
+              phoneHref={phone.href}
+              phoneLabel={phone.label}
+              whatsappHref={whatsapp?.href}
+            />
           </header>
 
           <div className="grid gap-10 pb-14 pt-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-16 lg:pb-20 lg:pt-14">
@@ -80,9 +94,9 @@ export function HomePage() {
                 Home care your family can actually <span className="text-[#ff5b2e]">trust</span>.
               </h1>
               <p className="mt-5 max-w-2xl text-lg font-medium leading-9 text-[#445d66]">
-                Daily elder care, specialist dementia care, or recovery after a hospital stay.
-                Doctor-designed plans, trained caregivers, and one care manager who stays with
-                your family from the first call onward.
+                For ageing parents, dementia care, or recovery after a hospital stay. One
+                doctor-led care manager runs everything from day one. The same caregivers come
+                back each day. Twice-a-week WhatsApp updates that tell you what actually happened.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-3">
@@ -146,19 +160,20 @@ export function HomePage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-[1.7rem] border border-[#d7e7ea] bg-white p-5 shadow-sm">
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87]">
-                    One family, one plan
+                    One number to call
                   </p>
                   <p className="mt-3 text-sm font-medium leading-6 text-[#455e67]">
-                    A single doctor-led care manager keeps every part of care moving. No
-                    bouncing between agents.
+                    Your care manager owns the case. No call centres, no rotating agents, no
+                    repeating yourself.
                   </p>
                 </div>
                 <div className="rounded-[1.7rem] border border-[#d7e7ea] bg-white p-5 shadow-sm">
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87]">
-                    Updates families actually use
+                    Updates worth reading
                   </p>
                   <p className="mt-3 text-sm font-medium leading-6 text-[#455e67]">
-                    Structured WhatsApp updates 2× a week, weekly CM call, monthly plan review.
+                    WhatsApp updates twice a week. A weekly call with your CM. A monthly plan
+                    review.
                   </p>
                 </div>
               </div>
