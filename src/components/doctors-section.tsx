@@ -14,7 +14,7 @@ const DOCTORS: Doctor[] = [
     role: "Clinical Head, Primary · Preventive · Elderly Care",
     image: "/dr-kavitha.avif",
     alt: "Portrait of Dr. Kavitha S Manjunath",
-    bio: "17+ years across infectious disease, chronic disease, palliative and elderly care. MBBS from Al Ameen Medical College, DNB in Family Medicine from The Bangalore Hospital. Has led Portea's preventive and primary care services for the last six years and is a member of the Family Physician Association. Co-authors the elder-care and post-discharge clinical protocols every Portea CM works to.",
+    bio: "17+ years across infectious disease, chronic disease, palliative and elderly care. MBBS from Al Ameen Medical College, DNB in Family Medicine from The Bangalore Hospital. Has led Portea's preventive and primary care services for the last six years and is a member of the Family Physician Association. Co-authors the elder-care and post-discharge protocols every Portea care manager works to.",
   },
   {
     name: "Dr. Allia Rahaman",

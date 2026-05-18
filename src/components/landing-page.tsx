@@ -234,7 +234,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
         <SectionIntro
           label="Why Portea"
           title="Doctors write the protocol. CMs run your case. Caregivers do the work."
-          description="Built for families who want one number to call, one CM who knows the case, and weekly updates that say what's actually happening at home."
+          description="Built for families who want one number to call, one care manager who knows the case, and weekly updates that say what's actually happening at home."
         />
         <div
           className={`mt-10 grid gap-4 sm:grid-cols-2 ${
@@ -515,9 +515,9 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
               Choose the easiest way to begin
             </h3>
             <p className="mt-4 text-base font-medium leading-8 text-[#445d66]">
-              Call if you want to speak right away, message us on WhatsApp if that
-              works for you, or send the chatbot in 90 seconds so the CM has
-              the basics before they call.
+              Call if you want to speak right away. Message us on WhatsApp if that's
+              easier. Or use the chatbot, 90 seconds, and your care manager will
+              know your situation before they pick up the phone.
             </p>
 
             <div className="mt-7">

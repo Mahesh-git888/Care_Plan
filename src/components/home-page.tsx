@@ -172,8 +172,8 @@ export function HomePage() {
                     Updates worth reading
                   </p>
                   <p className="mt-3 text-sm font-medium leading-6 text-[#455e67]">
-                    WhatsApp updates twice a week. A weekly call with your CM. A monthly plan
-                    review.
+                    WhatsApp updates twice a week. A weekly call with your care manager. A
+                    monthly plan review.
                   </p>
                 </div>
               </div>
@@ -192,11 +192,11 @@ export function HomePage() {
             Care programs
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
-            Choose the care path that fits your family today
+            Three programs. Pick the one that fits your family.
           </h2>
           <p className="mt-4 text-base font-medium leading-8 text-[#445d66]">
-            Each program has its own page so families can read, compare, and reach out in the
-            way that feels most comfortable.
+            Daily elder care. Specialist dementia care. Recovery after a hospital stay. Each
+            program has its own page so you can read, compare and reach out the way you prefer.
           </p>
         </div>
 
@@ -255,7 +255,7 @@ export function HomePage() {
               Why Portea
             </p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
-              Doctors design the plan. The Dementia India Alliance trains the caregivers. Your CM stays the same person.
+              Doctors write the plan. Trained caregivers run it. The same care manager stays with you.
             </h2>
           </div>
 
@@ -291,11 +291,11 @@ export function HomePage() {
             How it works
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
-            A simple, four-step path from inquiry to care at home
+            From first message to care at home in four simple steps
           </h2>
           <p className="mt-4 text-base font-medium leading-8 text-[#445d66]">
-            Same SOP for every family. Same care, whether you live in Bangalore or your parents
-            do and you live in New Jersey.
+            The same process for every family. The same care, whether you live in Bangalore or
+            thousands of miles away.
           </p>
         </div>
 
@@ -304,22 +304,22 @@ export function HomePage() {
             {
               title: "Tell us what's happening",
               description:
-                "Use the chatbot, WhatsApp, or call us. Share 6 basics so we don't waste your time on the first call.",
+                "Use the chatbot, WhatsApp or call us. A few quick details. No long forms, no scripts.",
             },
             {
-              title: "Discovery call within 4 hours",
+              title: "A doctor calls back in 4 hours",
               description:
-                "An MBBS doctor or senior clinician calls you for a 15–30 min discovery and triage conversation.",
+                "A qualified doctor or senior clinician spends 15-30 minutes understanding your situation. No call centre.",
             },
             {
-              title: "Personalised care plan",
+              title: "A written plan, same day",
               description:
-                "Same-day written plan on WhatsApp covering daily schedule, care team, equipment and itemised weekly price.",
+                "A clear plan on WhatsApp: the daily schedule, who's coming home, what to expect, and an itemised weekly price.",
             },
             {
-              title: "Care begins with weekly updates",
+              title: "Care starts. So do the updates.",
               description:
-                "Trained caregiver placed. Structured WhatsApp updates twice a week, weekly CM call, monthly review.",
+                "A trained caregiver arrives. WhatsApp updates twice a week, a weekly call with your care manager, a monthly plan review.",
             },
           ].map((step, idx) => (
             <li
@@ -357,9 +357,8 @@ export function HomePage() {
                 The notes that mean the most are the ones we don&apos;t ask for.
               </h2>
               <p className="mt-4 text-base font-medium leading-8 text-[#5c4a2c]">
-                This handwritten note was received by Dr. Kavitha and the Portea team from a
-                family whose mother spent her last months in our care. We&apos;re reproducing it
-                verbatim, with permission.
+                Sent to Dr. Kavitha and the Portea team by a family whose mother spent her last
+                months in our care. Reproduced verbatim, with permission.
               </p>
 
               <div className="mt-7 grid gap-3">
@@ -368,15 +367,15 @@ export function HomePage() {
                   <ul className="mt-3 space-y-2 text-sm leading-7 text-[#3a2c14]">
                     <li className="flex gap-3">
                       <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#ff5b2e]" />
-                      A care manager who stays with you through every change.
+                      The same care manager from day one. Not a queue, not a call centre.
                     </li>
                     <li className="flex gap-3">
                       <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#ff5b2e]" />
-                      Caregivers who treat your elder like their own family.
+                      Caregivers who treat your parent like their own family.
                     </li>
                     <li className="flex gap-3">
                       <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#ff5b2e]" />
-                      A plan that actually adjusts as life at home changes.
+                      A plan that adjusts as life at home changes. No lock-in, ever.
                     </li>
                   </ul>
                 </div>
@@ -406,11 +405,11 @@ export function HomePage() {
                 />
               </div>
               <p className="mt-5 text-lg font-semibold tracking-[-0.03em] text-[#10242b]">
-                Dementia care that brings calm
+                Dementia care that brings calm home
               </p>
               <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                Caregivers trained on dementia routines. Pre-placement scoring for every match.
-                Doctor-reviewed plan.
+                Caregivers trained on dementia behaviour. An 80-point readiness check before
+                every placement. Doctor-reviewed plan.
               </p>
               <Link
                 href="/dementia"
@@ -434,11 +433,11 @@ export function HomePage() {
                 />
               </div>
               <p className="mt-5 text-lg font-semibold tracking-[-0.03em] text-[#10242b]">
-                Recovery after hospital discharge
+                A safer first week home after hospital
               </p>
               <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                Nurse, caregiver, physio and equipment under one plan. Daily updates through the
-                first week home.
+                Nurse, caregiver, physio and equipment in one plan. Daily WhatsApp updates
+                through the first seven days at home.
               </p>
               <Link
                 href="/post-discharge"
@@ -460,11 +459,11 @@ export function HomePage() {
                 />
               </div>
               <p className="mt-5 text-lg font-semibold tracking-[-0.03em] text-[#10242b]">
-                Three easy ways to reach out
+                Three easy ways to reach us
               </p>
               <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                Chat with our care assistant, call us on a toll-free number, or send a WhatsApp.
-                Same care manager, whichever path you choose.
+                Chat with our care assistant. Call our toll-free number. Send a WhatsApp. The
+                same care manager will pick it up, whichever you choose.
               </p>
               <div className="mt-5 flex flex-wrap gap-2">
                 <a

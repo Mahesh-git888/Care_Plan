@@ -87,52 +87,52 @@ export type VerticalConfig = {
 
 const sharedFaqs: FaqItem[] = [
   {
-    question: "How quickly will someone get back to us?",
+    question: "How soon will someone call us back?",
     answer:
-      "If the family needs help soon, a Portea care manager usually calls within 4 hours. If you are planning ahead, the callback is usually within 24 hours. The chatbot intake helps us prepare for that first conversation so you don't have to repeat the story.",
+      "If care is needed soon, your care manager usually calls within 4 hours. If you are planning ahead, expect a call within 24 hours. The chatbot takes a few quick details so the first call gets straight to your situation.",
   },
   {
-    question: "Will we have one person guiding us through the process?",
+    question: "Will we have one person guiding us through this?",
     answer:
-      "A single care manager (an MBBS doctor or a senior clinical professional) owns the family relationship end-to-end: discovery call, care plan, caregiver oversight, weekly updates, escalations. You won't be bouncing between agents.",
+      "Yes. A single care manager, a doctor or senior clinician, handles your first call, your written plan, the caregiver on the ground, the weekly updates and any escalations. You will not be passed between agents.",
   },
   {
-    question: "How are caregivers selected and trained?",
+    question: "How are caregivers chosen and trained?",
     answer:
-      "Caregivers are matched to the elder's routine, condition, language and home, and read the full care plan before they walk in on day one. For dementia placements we run them through a mandatory 80-point scoring sheet co-designed with the Dementia India Alliance first.",
+      "Each caregiver is matched to your parent's routine, condition, language and home. They read the full care plan before day one. For dementia, every caregiver also passes an 80-point readiness check co-designed with the Dementia India Alliance.",
   },
   {
-    question: "How do we know what's happening at home?",
+    question: "How will we know what is happening at home?",
     answer:
-      "You'll be added to a private WhatsApp group with your care manager. You'll receive structured care updates twice a week (daily for the first week of dementia or post-surgery cases) plus a weekly call from the care manager. The caregiver doesn't run the family conversation. The CM does.",
+      "You are added to a private WhatsApp group with your care manager. You get clear updates twice a week (daily in the first week of dementia or recovery cases), plus a weekly call from the care manager. The caregiver delivers the care. The care manager is your point of contact.",
   },
   {
-    question: "What does this cost?",
+    question: "How much does it cost?",
     answer:
-      "Costs depend on the care plan: caregiver hours, nurse visits, equipment, physiotherapy and so on. Your care manager will share an itemised weekly price after the discovery call. There are no signup fees and no contracts. You can stop care any week.",
+      "Pricing depends on what you actually need: caregiver hours, nurse visits, physiotherapy, equipment. After the first call, your care manager shares a written, itemised weekly price. No sign-up fee. No contract. You can stop care any week.",
   },
   {
     question: "Is Portea available in our city?",
     answer:
-      "Portea operates in 40+ Indian cities including Bangalore, Mumbai, Delhi NCR, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad, Jaipur and Chandigarh. If we don't directly cover your pin code, the care manager will tell you on the first call.",
+      "We operate in 40+ Indian cities including Bangalore, Mumbai, Delhi NCR, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad, Jaipur and Chandigarh. If we do not cover your pin code directly, the care manager will tell you honestly on the first call.",
   },
 ];
 
 const sharedTrustBadges: TrustBadge[] = [
   {
-    title: "Designed by Portea doctors",
+    title: "A plan written by doctors",
     description:
-      "Clinical protocols co-authored by Dr. Kavitha (17+ yrs) and Dr. Allia (11 yrs). Every care plan reviewed by a CM before it reaches the family.",
+      "Care protocols co-authored by Dr. Kavitha and Dr. Allia. Every plan is reviewed by your care manager before it reaches you.",
   },
   {
-    title: "One care manager per family",
+    title: "One care manager. The same person.",
     description:
-      "An MBBS doctor or senior clinical lead handles your discovery call, the plan and the weekly updates. The same person, week after week.",
+      "A qualified doctor or senior clinician handles your first call, the plan and the weekly updates. Same person, week after week.",
   },
   {
-    title: "Updates twice a week on WhatsApp",
+    title: "WhatsApp updates twice a week",
     description:
-      "Specific notes on meals, meds, mood and what changed. Plus a weekly call with the CM and a monthly plan review.",
+      "Real notes on meals, medicines, mood and what changed. A weekly call with your care manager and a monthly plan review.",
   },
 ];
 
@@ -142,45 +142,45 @@ const dementiaTrustBadges: TrustBadge[] = [
   {
     title: "Trained by the Dementia India Alliance",
     description:
-      "Caregivers go through specialist dementia training and a mandatory pre-placement scoring sheet before they ever set foot in your home.",
+      "Caregivers go through specialist dementia training and a 80-point readiness check before they step into your home.",
   },
   {
-    title: "Designed by Portea doctors",
+    title: "A plan written by doctors",
     description:
-      "Dementia protocols co-owned by Dr. Allia (Clinical Head, South) and Dr. Kavitha. Every plan reviewed before it reaches the family.",
+      "Dementia protocols co-owned by Dr. Allia and Dr. Kavitha. Every plan is reviewed before it reaches you.",
   },
   {
-    title: "Daily updates in week one",
+    title: "Daily updates in the first week",
     description:
-      "New dementia placements get a daily WhatsApp update for the first seven days (patterns, triggers, what helped). After that it eases to twice a week.",
+      "WhatsApp updates every day for the first seven days. Triggers, what helped, what changed. Then it eases to twice a week.",
   },
   {
-    title: "One care manager per family",
+    title: "One care manager. The same person.",
     description:
-      "A doctor or senior clinical lead who actually knows your parent's case. Same person from day one onward.",
+      "A doctor or senior clinician who actually knows your parent's case. The same person from day one.",
   },
 ];
 
 const postDischargeTrustBadges: TrustBadge[] = [
   {
-    title: "Care plan ready before discharge day",
+    title: "Plan ready before discharge day",
     description:
-      "Tell us the discharge date and we'll have a plan, equipment and team scheduled before the patient is home.",
+      "Share the discharge date. We have the plan, the equipment and the team scheduled before you bring the patient home.",
   },
   {
-    title: "Designed by Portea doctors",
+    title: "A plan written by doctors",
     description:
-      "Post-discharge protocols authored by Dr. Kavitha. Each plan reviewed by a CM before going to the family.",
+      "Recovery protocols authored by Dr. Kavitha. Every plan is reviewed by your care manager before it reaches you.",
   },
   {
-    title: "Nurse, physio and caregiver under one plan",
+    title: "Nurse, physio and caregiver in one plan",
     description:
-      "No juggling three vendors. One care manager schedules every visit and keeps the family in one WhatsApp loop.",
+      "No juggling three vendors. Your care manager schedules every visit and keeps the family in one WhatsApp group.",
   },
   {
     title: "Daily updates for the first 7 days",
     description:
-      "Week one is the highest-risk stretch. You get a daily WhatsApp summary, then it eases to twice a week.",
+      "The first week home is the riskiest. You get a daily WhatsApp summary, then it eases to twice a week.",
   },
 ];
 
@@ -276,39 +276,39 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "1. Tell us what's happening at home",
         description:
-          "Use the chatbot, WhatsApp or a phone call. Share your name, the elder's condition, city and what would help most.",
+          "Use the chatbot, WhatsApp or call us. Share your name, your parent's condition, your city and what would help the most.",
       },
       {
-        title: "2. Discovery call with a care manager",
+        title: "2. A doctor calls you back in 4 hours",
         description:
-          "Within 4 hours, an MBBS doctor or senior clinician calls you. The 15–30 min call covers routine, mobility, medications and home dynamics.",
+          "A qualified doctor or senior clinician spends 15-30 minutes with you. Routine, mobility, medicines, the layout of the home, the people in it.",
       },
       {
-        title: "3. Personalised care plan and pricing",
+        title: "3. A written plan, same day",
         description:
-          "You receive a written care plan on WhatsApp the same day, daily schedule, care team, equipment and itemised weekly price.",
+          "A clear care plan on WhatsApp: the daily schedule, who will be in your home, equipment if needed, and an itemised weekly price.",
       },
       {
-        title: "4. Caregiver placed & continuous updates",
+        title: "4. Care starts. So do the updates.",
         description:
-          "A trained caregiver is matched and placed. You get structured updates twice a week, a weekly CM call, and a monthly plan review.",
+          "A trained caregiver arrives. WhatsApp updates twice a week, a weekly call with your care manager, a monthly plan review.",
       },
     ],
     whatToExpect: [
       {
-        title: "A 15–30 minute first call",
+        title: "A 15-30 minute first call",
         description:
-          "You do not need to have everything figured out before reaching out. We start with what is happening right now and what feels most difficult.",
+          "You don't need everything figured out before reaching out. We start with what's happening right now and what feels hardest.",
       },
       {
-        title: "Practical next steps",
+        title: "Clear next steps",
         description:
-          "Families come away knowing what support makes sense now, how quickly it can start, and exactly what Day 1 will look like.",
+          "You walk away knowing what support makes sense, how quickly it can start, and exactly what Day 1 looks like.",
       },
       {
         title: "Less chasing, more clarity",
         description:
-          "One WhatsApp group, one CM, twice-a-week updates, useful when siblings in three time zones are all trying to keep track.",
+          "One WhatsApp group, one care manager, updates twice a week. Useful when siblings in different time zones are all trying to stay in the loop.",
       },
     ],
     familyVoices: [
@@ -384,7 +384,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Specialist dementia care at home, trained by Dementia India Alliance",
     accentPhrase: "Dementia India Alliance",
     subheadline:
-      "Caregivers trained on dementia behaviour, sundowning, repetition, resistance, matched through a mandatory scoring sheet. One MBBS care manager owns the plan and tells you what's working week by week.",
+      "Caregivers trained on dementia behaviour: sundowning, repetition, resistance. Every caregiver passes an 80-point readiness check before they walk in. One doctor-led care manager owns the plan and tells you what's working, week by week.",
     heroLabel: "Specialist dementia care",
     overview:
       "For families dealing with confusion, repetition, wandering risk, agitation, sundowning or the emotional strain that often comes with dementia at home.",
@@ -409,7 +409,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     ],
     quickFacts: [
       "Caregivers trained on dementia-specific routines",
-      "Mandatory pre-placement scoring per case",
+      "80-point readiness check before every placement",
       "Doctor-reviewed care plan every month",
       "Daily updates for the first week of placement",
     ],
@@ -457,22 +457,22 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "1. Share what feels hardest right now",
         description:
-          "Use the chatbot, WhatsApp or a phone call. Tell us what triggered the inquiry, wandering, agitation, refusal to eat, or exhaustion.",
+          "Use the chatbot, WhatsApp or call us. Tell us what made you reach out: wandering, agitation, refusing to eat, or just sheer exhaustion.",
       },
       {
-        title: "2. Discovery call with a doctor-led care manager",
+        title: "2. A doctor calls back in 4 hours",
         description:
-          "Within 4 hours, a clinician calls you. We cover routine breakdowns, behaviour patterns, safety risks and what would actually help at home.",
+          "A doctor or senior clinician spends time with you on the phone. Routine breakdowns, behaviour patterns, safety risks, what would actually help at home.",
       },
       {
-        title: "3. Dementia-specific care plan",
+        title: "3. A plan built for dementia",
         description:
-          "Daily schedule built around the elder's triggers and communication style. Caregiver match using our pre-placement scoring sheet.",
+          "A daily schedule shaped around your parent's triggers and the way they communicate. The caregiver is chosen using an 80-point readiness check.",
       },
       {
         title: "4. Daily updates in the first week",
         description:
-          "Daily WhatsApp updates for the first seven days, then 2× a week. Weekly care manager call and a monthly clinical review.",
+          "WhatsApp updates every day for the first seven days. Then twice a week, with a weekly call from your care manager and a monthly review.",
       },
     ],
     whatToExpect: [
@@ -528,7 +528,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Can this help if evenings are the hardest time of day?",
         answer:
-          "The discovery call captures when confusion or agitation tends to rise. From there the plan and caregiver schedule are shaped around your home's specific pattern.",
+          "Yes. The first call captures when confusion or agitation tends to rise. The schedule and the caregiver's shift are shaped around your home's specific pattern.",
       },
       {
         question: "Will the family still stay involved after care starts?",
@@ -538,7 +538,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Are caregivers really trained in dementia care?",
         answer:
-          "Our caregivers receive specialised dementia training co-developed with the Dementia India Alliance, and every dementia placement uses a mandatory pre-placement scoring sheet to match the caregiver to the case.",
+          "Yes. Our caregivers get specialist dementia training co-developed with the Dementia India Alliance. Every dementia caregiver also passes an 80-point readiness check before being matched to a family.",
       },
     ],
     theme: {
@@ -643,22 +643,22 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "1. Tell us where recovery stands",
         description:
-          "Share the discharge date, the procedure and the city. The earlier we hear, the more we can line up before the patient is home.",
+          "Share the discharge date, the procedure and your city. The earlier we hear, the more we can have ready before the patient comes home.",
       },
       {
-        title: "2. Discovery call with a clinician",
+        title: "2. A doctor calls back in 4 hours",
         description:
-          "A doctor calls you within 4 hours. We turn the discharge papers into practical next steps and a written plan you can use that day.",
+          "A doctor turns the discharge papers into practical next steps and a written plan you can use the same day.",
       },
       {
         title: "3. Plan and team ready by Day 1",
         description:
-          "Care plan on WhatsApp the same day. Caregiver, nurse visits and physio scheduled. Equipment delivered before the patient walks in.",
+          "The full plan on WhatsApp the same day. Caregiver, nurse visits and physio scheduled. Equipment delivered before the patient walks in.",
       },
       {
         title: "4. Daily updates through week one",
         description:
-          "Daily WhatsApp updates for the first seven days, then twice a week. Weekly CM call. The plan adjusts as recovery progresses.",
+          "WhatsApp updates every day for the first seven days. Then twice a week, with a weekly call from your care manager. The plan adjusts as recovery progresses.",
       },
     ],
     whatToExpect: [
@@ -692,7 +692,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "“It felt like proper support, not discharge-day advice.”",
         description:
-          "The real difference is the second week, when most home recovery setups go quiet, your CM is still on the line and the physio still shows up.",
+          "The real difference shows up in week two. Most home setups go quiet by then. Your care manager is still on the line and the physio still shows up.",
       },
     ],
     testimonials: [
@@ -719,7 +719,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Can the support change if recovery feels harder at home?",
         answer:
-          "If pain, mobility, wound routines or daily support look different in real life, the plan is adjusted. That's exactly what the monthly review and weekly CM call are for.",
+          "Yes. If pain, mobility, wound care or daily support look different in real life than on paper, the plan is adjusted. That is what the weekly call and monthly review are for.",
       },
     ],
     theme: {
