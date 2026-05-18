@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { ContactActions, FloatingContactButtons } from "@/components/contact-actions";
+import { DoctorsSection } from "@/components/doctors-section";
 import { HandwrittenNote } from "@/components/handwritten-note";
 import {
   CheckIcon,
@@ -483,6 +484,8 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
           </div>
         </div>
       </section>
+
+      <DoctorsSection verticalLabel={vertical.shortName} />
 
       {/* FAQ + final CTA */}
       <section id="faq" className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">

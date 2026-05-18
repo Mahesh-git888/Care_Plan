@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { DoctorsSection } from "@/components/doctors-section";
 import { HandwrittenNote } from "@/components/handwritten-note";
 import {
   ArrowUpRightIcon,
@@ -341,6 +342,8 @@ export function HomePage() {
           ))}
         </ol>
       </section>
+
+      <DoctorsSection />
 
       {/* Real review */}
       <section id="reviews" className="bg-[#fdf8f3]">

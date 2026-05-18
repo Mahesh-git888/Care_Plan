@@ -7,7 +7,7 @@ const PORTEA_PHONE_DIGITS = "18001212323";
 const PORTEA_PHONE_HREF = `tel:+91${PORTEA_PHONE_DIGITS}`;
 
 // Default Portea WhatsApp business number (India). Override via env var if needed.
-const DEFAULT_WHATSAPP = "919606111000";
+const DEFAULT_WHATSAPP = "918068065360";
 
 function digitsOnly(value: string) {
   return value.replace(/\D/g, "");

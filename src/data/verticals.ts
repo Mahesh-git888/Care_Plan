@@ -120,24 +120,72 @@ const sharedFaqs: FaqItem[] = [
 
 const sharedTrustBadges: TrustBadge[] = [
   {
-    title: "Designed by doctors",
+    title: "Designed by Portea doctors",
     description:
-      "Clinical protocols co-authored by Dr. Kavitha and our medical leadership. Every care plan reviewed before it reaches your family.",
-  },
-  {
-    title: "Trained by the Dementia India Alliance",
-    description:
-      "Specialist dementia training for our caregivers, plus a mandatory pre-placement scoring sheet for every dementia placement.",
+      "Clinical protocols co-authored by Dr. Kavitha (17+ yrs) and Dr. Allia (11 yrs). Every care plan reviewed by a CM before it reaches the family.",
   },
   {
     title: "One care manager per family",
     description:
-      "A single MBBS doctor or senior clinical professional owns your family's care — not a rotating call-centre.",
+      "An MBBS doctor or senior clinical lead handles your discovery call, the plan and weekly updates. Not a rotating call-centre.",
   },
   {
-    title: "10+ years of home healthcare",
+    title: "Updates twice a week on WhatsApp",
     description:
-      "Portea has served over a million patients across 40+ cities. We are India's largest organised home healthcare provider.",
+      "Specific updates — meals, meds, mood, what changed. Plus a weekly call with the CM and a monthly plan review.",
+  },
+  {
+    title: "10 lakh+ patients across 40+ cities",
+    description:
+      "India's largest organised home healthcare provider, with 7 lakh+ home visits a year and 63 hospital partnerships.",
+  },
+];
+
+const elderCareTrustBadges: TrustBadge[] = sharedTrustBadges;
+
+const dementiaTrustBadges: TrustBadge[] = [
+  {
+    title: "Trained by the Dementia India Alliance",
+    description:
+      "Caregivers go through specialist dementia training and a mandatory pre-placement scoring sheet before they ever set foot in your home.",
+  },
+  {
+    title: "Designed by Portea doctors",
+    description:
+      "Dementia protocols co-owned by Dr. Allia (Clinical Head, South) and Dr. Kavitha. Every plan reviewed before it reaches the family.",
+  },
+  {
+    title: "Daily updates in week one",
+    description:
+      "New dementia placements get a daily WhatsApp update for the first seven days — patterns, triggers, what helped — then twice a week.",
+  },
+  {
+    title: "One care manager per family",
+    description:
+      "A doctor or senior clinical lead who actually knows your parent's case. Same person from day one onward.",
+  },
+];
+
+const postDischargeTrustBadges: TrustBadge[] = [
+  {
+    title: "Care plan ready before discharge day",
+    description:
+      "Tell us the discharge date and we'll have a plan, equipment and team scheduled before the patient is home.",
+  },
+  {
+    title: "Designed by Portea doctors",
+    description:
+      "Post-discharge protocols authored by Dr. Kavitha. Each plan reviewed by a CM before going to the family.",
+  },
+  {
+    title: "Nurse, physio and caregiver under one plan",
+    description:
+      "No juggling three vendors. One care manager schedules every visit and keeps the family in one WhatsApp loop.",
+  },
+  {
+    title: "Daily updates for the first 7 days",
+    description:
+      "Week one is the highest-risk stretch. You get a daily WhatsApp summary, then it eases to twice a week.",
   },
 ];
 
@@ -160,7 +208,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Doctor-designed elder care that comes home to your parents",
     accentPhrase: "comes home",
     subheadline:
-      "Trained caregivers, one Portea care manager, and warm, organised support — for everyday routines, mobility, meals, medications and the small things that quietly matter.",
+      "One doctor-led care manager. A caregiver matched to your parent's routine and language. Twice-a-week WhatsApp updates that say what actually happened — meals, meds, mood, what changed.",
     heroLabel: "Managed elder care",
     overview:
       "For families looking for dependable everyday support with mobility, hygiene, meals, routine, medication and peace of mind at home. Built around the people in the house, not a generic checklist.",
@@ -206,8 +254,8 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "Caregiver matching takes language, schedule, mobility needs, gender preference and home dynamics into account before care starts.",
       },
     ],
-    trustSignals: sharedTrustBadges.map((badge) => badge.title),
-    trustBadges: sharedTrustBadges,
+    trustSignals: elderCareTrustBadges.map((badge) => badge.title),
+    trustBadges: elderCareTrustBadges,
     forWho: {
       title: "Right for families who need day-to-day support at home",
       intro:
@@ -341,7 +389,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Specialist dementia care at home, trained by Dementia India Alliance",
     accentPhrase: "Dementia India Alliance",
     subheadline:
-      "When memory changes start affecting routine, mood or safety, we bring care that feels calmer, steadier and more understanding — designed by doctors, delivered by trained caregivers.",
+      "Caregivers trained on dementia behaviour — sundowning, repetition, resistance — matched through a mandatory scoring sheet. One MBBS care manager owns the plan and tells you what's working week by week.",
     heroLabel: "Specialist dementia care",
     overview:
       "For families dealing with confusion, repetition, wandering risk, agitation, sundowning or the emotional strain that often comes with dementia at home.",
@@ -387,8 +435,8 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "Spouses and children carrying the load get a doctor-led care manager who shares the weight, not just a caregiver who shows up.",
       },
     ],
-    trustSignals: sharedTrustBadges.map((badge) => badge.title),
-    trustBadges: sharedTrustBadges,
+    trustSignals: dementiaTrustBadges.map((badge) => badge.title),
+    trustBadges: dementiaTrustBadges,
     forWho: {
       title: "Right when memory changes are affecting daily life",
       intro:
@@ -527,7 +575,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Safer recovery at home after hospital discharge",
     accentPhrase: "after hospital discharge",
     subheadline:
-      "Trained caregivers, nurses and physiotherapists — coordinated by one doctor-led care manager — so the first week at home doesn't feel like guesswork.",
+      "Nurse visits, home physio and a trained caregiver — scheduled before discharge day, run from one plan, with daily WhatsApp updates through week one. Equipment delivered before the patient is home.",
     heroLabel: "Recovery at home",
     overview:
       "For families who know discharge is only the beginning and want a safer, better-organised start to recovery — wound care, medication, mobility, follow-up coordination and home physiotherapy under one plan.",
@@ -573,8 +621,8 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "Recovery doesn't only affect the patient. The care manager coordinates appointments, medication, equipment and questions.",
       },
     ],
-    trustSignals: sharedTrustBadges.map((badge) => badge.title),
-    trustBadges: sharedTrustBadges,
+    trustSignals: postDischargeTrustBadges.map((badge) => badge.title),
+    trustBadges: postDischargeTrustBadges,
     forWho: {
       title: "Right when recovery at home needs more structure",
       intro:
