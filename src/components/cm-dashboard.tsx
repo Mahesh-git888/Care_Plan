@@ -8,7 +8,7 @@ import {
   LIFECYCLE_STATUSES,
   type LeadRecord,
   type LifecycleStatus,
-} from "@/lib/lead-store";
+} from "@/lib/lead-types";
 
 const STATUS_LABELS: Record<LifecycleStatus, string> = {
   new: "new",

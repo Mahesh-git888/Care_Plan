@@ -1,74 +1,26 @@
-// Server-side lead store.
-// Every intake submission and every Call/WhatsApp click on a landing page
-// is appended here as a single JSON line. The /admin/leads dashboard reads
-// this file. If PORTEA_LEADS_WEBHOOK_URL is set, every record is also POSTed
-// to that webhook (Slack incoming webhook, Zapier catch-hook, CRM endpoint).
-//
-// This is intentionally simple: one append-only file. The team picks up new
-// leads from /admin/leads, and a future revision can replace this with the
-// Portea CRM writeback that the engineering design doc specifies.
+// Server-side lead store. Uses node:fs and outbound fetch — DO NOT import
+// this file from a "use client" component. Client code that only needs the
+// types should import from "@/lib/lead-types" instead.
 
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import os from "node:os";
 
-export type LeadKind = "intake" | "call_click" | "whatsapp_click";
+import {
+  LIFECYCLE_STATUSES,
+  type LeadAttribution,
+  type LeadRecord,
+  type LifecycleStatus,
+} from "@/lib/lead-types";
 
-export type LeadAttribution = {
-  utm_source?: string;
-  utm_medium?: string;
-  utm_campaign?: string;
-  utm_term?: string;
-  utm_content?: string;
-  gclid?: string;
-  fbclid?: string;
-  referrer?: string;
-  landing_path?: string;
-};
-
-// CM lifecycle states — matches the SOP / engineering design doc.
-export type LifecycleStatus =
-  | "new"
-  | "cm_contacted"
-  | "plan_shared"
-  | "follow_up"
-  | "converted"
-  | "active"
-  | "lost";
-
-export const LIFECYCLE_STATUSES: LifecycleStatus[] = [
-  "new",
-  "cm_contacted",
-  "plan_shared",
-  "follow_up",
-  "converted",
-  "active",
-  "lost",
-];
-
-export type LeadRecord = {
-  id: string;
-  kind: LeadKind;
-  created_at: string;
-  vertical?: string;
-  full_name?: string;
-  phone?: string;
-  city?: string;
-  elder_name?: string;
-  condition?: string;
-  needs?: string;
-  relationship?: string;
-  situation?: string;
-  ab_variant?: string;
-  consent_given?: boolean;
-  status?: LifecycleStatus;
-  care_manager?: string;
-  follow_up_date?: string;
-  attribution?: LeadAttribution;
-  click_target?: string;
-  user_agent?: string;
-  ip_hash?: string;
-};
+// Re-export types for files that already import from "@/lib/lead-store".
+export {
+  LIFECYCLE_STATUSES,
+  type LeadAttribution,
+  type LeadKind,
+  type LeadRecord,
+  type LifecycleStatus,
+} from "@/lib/lead-types";
 
 function leadsFilePath() {
   const configured = process.env.PORTEA_LEADS_FILE?.trim();
@@ -112,7 +64,7 @@ async function forwardToSheetWebhook(record: LeadRecord) {
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error(
-      "[lead-store] PORTEA_LEADS_WEBHOOK_URL is not a valid URL — fix env var (no leading space):",
+      "[lead-store] PORTEA_LEADS_WEBHOOK_URL invalid (fix env var, no leading space):",
       JSON.stringify(raw),
       err,
     );
