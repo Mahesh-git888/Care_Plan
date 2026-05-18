@@ -762,4 +762,3 @@ export const homeStats = [
 ];
 
 export const homeTrustBadges: TrustBadge[] = sharedTrustBadges;
-] = sharedTrustBadges;
