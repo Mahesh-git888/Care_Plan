@@ -81,7 +81,7 @@ export function HomePage() {
               </h1>
               <p className="mt-5 max-w-2xl text-lg font-medium leading-9 text-[#445d66]">
                 Daily elder care, specialist dementia care, or recovery after a hospital stay.
-                doctor-designed plans, trained caregivers, and one care manager who stays with
+                Doctor-designed plans, trained caregivers, and one care manager who stays with
                 your family from the first call onward.
               </p>
 

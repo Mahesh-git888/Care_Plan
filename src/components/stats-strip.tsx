@@ -1,25 +1,19 @@
 import {
-  BriefcaseIcon,
-  HeartIcon,
+  HomeIcon,
   HospitalIcon,
-  PulseIcon,
-  ShieldIcon,
-  StethoscopeIcon,
+  MapPinIcon,
+  UsersIcon,
 } from "@/components/ui-icons";
 import { homeStats, type StatItem } from "@/data/verticals";
 
 type IconKey = StatItem["icon"];
 
 const ICONS: Record<IconKey, (p: { className?: string }) => React.ReactNode> = {
-  heart: HeartIcon,
-  stethoscope: StethoscopeIcon,
-  shield: ShieldIcon,
+  users: UsersIcon,
+  home: HomeIcon,
+  mapPin: MapPinIcon,
   hospital: HospitalIcon,
 };
-
-// Optional fallbacks if we add new keys later.
-void BriefcaseIcon;
-void PulseIcon;
 
 export function StatsStrip() {
   return (
@@ -29,7 +23,7 @@ export function StatsStrip() {
     >
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-5 py-8 sm:px-6 lg:grid-cols-4 lg:px-10">
         {homeStats.map((stat) => {
-          const Icon = ICONS[stat.icon] ?? HeartIcon;
+          const Icon = ICONS[stat.icon] ?? UsersIcon;
           return (
             <div
               key={stat.label}

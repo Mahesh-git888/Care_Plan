@@ -745,35 +745,24 @@ export const verticalList = Object.values(verticals);
 export type StatItem = {
   value: string;
   label: string;
-  icon: "heart" | "stethoscope" | "shield" | "hospital";
+  icon: "users" | "home" | "mapPin" | "hospital";
 };
 
 export const homeStats: StatItem[] = [
   {
     value: "10L+",
     label: "patients served across India",
-    icon: "heart",
+    icon: "users",
   },
   {
     value: "7L+",
     label: "annual home visits",
-    icon: "stethoscope",
+    icon: "home",
   },
   {
     value: "40+",
     label: "cities covered",
-    icon: "shield",
-  },
-  {
-    value: "63",
-    label: "hospital partnerships",
-    icon: "hospital",
-  },
-];
-
-export const homeTrustBadges: TrustBadge[] = sharedTrustBadges;
-label: "cities covered",
-    icon: "shield",
+    icon: "mapPin",
   },
   {
     value: "63",
