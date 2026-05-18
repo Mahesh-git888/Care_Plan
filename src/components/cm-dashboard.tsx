@@ -70,9 +70,9 @@ function isWithin(window: TimeWindow, iso?: string) {
 }
 
 function timeAgo(iso?: string): string {
-  if (!iso) return "â€”";
+  if (!iso) return "-";
   const d = new Date(iso);
-  if (isNaN(d.getTime())) return "â€”";
+  if (isNaN(d.getTime())) return "-";
   const diff = Date.now() - d.getTime();
   const mins = Math.floor(diff / 60_000);
   if (mins < 1) return "just now";
@@ -156,7 +156,7 @@ export function CmDashboard() {
     return out;
   }, [scoped]);
 
-  // Top stat cards â€” also respect CM + time window
+  // Top stat cards - also respect CM + time window
   const newLeadsCount = counts.new;
   const followUpsToday = scoped.filter(
     (l) => (l.status || "new") === "follow_up" && isToday(l.follow_up_date),
@@ -206,7 +206,7 @@ export function CmDashboard() {
               href="/admin/analytics"
               className="rounded-full border border-[#d7e7ea] bg-white px-4 py-2 text-sm font-medium text-[#0b7c87] hover:bg-[#f7fbfb]"
             >
-              Marketing analytics â†’
+              Marketing analytics →
             </Link>
             <select
               value={cm}
@@ -285,7 +285,7 @@ export function CmDashboard() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name or phoneâ€¦"
+              placeholder="Search by name or phone..."
               className="w-64 rounded-full border border-[#d7e7ea] bg-white px-4 py-2 text-sm outline-none focus:border-[#0f9aa8] focus:ring-2 focus:ring-[#0f9aa8]/20"
             />
           </div>
@@ -294,7 +294,7 @@ export function CmDashboard() {
         {/* Table */}
         <div className="mt-6 overflow-hidden rounded-2xl border border-[#e2e8eb] bg-white shadow-sm">
           {loading ? (
-            <p className="p-8 text-center text-sm text-[#7a8c92]">Loading leadsâ€¦</p>
+            <p className="p-8 text-center text-sm text-[#7a8c92]">Loading leads...</p>
           ) : error ? (
             <p className="p-8 text-center text-sm text-rose-600">{error}</p>
           ) : visible.length === 0 ? (
@@ -310,7 +310,7 @@ export function CmDashboard() {
                     <th className="px-4 py-3">Caller</th>
                     <th className="px-4 py-3">Phone</th>
                     <th className="px-4 py-3">City</th>
-                    <th className="px-4 py-3">Condition Â· needs</th>
+                    <th className="px-4 py-3">Condition · needs</th>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">CM</th>
                     <th className="px-4 py-3">Received</th>
@@ -327,14 +327,14 @@ export function CmDashboard() {
                       >
                         <td className="px-4 py-3">
                           <p className="font-semibold text-[#10242b]">
-                            {lead.elder_name || "â€”"}
+                            {lead.elder_name || "-"}
                           </p>
                           {lead.vertical ? (
                             <p className="text-xs text-[#7a8c92]">{lead.vertical}</p>
                           ) : null}
                         </td>
                         <td className="px-4 py-3 text-sm">
-                          {lead.full_name || "â€”"}
+                          {lead.full_name || "-"}
                           {lead.relationship ? (
                             <p className="text-xs text-[#7a8c92]">{lead.relationship}</p>
                           ) : null}
@@ -349,13 +349,13 @@ export function CmDashboard() {
                               {lead.phone}
                             </a>
                           ) : (
-                            <span className="text-[#7a8c92]">â€”</span>
+                            <span className="text-[#7a8c92]">-</span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-sm">{lead.city || "â€”"}</td>
+                        <td className="px-4 py-3 text-sm">{lead.city || "-"}</td>
                         <td className="px-4 py-3 text-sm">
                           <p className="font-semibold text-[#10242b]">
-                            {lead.condition || "â€”"}
+                            {lead.condition || "-"}
                           </p>
                           {lead.needs ? (
                             <p className="text-xs text-[#7a8c92]">{lead.needs}</p>
@@ -516,7 +516,7 @@ function LeadDetailPanel({
               {lead.elder_name || "Unnamed patient"}
             </h2>
             <p className="mt-0.5 text-sm text-[#7a8c92]">
-              Received {timeAgo(lead.created_at)} Â· caller {lead.full_name || "â€”"}
+              Received {timeAgo(lead.created_at)} · caller {lead.full_name || "-"}
               {lead.relationship ? ` (${lead.relationship})` : ""}
             </p>
           </div>
@@ -541,18 +541,18 @@ function LeadDetailPanel({
                   {lead.phone}
                 </a>
               ) : (
-                "â€”"
+                "-"
               )}
             </Fact>
-            <Fact label="City">{lead.city || "â€”"}</Fact>
-            <Fact label="Condition">{lead.condition || "â€”"}</Fact>
-            <Fact label="Needs">{lead.needs || "â€”"}</Fact>
-            <Fact label="A/B variant">{lead.ab_variant || "â€”"}</Fact>
-            <Fact label="Source Â· campaign">
+            <Fact label="City">{lead.city || "-"}</Fact>
+            <Fact label="Condition">{lead.condition || "-"}</Fact>
+            <Fact label="Needs">{lead.needs || "-"}</Fact>
+            <Fact label="A/B variant">{lead.ab_variant || "-"}</Fact>
+            <Fact label="Source · campaign">
               {lead.attribution?.utm_source ? (
                 <>
                   <span className="font-semibold">{lead.attribution.utm_source}</span>
-                  {lead.attribution.utm_medium ? ` Â· ${lead.attribution.utm_medium}` : ""}
+                  {lead.attribution.utm_medium ? ` · ${lead.attribution.utm_medium}` : ""}
                   {lead.attribution.utm_campaign ? (
                     <p className="mt-0.5 text-xs text-[#7a8c92]">
                       {lead.attribution.utm_campaign}
@@ -636,7 +636,7 @@ function LeadDetailPanel({
               disabled={saving}
               className="rounded-full bg-[#0f9aa8] px-5 py-2 text-sm font-semibold text-white hover:bg-[#0b7c87] disabled:opacity-50"
             >
-              {saving ? "Savingâ€¦" : "Save update"}
+              {saving ? "Saving..." : "Save update"}
             </button>
           </div>
         </div>

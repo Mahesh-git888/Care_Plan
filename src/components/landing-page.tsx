@@ -229,14 +229,18 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
       {/* Stats */}
       <StatsStrip />
 
-      {/* Trust badges — designed by doctors */}
+      {/* Trust badges. Designed by doctors. */}
       <section id="trust" className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
         <SectionIntro
           label="Why Portea"
           title="Doctors write the protocol. CMs run your case. Caregivers do the work."
           description="Built for families who want one number to call, one CM who knows the case, and weekly updates that say what's actually happening at home."
         />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          className={`mt-10 grid gap-4 sm:grid-cols-2 ${
+            vertical.trustBadges.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"
+          }`}
+        >
           {vertical.trustBadges.map((badge, idx) => {
             const icons = [StethoscopeIcon, ShieldIcon, HeartIcon, ClockIcon];
             const Icon = icons[idx % icons.length];
@@ -423,7 +427,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
         </div>
       </section>
 
-      {/* Testimonials — real notes from real families */}
+      {/* Testimonials. Real notes from real families. */}
       <section id="reviews" className="bg-[#fdf8f3]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
           <SectionIntro

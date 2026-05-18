@@ -134,11 +134,6 @@ const sharedTrustBadges: TrustBadge[] = [
     description:
       "Specific notes on meals, meds, mood and what changed. Plus a weekly call with the CM and a monthly plan review.",
   },
-  {
-    title: "10 lakh+ patients across 40+ cities",
-    description:
-      "India's largest organised home healthcare provider, with 7 lakh+ home visits a year and 63 hospital partnerships.",
-  },
 ];
 
 const elderCareTrustBadges: TrustBadge[] = sharedTrustBadges;

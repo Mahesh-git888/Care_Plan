@@ -168,7 +168,7 @@ export default async function MarketingAnalyticsPage() {
         <div>
           <h2 className="text-lg font-semibold tracking-[-0.02em]">Click events</h2>
           <p className="mt-1 text-sm text-[#7a8c92]">
-            Anonymous — we know an ad drove the click but not who clicked. Helpful for
+            Anonymous. We know an ad drove the click but not who clicked. Helpful for
             judging top-of-funnel volume per campaign.
           </p>
           <div className="mt-4 overflow-hidden rounded-2xl border border-[#e2e8eb] bg-white shadow-sm">
@@ -197,7 +197,7 @@ export default async function MarketingAnalyticsPage() {
                           {formatTime(c.created_at)}
                         </td>
                         <td className="px-4 py-3">{kindBadge(c.kind)}</td>
-                        <td className="px-4 py-3 text-sm">{c.vertical ?? "—"}</td>
+                        <td className="px-4 py-3 text-sm">{c.vertical ?? "-"}</td>
                         <td className="px-4 py-3 text-xs">
                           {c.attribution?.utm_source ? (
                             <>
@@ -216,7 +216,7 @@ export default async function MarketingAnalyticsPage() {
                           )}
                         </td>
                         <td className="px-4 py-3 text-xs text-[#7a8c92]">
-                          {c.click_target || "—"}
+                          {c.click_target || "-"}
                         </td>
                       </tr>
                     ))

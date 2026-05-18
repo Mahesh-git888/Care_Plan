@@ -232,7 +232,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Why Portea — trust signals */}
+      {/* Why Portea. Trust signals. */}
       <section id="why-portea" className="bg-[#f7fbfb]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
           <div className="max-w-3xl">
@@ -244,9 +244,9 @@ export function HomePage() {
             </h2>
           </div>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {homeTrustBadges.map((badge, idx) => {
-              const icons = [StethoscopeIcon, ShieldIcon, HeartIcon, ClockIcon];
+              const icons = [StethoscopeIcon, ShieldIcon, HeartIcon];
               const Icon = icons[idx % icons.length];
               return (
                 <article
