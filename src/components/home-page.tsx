@@ -14,7 +14,8 @@ import {
   StethoscopeIcon,
   WhatsAppIcon,
 } from "@/components/ui-icons";
-import { homeStats, homeTrustBadges, verticalList } from "@/data/verticals";
+import { StatsStrip } from "@/components/stats-strip";
+import { homeTrustBadges, verticalList } from "@/data/verticals";
 import { getPhoneContact, getWhatsAppContact } from "@/lib/contact";
 
 export function HomePage() {
@@ -79,7 +80,7 @@ export function HomePage() {
                 Home care your family can actually <span className="text-[#ff5b2e]">trust</span>.
               </h1>
               <p className="mt-5 max-w-2xl text-lg font-medium leading-9 text-[#445d66]">
-                Daily elder care, specialist dementia care, or recovery after a hospital stay —
+                Daily elder care, specialist dementia care, or recovery after a hospital stay.
                 doctor-designed plans, trained caregivers, and one care manager who stays with
                 your family from the first call onward.
               </p>
@@ -148,7 +149,7 @@ export function HomePage() {
                     One family, one plan
                   </p>
                   <p className="mt-3 text-sm font-medium leading-6 text-[#455e67]">
-                    A single doctor-led care manager keeps every part of care moving — no
+                    A single doctor-led care manager keeps every part of care moving. No
                     bouncing between agents.
                   </p>
                 </div>
@@ -167,23 +168,7 @@ export function HomePage() {
       </section>
 
       {/* Stats */}
-      <section className="border-y border-white/80 bg-white/70 backdrop-blur" aria-label="Portea by the numbers">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-5 py-6 sm:px-6 lg:grid-cols-4 lg:px-10">
-          {homeStats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-[1.5rem] border border-[#d9e8ea] bg-white/95 p-5 shadow-sm"
-            >
-              <p className="text-2xl font-semibold tracking-[-0.04em] text-[#10242b]">
-                {stat.value}
-              </p>
-              <p className="mt-2 text-sm font-medium leading-6 text-[#455e67]">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <StatsStrip />
 
       {/* Programs */}
       <section id="programs" className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
@@ -314,7 +299,7 @@ export function HomePage() {
             {
               title: "Personalised care plan",
               description:
-                "Same-day written plan on WhatsApp — daily schedule, care team, equipment, itemised weekly price.",
+                "Same-day written plan on WhatsApp covering daily schedule, care team, equipment and itemised weekly price.",
             },
             {
               title: "Care begins with weekly updates",
@@ -498,7 +483,7 @@ export function HomePage() {
           <div>
             <BrandLogo />
             <p className="mt-4 max-w-md text-sm leading-7 text-white/70">
-              Portea is India&apos;s largest organised home healthcare provider — doctor-led
+              Portea is India&apos;s largest organised home healthcare provider, with doctor-led
               elder care, dementia care and post-hospital recovery in 40+ cities.
             </p>
           </div>

@@ -15,7 +15,8 @@ import {
   StarIcon,
   StethoscopeIcon,
 } from "@/components/ui-icons";
-import { homeStats, verticalList, type VerticalConfig } from "@/data/verticals";
+import { StatsStrip } from "@/components/stats-strip";
+import { verticalList, type VerticalConfig } from "@/data/verticals";
 import { getPhoneContact } from "@/lib/contact";
 
 function renderHeadline(text: string, accentPhrase: string) {
@@ -226,23 +227,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
       </section>
 
       {/* Stats */}
-      <section className="border-y border-white/80 bg-white/70 backdrop-blur" aria-label="Portea by the numbers">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-5 py-6 sm:px-6 lg:grid-cols-4 lg:px-10">
-          {homeStats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-[1.5rem] border border-[#d9e8ea] bg-white/95 p-5 shadow-sm"
-            >
-              <p className="text-2xl font-semibold tracking-[-0.04em] text-[#10242b]">
-                {stat.value}
-              </p>
-              <p className="mt-2 text-sm font-medium leading-6 text-[#455e67]">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <StatsStrip />
 
       {/* Trust badges — designed by doctors */}
       <section id="trust" className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
@@ -355,7 +340,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
           <SectionIntro
             label="How it works"
             title="A simple, four-step path from inquiry to care"
-            description="Designed around the SOP every Portea care manager follows — same flow for every family, no improvising."
+            description="The same four steps for every family. Every care manager runs this flow, every time, in this order."
           />
 
           <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -475,7 +460,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                 <p className="font-semibold text-[#5a4724]">A note on these reviews</p>
                 <p className="mt-2 leading-6">
                   We never invent quotes. Every testimonial here is from a real Portea
-                  family — including the handwritten note received by Dr. Kavitha&apos;s
+                  family, including the handwritten note received by Dr. Kavitha&apos;s
                   team. We collect feedback at week one, at month one, and on
                   offboarding.
                 </p>
@@ -555,7 +540,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
           <div>
             <BrandLogo />
             <p className="mt-4 max-w-md text-sm leading-7 text-white/70">
-              Portea is India&apos;s largest organised home healthcare provider — doctor-led
+              Portea is India&apos;s largest organised home healthcare provider, with doctor-led
               elder care, dementia care and post-hospital recovery in 40+ cities.
             </p>
           </div>

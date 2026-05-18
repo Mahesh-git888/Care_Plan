@@ -11,14 +11,14 @@ type Doctor = {
 const DOCTORS: Doctor[] = [
   {
     name: "Dr. Kavitha S Manjunath",
-    role: "Clinical Head — Primary, Preventive & Elderly Care",
+    role: "Clinical Head, Primary · Preventive · Elderly Care",
     image: "/dr-kavitha.avif",
     alt: "Portrait of Dr. Kavitha S Manjunath",
     bio: "17+ years across infectious disease, chronic disease, palliative and elderly care. MBBS from Al Ameen Medical College, DNB in Family Medicine from The Bangalore Hospital. Has led Portea's preventive and primary care services for the last six years and is a member of the Family Physician Association. Co-authors the elder-care and post-discharge clinical protocols every Portea CM works to.",
   },
   {
     name: "Dr. Allia Rahaman",
-    role: "Clinical Head — South",
+    role: "Clinical Head, South",
     image: "/dr-alia.avif",
     alt: "Portrait of Dr. Allia Rahaman",
     bio: "11 years in chronic disease, emergency medicine and critical care. Trained at GB Pant Hospital and NRHM (A & N Islands) where she ran ICU duties for most of her tenure, then worked as Consultant Physician with V-Health by Aetna (CVS Health). Certified in Diabetes Management (BMJ Fortis) and in ACLS, BLS and PALS by the American Heart Association. Owns dementia-care protocol design at Portea South.",
@@ -37,7 +37,7 @@ export function DoctorsSection({ verticalLabel }: { verticalLabel?: string }) {
             Real clinicians. Not a brand name.
           </h2>
           <p className="mt-4 text-base font-medium leading-8 text-[#34555d]">
-            Every Portea care plan is written against protocols these two doctors maintain, and reviewed monthly for quality. If your case needs a specialist call, it goes to one of them — not a triage queue.
+            Every Portea care plan is written against protocols these two doctors maintain, and reviewed monthly for quality. If your case needs a specialist call, it goes to one of them directly.
           </p>
         </div>
 

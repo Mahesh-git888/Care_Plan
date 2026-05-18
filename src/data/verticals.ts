@@ -648,22 +648,22 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "1. Tell us where recovery stands",
         description:
-          "Share the discharge context, condition and city. The faster we get the basics, the faster we can prepare.",
+          "Share the discharge date, the procedure and the city. The earlier we hear, the more we can line up before the patient is home.",
       },
       {
-        title: "2. Discovery call with a care manager",
+        title: "2. Discovery call with a clinician",
         description:
-          "A clinician calls you within 4 hours. We turn the discharge papers into practical next steps you can actually use at home.",
+          "A doctor calls you within 4 hours. We turn the discharge papers into practical next steps and a written plan you can use that day.",
       },
       {
-        title: "3. Plan, equipment & team in place by Day 1",
+        title: "3. Plan and team ready by Day 1",
         description:
-          "Care plan on WhatsApp same day. Caregiver, nurse visits and physiotherapy scheduled. Equipment delivered before the patient is home.",
+          "Care plan on WhatsApp the same day. Caregiver, nurse visits and physio scheduled. Equipment delivered before the patient walks in.",
       },
       {
-        title: "4. Daily updates through the first week",
+        title: "4. Daily updates through week one",
         description:
-          "Daily WhatsApp updates for the first seven days, then twice a week. Weekly CM call. Plan adjusts as recovery progresses.",
+          "Daily WhatsApp updates for the first seven days, then twice a week. Weekly CM call. The plan adjusts as recovery progresses.",
       },
     ],
     whatToExpect: [
@@ -742,22 +742,43 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
 
 export const verticalList = Object.values(verticals);
 
-export const homeStats = [
+export type StatItem = {
+  value: string;
+  label: string;
+  icon: "heart" | "stethoscope" | "shield" | "hospital";
+};
+
+export const homeStats: StatItem[] = [
   {
     value: "10L+",
     label: "patients served across India",
+    icon: "heart",
   },
   {
     value: "7L+",
     label: "annual home visits",
+    icon: "stethoscope",
   },
   {
     value: "40+",
     label: "cities covered",
+    icon: "shield",
   },
   {
     value: "63",
     label: "hospital partnerships",
+    icon: "hospital",
+  },
+];
+
+export const homeTrustBadges: TrustBadge[] = sharedTrustBadges;
+label: "cities covered",
+    icon: "shield",
+  },
+  {
+    value: "63",
+    label: "hospital partnerships",
+    icon: "hospital",
   },
 ];
 
