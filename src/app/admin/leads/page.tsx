@@ -1,22 +1,17 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
+import { isAdminAuthed } from "@/lib/admin-auth";
 import { readLeads, maskPhone, type LeadRecord } from "@/lib/lead-store";
+import { AdminHeaderActions } from "@/components/admin-header-actions";
 
 export const metadata: Metadata = {
   title: "Portea Leads · Admin",
   robots: { index: false, follow: false },
 };
 
-// Keep this dynamic so we always read the most recent file contents and never
-// cache them at build time.
+// Always read fresh data — never cache.
 export const dynamic = "force-dynamic";
-
-type SearchParams = { [key: string]: string | string[] | undefined };
-
-function resolveSearchParam(value: string | string[] | undefined) {
-  if (Array.isArray(value)) return value[0];
-  return value;
-}
 
 function formatTime(iso: string) {
   try {
@@ -48,37 +43,24 @@ function badge(kind: LeadRecord["kind"]) {
   );
 }
 
-export default async function AdminLeadsPage({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
-  const expectedToken = process.env.PORTEA_ADMIN_TOKEN?.trim();
-  const params = await searchParams;
-  const providedToken = resolveSearchParam(params.token);
+export default async function AdminLeadsPage() {
+  const adminPassword = process.env.PORTEA_ADMIN_PASSWORD?.trim();
 
-  if (!expectedToken) {
+  if (!adminPassword) {
     return (
       <main className="mx-auto max-w-3xl px-6 py-16 text-[#10242b]">
         <h1 className="text-3xl font-semibold">Leads admin disabled</h1>
         <p className="mt-3 text-base text-[#445d66]">
-          Set <code className="rounded bg-slate-100 px-2 py-0.5">PORTEA_ADMIN_TOKEN</code> in the
-          environment, then visit <code>/admin/leads?token=YOUR_TOKEN</code>.
+          Set <code className="rounded bg-slate-100 px-2 py-0.5">PORTEA_ADMIN_PASSWORD</code> in
+          the environment, then visit{" "}
+          <code className="rounded bg-slate-100 px-2 py-0.5">/admin/login</code> and sign in.
         </p>
       </main>
     );
   }
 
-  if (providedToken !== expectedToken) {
-    return (
-      <main className="mx-auto max-w-3xl px-6 py-16 text-[#10242b]">
-        <h1 className="text-3xl font-semibold">Access denied</h1>
-        <p className="mt-3 text-base text-[#445d66]">
-          Append <code className="rounded bg-slate-100 px-2 py-0.5">?token=YOUR_TOKEN</code> to the
-          URL. The token is set as <code>PORTEA_ADMIN_TOKEN</code> in the environment.
-        </p>
-      </main>
-    );
+  if (!(await isAdminAuthed())) {
+    redirect("/admin/login");
   }
 
   const leads = await readLeads(500);
@@ -100,12 +82,7 @@ export default async function AdminLeadsPage({
               landing page lands here.
             </p>
           </div>
-          <a
-            href={`/api/v1/admin/leads.csv?token=${encodeURIComponent(expectedToken)}`}
-            className="inline-flex w-fit items-center gap-2 rounded-full bg-[#0f9aa8] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0b7c87]"
-          >
-            Download CSV
-          </a>
+          <AdminHeaderActions csvHref="/api/v1/admin/leads.csv" />
         </div>
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 px-6 pb-6 sm:grid-cols-4">
           {[
@@ -222,14 +199,19 @@ export default async function AdminLeadsPage({
         )}
 
         <p className="mt-6 text-xs text-[#7a8c92]">
-          Storage: <code>{process.env.PORTEA_LEADS_FILE || "/tmp/portea-leads.jsonl"}</code>
-          {process.env.PORTEA_LEADS_WEBHOOK_URL ? (
-            <span>
-              {" · "}forwarding to webhook (
-              <code>PORTEA_LEADS_WEBHOOK_URL</code>) is enabled.
-            </span>
+          Source:{" "}
+          {process.env.PORTEA_LEADS_READ_SECRET ? (
+            <span className="font-semibold text-[#0b7c87]">Google Sheet (live)</span>
           ) : (
-            <span> · webhook forwarding disabled. Set <code>PORTEA_LEADS_WEBHOOK_URL</code> to push to Slack / Zapier / CRM.</span>
+            <span className="font-semibold text-[#0b7c87]">
+              Local JSONL (
+              <code>{process.env.PORTEA_LEADS_FILE || "/tmp/portea-leads.jsonl"}</code>)
+            </span>
+          )}
+          {process.env.PORTEA_LEADS_WEBHOOK_URL ? (
+            <span> · webhook forwarding ON.</span>
+          ) : (
+            <span> · webhook forwarding OFF — set <code>PORTEA_LEADS_WEBHOOK_URL</code> to push to Sheets / Slack / CRM.</span>
           )}
         </p>
         {(() => {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { isAdminAuthed } from "@/lib/admin-auth";
 import { readLeads } from "@/lib/lead-store";
 
 export const dynamic = "force-dynamic";
@@ -37,17 +38,15 @@ const HEADERS = [
   "landing_path",
 ];
 
-export async function GET(request: Request) {
-  const expected = process.env.PORTEA_ADMIN_TOKEN?.trim();
-  if (!expected) {
+export async function GET() {
+  if (!process.env.PORTEA_ADMIN_PASSWORD?.trim()) {
     return NextResponse.json(
-      { error: "PORTEA_ADMIN_TOKEN not configured." },
+      { error: "PORTEA_ADMIN_PASSWORD not configured." },
       { status: 503 },
     );
   }
 
-  const url = new URL(request.url);
-  if (url.searchParams.get("token") !== expected) {
+  if (!(await isAdminAuthed())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
