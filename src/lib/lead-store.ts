@@ -26,6 +26,26 @@ export type LeadAttribution = {
   landing_path?: string;
 };
 
+// CM lifecycle states — matches the SOP / engineering design doc.
+export type LifecycleStatus =
+  | "new"
+  | "cm_contacted"
+  | "plan_shared"
+  | "follow_up"
+  | "converted"
+  | "active"
+  | "lost";
+
+export const LIFECYCLE_STATUSES: LifecycleStatus[] = [
+  "new",
+  "cm_contacted",
+  "plan_shared",
+  "follow_up",
+  "converted",
+  "active",
+  "lost",
+];
+
 export type LeadRecord = {
   id: string;
   kind: LeadKind;
@@ -41,9 +61,10 @@ export type LeadRecord = {
   situation?: string;
   ab_variant?: string;
   consent_given?: boolean;
-  status?: string;
+  status?: LifecycleStatus;
+  care_manager?: string;
+  follow_up_date?: string;
   attribution?: LeadAttribution;
-  // Click events (for kind === "call_click" | "whatsapp_click")
   click_target?: string;
   user_agent?: string;
   ip_hash?: string;
@@ -58,15 +79,11 @@ function leadsFilePath() {
 async function ensureLeadsFile(filePath: string) {
   const dir = path.dirname(filePath);
   await fs.mkdir(dir, { recursive: true });
-  // Touch the file so subsequent reads don't fail with ENOENT.
   await fs.appendFile(filePath, "", { encoding: "utf8" });
 }
 
 export async function appendLead(record: LeadRecord) {
   const filePath = leadsFilePath();
-  // The JSONL backup file is best-effort — on serverless platforms like Vercel
-  // where /tmp is ephemeral and read-only outside /tmp, a write failure
-  // shouldn't block the intake response or the webhook forward.
   try {
     await ensureLeadsFile(filePath);
     const line = JSON.stringify(record) + "\n";
@@ -76,18 +93,12 @@ export async function appendLead(record: LeadRecord) {
     console.warn("[lead-store] local file append failed", err);
   }
 
-  // Fan out to every configured destination in parallel. Each forwarder is
-  // best-effort and independent — if the Sheet webhook is down, the CRM still
-  // gets the lead, and vice versa.
   await Promise.allSettled([
     forwardToSheetWebhook(record),
     forwardToPorteaCrm(record),
   ]);
 }
 
-// ---------------------------------------------------------------------------
-// Forwarder 1 — Google Sheet via Apps Script Web App (MVP source of truth).
-// ---------------------------------------------------------------------------
 async function forwardToSheetWebhook(record: LeadRecord) {
   const raw = process.env.PORTEA_LEADS_WEBHOOK_URL?.trim();
   if (!raw) {
@@ -95,7 +106,6 @@ async function forwardToSheetWebhook(record: LeadRecord) {
     console.warn("[lead-store] PORTEA_LEADS_WEBHOOK_URL is empty — not forwarding to Sheet");
     return;
   }
-
   let url: URL;
   try {
     url = new URL(raw);
@@ -108,13 +118,12 @@ async function forwardToSheetWebhook(record: LeadRecord) {
     );
     return;
   }
-
   try {
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(record),
-      signal: AbortSignal.timeout(10_000), // Apps Script cold-start headroom
+      signal: AbortSignal.timeout(10_000),
       redirect: "follow",
     });
     if (!response.ok) {
@@ -134,39 +143,24 @@ async function forwardToSheetWebhook(record: LeadRecord) {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Forwarder 2 — Portea CRM (production destination).
-// When PORTEA_CRM_API_URL is unset, this is a no-op so the MVP keeps working.
-// ---------------------------------------------------------------------------
 async function forwardToPorteaCrm(record: LeadRecord) {
   const raw = process.env.PORTEA_CRM_API_URL?.trim();
-  if (!raw) return; // not yet configured — MVP mode
-
+  if (!raw) return;
   let url: URL;
   try {
     url = new URL(raw);
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error(
-      "[lead-store] PORTEA_CRM_API_URL is not a valid URL:",
-      JSON.stringify(raw),
-      err,
-    );
+    console.error("[lead-store] PORTEA_CRM_API_URL invalid:", JSON.stringify(raw), err);
     return;
   }
-
   const apiKey = process.env.PORTEA_CRM_API_KEY?.trim();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "X-Portea-Source": "portea-care-plan-lp",
   };
   if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
-
-  const payload = {
-    ...record,
-    source: "portea-care-plan-lp",
-  };
-
+  const payload = { ...record, source: "portea-care-plan-lp" };
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -192,12 +186,6 @@ async function forwardToPorteaCrm(record: LeadRecord) {
 }
 
 // --- Reading leads ---------------------------------------------------------
-
-// The admin dashboard prefers the Google Sheet (durable, shared across all
-// Vercel instances) over the local JSONL file (ephemeral on serverless). If
-// PORTEA_LEADS_READ_SECRET is set we read from the Sheet via the Apps Script
-// doGet endpoint; otherwise we fall back to the local file (handy for local
-// dev).
 
 type SheetRow = Record<string, string | number | boolean | Date | null | undefined>;
 
@@ -227,6 +215,14 @@ function asAttribution(row: SheetRow) {
   return a;
 }
 
+function asStatus(value: SheetRow[string]): LifecycleStatus {
+  const s = asString(value)?.toLowerCase().replace(/[\s-]+/g, "_");
+  if (s && (LIFECYCLE_STATUSES as string[]).includes(s)) {
+    return s as LifecycleStatus;
+  }
+  return "new";
+}
+
 function sheetRowToLead(row: SheetRow): LeadRecord {
   const kind = (asString(row.kind) as LeadRecord["kind"]) || "intake";
   const createdAtRaw = row.received_at;
@@ -239,6 +235,11 @@ function sheetRowToLead(row: SheetRow): LeadRecord {
   } else {
     createdAt = new Date().toISOString();
   }
+  let followUp: string | undefined;
+  const fuRaw = row.follow_up_date;
+  if (fuRaw instanceof Date) followUp = fuRaw.toISOString();
+  else if (typeof fuRaw === "string" && fuRaw) followUp = fuRaw;
+
   return {
     id: `${createdAt}-${asString(row.phone) ?? asString(row.kind) ?? "row"}`,
     kind,
@@ -252,7 +253,9 @@ function sheetRowToLead(row: SheetRow): LeadRecord {
     needs: asString(row.needs),
     relationship: asString(row.relationship),
     ab_variant: asString(row.ab_variant),
-    status: asString(row.status),
+    status: asStatus(row.status),
+    care_manager: asString(row.care_manager),
+    follow_up_date: followUp,
     attribution: asAttribution(row),
   };
 }
@@ -261,25 +264,21 @@ export async function readLeadsFromSheet(limit = 500): Promise<LeadRecord[]> {
   const webhookRaw = process.env.PORTEA_LEADS_WEBHOOK_URL?.trim();
   const secret = process.env.PORTEA_LEADS_READ_SECRET?.trim();
   if (!webhookRaw || !secret) return [];
-
   let url: URL;
   try {
     url = new URL(webhookRaw);
   } catch {
     // eslint-disable-next-line no-console
-    console.error("[lead-store] read URL is invalid (probably leading space):", webhookRaw);
+    console.error("[lead-store] read URL invalid:", webhookRaw);
     return [];
   }
   url.searchParams.set("secret", secret);
   url.searchParams.set("limit", String(limit));
-
   try {
     const response = await fetch(url, {
       method: "GET",
-      // Apps Script cold-start headroom.
       signal: AbortSignal.timeout(10_000),
       redirect: "follow",
-      // Always re-fetch — admin page should never serve cached data.
       cache: "no-store",
     });
     if (!response.ok) {
@@ -318,9 +317,6 @@ export async function readLeadsFromFile(limit = 500): Promise<LeadRecord[]> {
   }
 }
 
-// Unified reader used by the admin dashboard. Picks the right backend based
-// on what's configured. The Sheet is the source of truth on Vercel; the local
-// JSONL is a convenient fallback for local dev.
 export async function readLeads(limit = 500): Promise<LeadRecord[]> {
   if (process.env.PORTEA_LEADS_READ_SECRET) {
     const fromSheet = await readLeadsFromSheet(limit);
