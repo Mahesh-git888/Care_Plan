@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     needs: body.needs?.trim() || undefined,
     relationship: body.relationship?.trim() || undefined,
     consent_given: true,
-    status: "PENDING_CM_ASSIGNMENT",
+    status: "new",
     attribution: body.attribution ?? {},
   });
 
@@ -101,7 +101,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     patient_id: patientId,
-    status: "PENDING_CM_ASSIGNMENT",
+    status: "new",
     submittedAt: receivedAt,
   });
 }
