@@ -9,6 +9,7 @@ import {
   IntakeFieldKey,
   IntakeFields,
   intakeSteps,
+  isValidIndianMobile,
 } from "@/lib/chatbot";
 import type { VerticalConfig } from "@/data/verticals";
 import { getIntakeApiUrl } from "@/lib/api";
@@ -302,8 +303,11 @@ export function IntakeChatbot({
       dispatch({ type: "SUBMIT_ERROR", error: `Please enter your ${activeStep.label}.` });
       return;
     }
-    if (activeStep.key === "phone" && trimmed.replace(/\D/g, "").length < 10) {
-      dispatch({ type: "SUBMIT_ERROR", error: "Please enter a valid 10-digit phone number." });
+    if (activeStep.key === "phone" && !isValidIndianMobile(trimmed)) {
+      dispatch({
+        type: "SUBMIT_ERROR",
+        error: "Please enter a valid 10-digit Indian mobile number (starts with 6, 7, 8 or 9).",
+      });
       return;
     }
     dispatch({ type: "ANSWER", value: trimmed });
@@ -528,6 +532,9 @@ export function IntakeChatbot({
                               })
                             }
                             placeholder={activeStep.placeholder}
+                            inputMode={activeStep.key === "phone" ? "numeric" : undefined}
+                            autoComplete={activeStep.key === "phone" ? "tel" : undefined}
+                            maxLength={activeStep.key === "phone" ? 13 : undefined}
                             className="w-full rounded-full border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400"
                           />
                         )}

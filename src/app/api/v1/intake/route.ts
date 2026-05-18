@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
+import { isValidIndianMobile, normalizePhone } from "@/lib/chatbot";
 import { verticals, type VerticalSlug } from "@/data/verticals";
 import { appendLead, maskPhone, type LeadAttribution } from "@/lib/lead-store";
 
@@ -52,12 +53,13 @@ export async function POST(request: Request) {
     );
   }
 
-  if (phone.replace(/\D/g, "").length < 10) {
+  if (!isValidIndianMobile(phone)) {
     return NextResponse.json(
-      { error: "Please provide a valid 10-digit phone number." },
+      { error: "Please provide a valid 10-digit Indian mobile number (starts with 6, 7, 8 or 9)." },
       { status: 400 },
     );
   }
+  const normalizedPhone = normalizePhone(phone);
 
   if (!body.consent_given) {
     return NextResponse.json(
@@ -75,7 +77,7 @@ export async function POST(request: Request) {
     created_at: receivedAt,
     vertical,
     full_name: fullName,
-    phone,
+    phone: normalizedPhone,
     city,
     situation,
     ab_variant: body.ab_variant?.trim() || undefined,
@@ -94,7 +96,7 @@ export async function POST(request: Request) {
     vertical,
     ab_variant: body.ab_variant ?? null,
     city,
-    phone: maskPhone(phone),
+    phone: maskPhone(normalizedPhone),
     utm_source: body.attribution?.utm_source ?? null,
     utm_campaign: body.attribution?.utm_campaign ?? null,
   });

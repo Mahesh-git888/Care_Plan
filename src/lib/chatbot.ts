@@ -74,3 +74,18 @@ export const emptyFields: IntakeFields = {
   relationship: "",
   phone: "",
 };
+
+// Strip formatting and the +91 / 91 / leading-0 prefixes families type by habit,
+// returning the 10-digit subscriber number.
+export function normalizePhone(raw: string): string {
+  let digits = raw.replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) digits = digits.slice(2);
+  else if (digits.length === 13 && digits.startsWith("091")) digits = digits.slice(3);
+  else if (digits.length === 11 && digits.startsWith("0")) digits = digits.slice(1);
+  return digits;
+}
+
+export function isValidIndianMobile(raw: string): boolean {
+  const d = normalizePhone(raw);
+  return d.length === 10 && /^[6-9]/.test(d);
+}
