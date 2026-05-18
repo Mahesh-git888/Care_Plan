@@ -703,7 +703,6 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     testimonials: [
       {
         quote:
-          "        quote:
           "My father came home after a hip surgery and we were terrified about the first week. Portea's nurse, physio and caregiver arrived like clockwork. Within four days he was walking with a walker.",
         author: "Ramesh K.",
         context: "Son, Hyderabad",
