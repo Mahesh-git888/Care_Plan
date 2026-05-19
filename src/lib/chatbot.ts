@@ -1,19 +1,24 @@
-// Chatbot intake — aligned with the Managed Elder Care SOP.
+// Chatbot intake. Aligned with the Managed Elder Care SOP.
 // The 6 SOP data points: elder's name, condition, high-level needs, phone,
 // city/area, family member name + phone. Plus consent.
+//
+// Step order is intentional: elder-related fields first, then caller fields.
+// When the visible landing-page lead form has already captured name/city/phone
+// + consent, the chatbot skips those steps automatically (see findNextEmptyStep
+// in intake-chatbot.tsx) and only asks the 4 elder-side questions.
 
 export const intakeSteps = [
   {
     key: "elderName",
     label: "elder's name",
-    prompt: "Hi, I'm Portea's care assistant. Whom are we caring for? Please share the elder's name.",
+    prompt: "Whom are we caring for? Please share their name.",
     placeholder: "Elder's full name",
     type: "text",
   },
   {
     key: "condition",
     label: "condition or diagnosis",
-    prompt: "Got it. What is happening with their health? A diagnosis or a short description is fine.",
+    prompt: "Got it. What's happening with their health? A diagnosis or a short description works.",
     placeholder: "e.g. Alzheimer's, post hip-replacement, low mobility",
     type: "text",
   },
@@ -25,6 +30,13 @@ export const intakeSteps = [
     type: "textarea",
   },
   {
+    key: "relationship",
+    label: "relationship to the elder",
+    prompt: "How are you related to the elder?",
+    placeholder: "e.g. Daughter, Son, Spouse",
+    type: "text",
+  },
+  {
     key: "city",
     label: "city / area",
     prompt: "Which city and area is the elder in?",
@@ -34,15 +46,8 @@ export const intakeSteps = [
   {
     key: "name",
     label: "your name",
-    prompt: "Thank you. May I have your name?",
+    prompt: "May I have your name?",
     placeholder: "Your name",
-    type: "text",
-  },
-  {
-    key: "relationship",
-    label: "relationship to the elder",
-    prompt: "How are you related to the elder?",
-    placeholder: "e.g. Daughter, Son, Spouse",
     type: "text",
   },
   {
@@ -88,4 +93,58 @@ export function normalizePhone(raw: string): string {
 export function isValidIndianMobile(raw: string): boolean {
   const d = normalizePhone(raw);
   return d.length === 10 && /^[6-9]/.test(d);
+}
+
+// --- Quick form handoff -----------------------------------------------------
+//
+// The visible landing-page lead form captures (name, city, phone) + consent.
+// We persist these in sessionStorage keyed by vertical slug so the chatbot can
+// read them on open, skip those steps, and auto-submit once the four remaining
+// SOP questions are answered.
+
+export type QuickFormData = {
+  name: string;
+  city: string;
+  phone: string;
+  consentGiven: boolean;
+  ab_variant?: string;
+};
+
+const QUICK_FORM_PREFIX = "portea-quick-form:";
+
+export function writeQuickFormData(verticalSlug: string, data: QuickFormData) {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(QUICK_FORM_PREFIX + verticalSlug, JSON.stringify(data));
+  } catch {
+    /* sessionStorage may be unavailable in incognito; non-fatal */
+  }
+}
+
+export function readQuickFormData(verticalSlug: string): QuickFormData | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(QUICK_FORM_PREFIX + verticalSlug);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<QuickFormData>;
+    if (!parsed.name || !parsed.city || !parsed.phone) return null;
+    return {
+      name: parsed.name,
+      city: parsed.city,
+      phone: parsed.phone,
+      consentGiven: Boolean(parsed.consentGiven),
+      ab_variant: parsed.ab_variant,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function clearQuickFormData(verticalSlug: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.removeItem(QUICK_FORM_PREFIX + verticalSlug);
+  } catch {
+    /* noop */
+  }
 }

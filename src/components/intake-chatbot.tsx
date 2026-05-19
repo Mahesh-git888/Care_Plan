@@ -2,14 +2,17 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   ChatMessage,
+  clearQuickFormData,
   emptyFields,
   IntakeFieldKey,
   IntakeFields,
   intakeSteps,
   isValidIndianMobile,
+  readQuickFormData,
 } from "@/lib/chatbot";
 import type { VerticalConfig } from "@/data/verticals";
 import { getIntakeApiUrl } from "@/lib/api";
@@ -23,6 +26,7 @@ type PersistedState = {
   fields: IntakeFields;
   messages: ChatMessage[];
   consentGiven: boolean;
+  autoSubmit: boolean;
   submittedAt: string | null;
 };
 
@@ -38,11 +42,16 @@ type FlowAction =
   | { type: "UPDATE_FIELD"; key: IntakeFieldKey; value: string }
   | { type: "PROMPT_READY" }
   | { type: "ANSWER"; value: string }
-  | { type: "REACH_CONSENT" }
   | { type: "CONSENT_TOGGLE"; value: boolean }
   | { type: "SUBMIT_START" }
   | { type: "SUBMIT_SUCCESS"; submittedAt: string }
   | { type: "SUBMIT_ERROR"; error: string }
+  | {
+      type: "PREFILL_AND_OPEN";
+      fields: Partial<IntakeFields>;
+      consentGiven: boolean;
+      intro?: string;
+    }
   | { type: "RESET" };
 
 const TOTAL_STEPS = intakeSteps.length;
@@ -55,12 +64,23 @@ function makeMessage(role: ChatMessage["role"], text: string) {
   };
 }
 
+// Find the index of the first step whose field is still empty. Used to skip
+// over steps that the visible lead form already captured (city, name, phone).
+function findNextEmptyStep(fields: IntakeFields, startIdx: number): number {
+  for (let i = startIdx; i < TOTAL_STEPS; i++) {
+    const key = intakeSteps[i].key;
+    if (!fields[key] || !fields[key].trim()) return i;
+  }
+  return TOTAL_STEPS;
+}
+
 function sanitizePersistedState(raw: string | null): PersistedState {
   const blank: PersistedState = {
     currentStep: 0,
     fields: { ...emptyFields },
     messages: [],
     consentGiven: false,
+    autoSubmit: false,
     submittedAt: null,
   };
 
@@ -86,8 +106,8 @@ function sanitizePersistedState(raw: string | null): PersistedState {
           )
         : [],
       consentGiven: Boolean(parsed.consentGiven),
-      submittedAt:
-        typeof parsed.submittedAt === "string" ? parsed.submittedAt : null,
+      autoSubmit: Boolean(parsed.autoSubmit),
+      submittedAt: typeof parsed.submittedAt === "string" ? parsed.submittedAt : null,
     };
   } catch {
     return blank;
@@ -103,20 +123,70 @@ function derivePhase(state: PersistedState): FlowPhase {
     : "awaiting-input";
 }
 
-function createInitialState(storageKey: string): FlowState {
+function createInitialState(storageKey: string, verticalSlug: string): FlowState {
   if (typeof window === "undefined") {
     return {
       currentStep: 0,
       fields: { ...emptyFields },
       messages: [],
       consentGiven: false,
+      autoSubmit: false,
       submittedAt: null,
       isOpen: false,
       phase: "typing",
       error: null,
     };
   }
+
   const persisted = sanitizePersistedState(window.localStorage.getItem(storageKey));
+  const quickForm = readQuickFormData(verticalSlug);
+
+  // If the lead form just handed off data and the chatbot hasn't already
+  // submitted, pre-fill the matching fields, jump past them, and auto-open.
+  if (quickForm && !persisted.submittedAt) {
+    persisted.fields = {
+      ...persisted.fields,
+      name: quickForm.name,
+      city: quickForm.city,
+      phone: quickForm.phone,
+    };
+    persisted.consentGiven = persisted.consentGiven || quickForm.consentGiven;
+    persisted.autoSubmit = persisted.autoSubmit || quickForm.consentGiven;
+    persisted.currentStep = findNextEmptyStep(persisted.fields, 0);
+    persisted.messages = [
+      makeMessage(
+        "assistant",
+        `Thanks${quickForm.name ? `, ${quickForm.name.split(" ")[0]}` : ""}. A few quick questions and your care manager will call you back within 4 hours.`,
+      ),
+    ];
+    // Consume the handoff so a reload after the user closes the modal does not
+    // re-pop the chatbot. The chatbot's own localStorage carries the state forward.
+    clearQuickFormData(verticalSlug);
+    return {
+      ...persisted,
+      isOpen: true,
+      phase: persisted.currentStep >= TOTAL_STEPS ? "submitting" : "typing",
+      error: null,
+    };
+  }
+
+  // Direct-chatbot path: if the user has never interacted, seed a friendly
+  // greeting so the very first visible line isn't a question with no context.
+  if (persisted.messages.length === 0 && !persisted.submittedAt) {
+    persisted.messages = [
+      makeMessage(
+        "assistant",
+        "Hi, I'm Portea's care assistant. I'll ask a few quick questions, then a doctor-led care manager will call you back within 4 hours.",
+      ),
+    ];
+    return {
+      ...persisted,
+      isOpen: false,
+      phase: "typing",
+      error: null,
+    };
+  }
+
   return {
     ...persisted,
     isOpen: false,
@@ -155,18 +225,22 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
       if (!step) return state;
       const nextFields = { ...state.fields, [step.key]: action.value };
       const nextMessages = [...state.messages, makeMessage("user", action.value)];
-      const isLastStep = state.currentStep === TOTAL_STEPS - 1;
+      const nextStepIdx = findNextEmptyStep(nextFields, state.currentStep + 1);
+      const isDone = nextStepIdx >= TOTAL_STEPS;
+      const nextPhase: FlowPhase = isDone
+        ? state.autoSubmit
+          ? "submitting"
+          : "consent"
+        : "typing";
       return {
         ...state,
         fields: nextFields,
         messages: nextMessages,
-        currentStep: isLastStep ? TOTAL_STEPS : state.currentStep + 1,
-        phase: isLastStep ? "consent" : "typing",
+        currentStep: nextStepIdx,
+        phase: nextPhase,
         error: null,
       };
     }
-    case "REACH_CONSENT":
-      return { ...state, phase: "consent" };
     case "CONSENT_TOGGLE":
       return { ...state, consentGiven: action.value, error: null };
     case "SUBMIT_START":
@@ -179,13 +253,36 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
         error: null,
       };
     case "SUBMIT_ERROR":
+      // On failure, drop into the consent panel for both paths. The user sees
+      // a clear error message and a Submit button to retry. In the auto-submit
+      // path the consent box is already ticked, so retrying is one click.
       return { ...state, phase: "consent", error: action.error };
+    case "PREFILL_AND_OPEN": {
+      const mergedFields = { ...state.fields, ...action.fields };
+      const consent = state.consentGiven || action.consentGiven;
+      const nextStepIdx = findNextEmptyStep(mergedFields, 0);
+      const intro =
+        action.intro ??
+        `Thanks${action.fields.name ? `, ${action.fields.name.split(" ")[0]}` : ""}. A few quick questions and your care manager will call you back within 4 hours.`;
+      return {
+        ...state,
+        fields: mergedFields,
+        consentGiven: consent,
+        autoSubmit: consent,
+        currentStep: nextStepIdx,
+        messages: [makeMessage("assistant", intro)],
+        isOpen: true,
+        phase: nextStepIdx >= TOTAL_STEPS ? "submitting" : "typing",
+        error: null,
+      };
+    }
     case "RESET":
       return {
         currentStep: 0,
         fields: { ...emptyFields },
         messages: [],
         consentGiven: false,
+        autoSubmit: false,
         submittedAt: null,
         isOpen: true,
         phase: "typing",
@@ -211,29 +308,22 @@ export function IntakeChatbot({
   triggerClassName?: string;
   triggerContent?: ReactNode;
 }) {
-  const storageKey = useMemo(() => `portea-intake:${vertical.slug}`, [vertical.slug]);
-  const [state, dispatch] = useReducer(reducer, storageKey, createInitialState);
+  const router = useRouter();
+  // v2 bump after the step order was changed. Without this, anyone who
+  // started the chatbot under the old order would resume on the wrong step.
+  const storageKey = useMemo(() => `portea-intake-v2:${vertical.slug}`, [vertical.slug]);
+  const [state, dispatch] = useReducer(reducer, undefined, () =>
+    createInitialState(storageKey, vertical.slug),
+  );
   const [variant] = useState(() => (Math.random() < 0.5 ? "flow_a" : "flow_b"));
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
   const formStartFiredRef = useRef(false);
-  const leadFiredRef = useRef(false);
 
   const activeStep = intakeSteps[state.currentStep];
   const activeValue = activeStep ? state.fields[activeStep.key] : "";
 
-  function handleOpen() {
-    if (!formStartFiredRef.current && !state.submittedAt) {
-      formStartFiredRef.current = true;
-      pushDataLayerEvent("form_start", {
-        form_name: "intake_chatbot",
-        vertical: vertical.slug,
-        ab_variant: variant,
-      });
-    }
-    dispatch({ type: "OPEN" });
-  }
-
-  // persist
+  // Persist (without the autoSubmit + transient fields that should reset on
+  // reload after a successful submission)
   useEffect(() => {
     if (typeof window === "undefined") return;
     const persisted: PersistedState = {
@@ -241,24 +331,59 @@ export function IntakeChatbot({
       fields: state.fields,
       messages: state.messages,
       consentGiven: state.consentGiven,
+      autoSubmit: state.autoSubmit,
       submittedAt: state.submittedAt,
     };
     window.localStorage.setItem(storageKey, JSON.stringify(persisted));
-  }, [state.currentStep, state.fields, state.messages, state.consentGiven, state.submittedAt, storageKey]);
+  }, [
+    state.currentStep,
+    state.fields,
+    state.messages,
+    state.consentGiven,
+    state.autoSubmit,
+    state.submittedAt,
+    storageKey,
+  ]);
 
-  // autoscroll
+  // Autoscroll
   useEffect(() => {
     scrollAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [state.messages, state.phase, state.isOpen]);
 
-  // typing -> reveal next prompt
+  // Typing -> reveal next prompt
   useEffect(() => {
     if (!state.isOpen || state.phase !== "typing") return;
     const t = window.setTimeout(() => dispatch({ type: "PROMPT_READY" }), 380);
     return () => window.clearTimeout(t);
   }, [state.isOpen, state.phase, state.currentStep]);
 
-  // submit on phase === submitting
+  // Listen for the form -> chatbot handoff event
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as
+        | { vertical?: string; fields?: Partial<IntakeFields>; consentGiven?: boolean }
+        | undefined;
+      if (detail?.vertical && detail.vertical !== vertical.slug) return;
+      const quick = detail?.fields ?? readQuickFormData(vertical.slug);
+      if (quick) {
+        dispatch({
+          type: "PREFILL_AND_OPEN",
+          fields: {
+            name: quick.name ?? "",
+            city: quick.city ?? "",
+            phone: quick.phone ?? "",
+          },
+          consentGiven: detail?.consentGiven ?? Boolean((quick as { consentGiven?: boolean }).consentGiven),
+        });
+      } else {
+        dispatch({ type: "OPEN" });
+      }
+    };
+    window.addEventListener("portea:open-chatbot", handler as EventListener);
+    return () => window.removeEventListener("portea:open-chatbot", handler as EventListener);
+  }, [vertical.slug]);
+
+  // Submit when entering submitting phase
   useEffect(() => {
     if (state.phase !== "submitting") return;
     let cancelled = false;
@@ -289,22 +414,26 @@ export function IntakeChatbot({
           submittedAt?: string;
         };
         if (!response.ok) throw new Error(result.error || "We couldn't submit your request.");
-        if (!cancelled) {
-          if (!leadFiredRef.current) {
-            leadFiredRef.current = true;
-            pushDataLayerEvent("generate_lead", {
-              lead_source: "intake_chatbot",
-              vertical: vertical.slug,
-              ab_variant: variant,
-              patient_id: result.patient_id,
-              city: state.fields.city,
-            });
-          }
-          dispatch({
-            type: "SUBMIT_SUCCESS",
-            submittedAt: result.submittedAt || new Date().toISOString(),
-          });
-        }
+        if (cancelled) return;
+
+        // Clear handoff data so a refresh doesn't re-trigger the chatbot
+        clearQuickFormData(vertical.slug);
+
+        dispatch({
+          type: "SUBMIT_SUCCESS",
+          submittedAt: result.submittedAt || new Date().toISOString(),
+        });
+
+        // Redirect to /thank-you, which fires generate_lead via GTM with the
+        // full context. Single source of truth for the conversion event.
+        const params = new URLSearchParams({
+          source: "intake_chatbot",
+          vertical: vertical.slug,
+          ab_variant: variant,
+        });
+        if (result.patient_id) params.set("patient_id", result.patient_id);
+        if (state.fields.city) params.set("city", state.fields.city);
+        router.push(`/thank-you?${params.toString()}`);
       } catch (err) {
         if (!cancelled) {
           dispatch({
@@ -318,7 +447,19 @@ export function IntakeChatbot({
     return () => {
       cancelled = true;
     };
-  }, [state.phase, state.fields, vertical.slug, variant]);
+  }, [state.phase, state.fields, vertical.slug, variant, router]);
+
+  function handleOpen() {
+    if (!formStartFiredRef.current && !state.submittedAt) {
+      formStartFiredRef.current = true;
+      pushDataLayerEvent("form_start", {
+        form_name: "intake_chatbot",
+        vertical: vertical.slug,
+        ab_variant: variant,
+      });
+    }
+    dispatch({ type: "OPEN" });
+  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -379,9 +520,11 @@ export function IntakeChatbot({
                     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
                       {state.phase === "submitted"
                         ? "Request received"
-                        : state.phase === "consent"
-                          ? "Almost done"
-                          : `Step ${currentStepNumber(state)} of ${TOTAL_STEPS}`}
+                        : state.phase === "submitting"
+                          ? "Sending"
+                          : state.phase === "consent"
+                            ? "Almost done"
+                            : `Step ${currentStepNumber(state)} of ${TOTAL_STEPS}`}
                     </p>
                     <h2 className="mt-2 text-xl font-semibold text-slate-900">
                       {vertical.name} · Care assistant
@@ -413,19 +556,11 @@ export function IntakeChatbot({
                       Thank you, {state.fields.name || "there"}.
                     </h3>
                     <p className="mt-3 text-sm leading-6 text-slate-600">
-                      A Portea care manager will call you on{" "}
+                      Your care manager will call you on{" "}
                       <span className="font-semibold text-slate-800">{state.fields.phone}</span>{" "}
-                      within 4 hours. We've already shared {state.fields.elderName || "the elder"}'s
-                      details so you won't have to repeat them.
+                      within 4 hours.
                     </p>
                     <div className="mt-6 flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() => dispatch({ type: "RESET" })}
-                        className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
-                      >
-                        Start over
-                      </button>
                       <button
                         type="button"
                         onClick={() => dispatch({ type: "CLOSE" })}
@@ -458,7 +593,7 @@ export function IntakeChatbot({
                         I agree that Portea may contact me about home care for{" "}
                         <strong>{state.fields.elderName || "the elder"}</strong> on{" "}
                         <strong>{state.fields.phone || "the number I shared"}</strong>, and process
-                        the information shared in this chat under Portea's privacy policy (DPDP).
+                        the information shared in this chat under Portea&apos;s privacy policy.
                       </span>
                     </label>
 
@@ -567,7 +702,11 @@ export function IntakeChatbot({
                           type="submit"
                           className={`w-full rounded-full px-4 py-3 text-sm font-semibold text-white transition ${vertical.theme.accentStrong}`}
                         >
-                          {state.currentStep === TOTAL_STEPS - 1 ? "Continue" : "Next"}
+                          {findNextEmptyStep(state.fields, state.currentStep + 1) >= TOTAL_STEPS
+                            ? state.autoSubmit
+                              ? "Submit"
+                              : "Continue"
+                            : "Next"}
                         </button>
                       </form>
                     ) : null}
