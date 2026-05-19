@@ -14,6 +14,7 @@ import {
   StethoscopeIcon,
   WhatsAppIcon,
 } from "@/components/ui-icons";
+import { LeadForm } from "@/components/lead-form";
 import { MobileMenu } from "@/components/mobile-menu";
 import { StatsStrip } from "@/components/stats-strip";
 import { homeTrustBadges, verticalList } from "@/data/verticals";
@@ -160,26 +161,12 @@ export function HomePage() {
                   />
                 </div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-[1.7rem] border border-[#d7e7ea] bg-white p-5 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87]">
-                    One number to call
-                  </p>
-                  <p className="mt-3 text-sm font-medium leading-6 text-[#455e67]">
-                    Your care manager handles everything. You won't be passed between agents or
-                    asked to repeat your story to a new person each time.
-                  </p>
-                </div>
-                <div className="rounded-[1.7rem] border border-[#d7e7ea] bg-white p-5 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87]">
-                    Updates worth reading
-                  </p>
-                  <p className="mt-3 text-sm font-medium leading-6 text-[#455e67]">
-                    Twice-a-week WhatsApp updates, a phone call with your care manager every
-                    week, and a full plan review once a month.
-                  </p>
-                </div>
-              </div>
+              <LeadForm
+                vertical={elderCare}
+                verticalOptions={verticalList}
+                headline="Talk to a care manager today"
+                helperText="Share three quick details and a doctor-led care manager will call you back within 4 hours."
+              />
             </div>
           </div>
         </div>

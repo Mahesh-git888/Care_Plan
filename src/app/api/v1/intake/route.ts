@@ -36,12 +36,16 @@ export async function POST(request: Request) {
   const fullName = body.full_name?.trim() ?? "";
   const phone = body.phone?.trim() ?? "";
   const city = body.city?.trim() ?? "";
-  const situation = body.situation?.trim() ?? "";
   const vertical = body.vertical?.trim() ?? "";
+  // Situation is optional. The chatbot supplies a rich narrative; the short
+  // landing-page lead form omits it. Fall back to a placeholder so the care
+  // manager can spot which intake path a lead came through.
+  const situation =
+    body.situation?.trim() || "Landing page lead form. Care manager to gather details on call.";
 
-  if (!fullName || !phone || !city || !situation || !vertical) {
+  if (!fullName || !phone || !city || !vertical) {
     return NextResponse.json(
-      { error: "Please complete every step of the intake." },
+      { error: "Please share your name, phone, city and the care program." },
       { status: 400 },
     );
   }

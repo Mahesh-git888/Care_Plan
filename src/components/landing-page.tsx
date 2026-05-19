@@ -5,6 +5,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { ContactActions, FloatingContactButtons } from "@/components/contact-actions";
 import { DoctorsSection } from "@/components/doctors-section";
 import { HandwrittenNote } from "@/components/handwritten-note";
+import { LeadForm } from "@/components/lead-form";
 import {
   CheckIcon,
   ClockIcon,
@@ -190,37 +191,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-[0.92fr_1.08fr]">
-                <div
-                  className="relative overflow-hidden rounded-[1.8rem] border border-[#d9e8ea] bg-white p-3 shadow-sm"
-                  style={{ aspectRatio: secondaryImage.aspect }}
-                >
-                  <div className="relative h-full w-full overflow-hidden rounded-[1.35rem]">
-                    <Image
-                      src={secondaryImage.src}
-                      alt={secondaryImage.alt}
-                      width={900}
-                      height={1125}
-                      className="h-full w-full object-cover"
-                      style={{ objectPosition: secondaryImage.position ?? "center center" }}
-                    />
-                  </div>
-                </div>
-
-                <div className="rounded-[1.8rem] border border-[#d9e8ea] bg-white/95 p-6 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87]">
-                    What families have at hand
-                  </p>
-                  <ul className="mt-4 space-y-3 text-sm font-medium leading-7 text-[#455e67]">
-                    {vertical.trustSignals.slice(0, 4).map((signal) => (
-                      <li key={signal} className="flex gap-3">
-                        <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#0f9aa8]" />
-                        <span>{signal}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+              <LeadForm vertical={vertical} />
             </div>
           </div>
         </div>
