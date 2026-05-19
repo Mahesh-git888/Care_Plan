@@ -166,16 +166,16 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
             </div>
 
             <div className="grid gap-4">
-              <LeadForm vertical={vertical} />
               <div
                 className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white p-3 shadow-[0_30px_60px_-28px_rgba(16,42,49,0.22)]"
+                style={{ aspectRatio: primaryImage.aspect }}
               >
-                <div className="relative aspect-[16/9] overflow-hidden rounded-[1.55rem]">
+                <div className="relative h-full w-full overflow-hidden rounded-[1.55rem]">
                   <Image
                     src={primaryImage.src}
                     alt={primaryImage.alt}
                     width={1400}
-                    height={788}
+                    height={980}
                     className="h-full w-full object-cover"
                     style={{ objectPosition: primaryImage.position ?? "center center" }}
                     priority
@@ -190,6 +190,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                   </div>
                 </div>
               </div>
+              <LeadForm vertical={vertical} />
             </div>
           </div>
         </div>
