@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server";
 
-import { isAdminAuthed, isAdminConfigured } from "@/lib/admin-auth";
+import {
+  audit,
+  extractClientIp,
+  getSession,
+  isAdminConfigured,
+} from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
+
+function normalizeName(name: string | undefined | null): string {
+  return (name ?? "").trim().toLowerCase();
+}
+function firstWord(name: string | undefined | null): string {
+  return normalizeName(name).split(/\s+/)[0] ?? "";
+}
 
 // Forwards CM updates back to the Google Sheet through the same Apps Script
 // Web App URL we use for writes. The Apps Script must implement a doPost
@@ -12,7 +24,8 @@ export async function POST(request: Request) {
   if (!isAdminConfigured()) {
     return NextResponse.json({ ok: false, error: "Admin disabled" }, { status: 503 });
   }
-  if (!(await isAdminAuthed())) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
@@ -43,6 +56,35 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid request body" }, { status: 400 });
   }
 
+  // Per-CM lead-write scoping. A CM may update leads where the existing
+  // care_manager is unassigned, themselves, or where they're being assigned
+  // to themselves. They cannot reassign or modify another CM's lead. Admins
+  // bypass this check entirely.
+  if (session.role === "cm") {
+    const mineFull = normalizeName(session.name);
+    const mineFirst = firstWord(session.name);
+    const existing = normalizeName(body.existing_care_manager as string | undefined);
+    const incoming = normalizeName(body.care_manager as string | undefined);
+
+    const isMine = (cm: string) =>
+      !cm || cm === "unassigned" || cm === mineFull || cm === mineFirst || firstWord(cm) === mineFirst;
+
+    if (!isMine(existing) || (incoming && !isMine(incoming))) {
+      audit({
+        type: "auth.login.failure",
+        ts: new Date().toISOString(),
+        email: session.email,
+        user_id: session.sub,
+        ip: extractClientIp(request),
+        reason: "lead_update_out_of_scope",
+      });
+      return NextResponse.json(
+        { ok: false, error: "You can only update leads assigned to you or unassigned leads." },
+        { status: 403 },
+      );
+    }
+  }
+
   try {
     const upstream = await fetch(url, {
       method: "POST",
@@ -50,6 +92,7 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         action: "update_lead",
         secret,
+        updated_by: session.email,
         ...body,
       }),
       signal: AbortSignal.timeout(10_000),

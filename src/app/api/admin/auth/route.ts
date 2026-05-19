@@ -3,9 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 import {
   attemptLogin,
+  audit,
   buildSessionPayload,
   COOKIE_NAME,
+  extractClientIp,
   getSession,
+  isLoginRateLimited,
+  loginAttemptsRemaining,
+  recordLoginAttempt,
   SESSION_TTL_SECONDS,
   signSession,
 } from "@/lib/admin-auth";
@@ -16,6 +21,13 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const { email, password } = body as { email?: string; password?: string };
 
+  const ip = extractClientIp(request) ?? "unknown";
+  const ua = request.headers.get("user-agent")?.slice(0, 200) ?? undefined;
+  // Rate-limit key. Email-based makes brute force slower per account;
+  // IP-based catches credential stuffing. We combine both.
+  const rateKey = `${ip}|${(email ?? "").toLowerCase()}`;
+  const ts = new Date().toISOString();
+
   if (!password || typeof password !== "string") {
     return NextResponse.json(
       { error: "Email and password are required." },
@@ -23,9 +35,36 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (isLoginRateLimited(rateKey)) {
+    audit({
+      type: "auth.login.rate_limited",
+      ts,
+      email: typeof email === "string" ? email : undefined,
+      ip,
+      user_agent: ua,
+    });
+    return NextResponse.json(
+      {
+        error:
+          "Too many failed sign-in attempts. Please wait 15 minutes and try again.",
+      },
+      { status: 429 },
+    );
+  }
+
   const result = attemptLogin(typeof email === "string" ? email : undefined, password);
 
   if (!result.ok) {
+    recordLoginAttempt(rateKey, false);
+    audit({
+      type: "auth.login.failure",
+      ts,
+      email: typeof email === "string" ? email : undefined,
+      ip,
+      user_agent: ua,
+      reason: result.reason,
+    });
+
     if (result.reason === "not_configured") {
       return NextResponse.json(
         {
@@ -35,8 +74,23 @@ export async function POST(request: NextRequest) {
         { status: 500 },
       );
     }
-    return NextResponse.json({ error: "Incorrect email or password." }, { status: 401 });
+    const remaining = loginAttemptsRemaining(rateKey);
+    const tail = remaining > 0 ? ` ${remaining} attempt${remaining === 1 ? "" : "s"} remaining.` : "";
+    return NextResponse.json(
+      { error: `Incorrect email or password.${tail}` },
+      { status: 401 },
+    );
   }
+
+  recordLoginAttempt(rateKey, true);
+  audit({
+    type: "auth.login.success",
+    ts,
+    email: result.user.email,
+    user_id: result.user.id,
+    ip,
+    user_agent: ua,
+  });
 
   const payload = buildSessionPayload(result.user);
   const token = signSession(payload);
@@ -76,7 +130,17 @@ export async function GET() {
   });
 }
 
-export async function DELETE() {
+export async function DELETE(request: NextRequest) {
+  const session = await getSession();
+  if (session) {
+    audit({
+      type: "auth.logout",
+      ts: new Date().toISOString(),
+      email: session.email,
+      user_id: session.sub,
+      ip: extractClientIp(request) ?? undefined,
+    });
+  }
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);
   return NextResponse.json({ success: true });

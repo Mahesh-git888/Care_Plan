@@ -168,6 +168,83 @@ export function isAdminConfigured(): boolean {
   );
 }
 
+// --- Rate limiting (in-memory, per Vercel instance) -----------------------
+//
+// Caveat: Vercel runs multiple function instances. Counters live in each
+// instance's memory, so a brute-force attacker could rotate across IPs or
+// hit different instances and dilute the effect. For a small admin tool
+// this raises the bar from zero to "annoying," which is the goal. For
+// stronger protection, swap this for Vercel KV or Upstash Redis later.
+
+const MAX_ATTEMPTS = 5;
+const ATTEMPT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const attemptsByKey = new Map<string, { count: number; firstAt: number }>();
+
+function pruneStale(key: string) {
+  const entry = attemptsByKey.get(key);
+  if (entry && Date.now() - entry.firstAt > ATTEMPT_WINDOW_MS) {
+    attemptsByKey.delete(key);
+  }
+}
+
+export function isLoginRateLimited(key: string): boolean {
+  pruneStale(key);
+  const entry = attemptsByKey.get(key);
+  return Boolean(entry && entry.count >= MAX_ATTEMPTS);
+}
+
+export function recordLoginAttempt(key: string, success: boolean): void {
+  pruneStale(key);
+  if (success) {
+    attemptsByKey.delete(key);
+    return;
+  }
+  const entry = attemptsByKey.get(key);
+  if (!entry) {
+    attemptsByKey.set(key, { count: 1, firstAt: Date.now() });
+    return;
+  }
+  entry.count += 1;
+}
+
+export function loginAttemptsRemaining(key: string): number {
+  pruneStale(key);
+  const entry = attemptsByKey.get(key);
+  if (!entry) return MAX_ATTEMPTS;
+  return Math.max(0, MAX_ATTEMPTS - entry.count);
+}
+
+// --- Audit logging ---------------------------------------------------------
+//
+// Writes a single-line JSON record to stdout (visible in Vercel Runtime
+// Logs). Lightweight, no external dependencies. Filter the logs by the
+// "audit.*" prefix to see who signed in when.
+
+export type AuditEvent = {
+  type:
+    | "auth.login.success"
+    | "auth.login.failure"
+    | "auth.login.rate_limited"
+    | "auth.logout";
+  ts: string;
+  email?: string;
+  user_id?: string;
+  ip?: string;
+  user_agent?: string;
+  reason?: string;
+};
+
+export function audit(event: AuditEvent): void {
+  // eslint-disable-next-line no-console
+  console.log(JSON.stringify(event));
+}
+
+export function extractClientIp(request: Request): string | undefined {
+  const fwd = request.headers.get("x-forwarded-for");
+  if (fwd) return fwd.split(",")[0]?.trim();
+  return request.headers.get("x-real-ip") ?? undefined;
+}
+
 // --- Credential check ------------------------------------------------------
 
 export type LoginResult =

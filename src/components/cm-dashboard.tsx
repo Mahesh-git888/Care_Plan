@@ -98,9 +98,12 @@ function isThisMonth(iso?: string): boolean {
   return d.getTime() >= startOfThisMonth();
 }
 
+type Viewer = { role: "admin" | "cm"; name: string; email: string };
+
 export function CmDashboard() {
   const router = useRouter();
   const [leads, setLeads] = useState<LeadRecord[]>([]);
+  const [viewer, setViewer] = useState<Viewer | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cm, setCm] = useState<string>("All CMs");
@@ -118,9 +121,14 @@ export function CmDashboard() {
         router.push("/admin/login");
         return;
       }
-      const body = (await res.json()) as { leads?: LeadRecord[]; error?: string };
+      const body = (await res.json()) as {
+        leads?: LeadRecord[];
+        error?: string;
+        viewer?: Viewer;
+      };
       if (!res.ok) throw new Error(body.error || "Failed to load leads");
       setLeads(body.leads || []);
+      if (body.viewer) setViewer(body.viewer);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load leads");
     } finally {
@@ -199,27 +207,37 @@ export function CmDashboard() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-5">
           <div className="flex items-baseline gap-3">
             <h1 className="text-2xl font-semibold tracking-[-0.02em]">Portea</h1>
-            <span className="text-sm text-[#7a8c92]">CM Dashboard</span>
+            <span className="text-sm text-[#7a8c92]">
+              {viewer?.role === "cm" ? "My leads" : "CM Dashboard"}
+            </span>
           </div>
           <div className="flex items-center gap-2">
+            {viewer ? (
+              <span className="hidden text-sm text-[#54727a] sm:inline">
+                {viewer.name}
+                {viewer.role === "admin" ? " · admin" : ""}
+              </span>
+            ) : null}
             <Link
               href="/admin/analytics"
               className="rounded-full border border-[#d7e7ea] bg-white px-4 py-2 text-sm font-medium text-[#0b7c87] hover:bg-[#f7fbfb]"
             >
               Marketing analytics →
             </Link>
-            <select
-              value={cm}
-              onChange={(e) => setCm(e.target.value)}
-              className="rounded-lg border-2 border-[#0f9aa8] bg-white px-3 py-1.5 text-sm font-medium text-[#0b7c87] outline-none focus:ring-2 focus:ring-[#0f9aa8]/30"
-            >
-              <option value="All CMs">All CMs</option>
-              {CM_OPTIONS.map((o) => (
-                <option key={o} value={o}>
-                  {o}
-                </option>
-              ))}
-            </select>
+            {viewer?.role === "admin" ? (
+              <select
+                value={cm}
+                onChange={(e) => setCm(e.target.value)}
+                className="rounded-lg border-2 border-[#0f9aa8] bg-white px-3 py-1.5 text-sm font-medium text-[#0b7c87] outline-none focus:ring-2 focus:ring-[#0f9aa8]/30"
+              >
+                <option value="All CMs">All CMs</option>
+                {CM_OPTIONS.map((o) => (
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
+                ))}
+              </select>
+            ) : null}
             <button
               type="button"
               onClick={fetchLeads}
@@ -480,6 +498,7 @@ function LeadDetailPanel({
           phone: lead.phone,
           status,
           care_manager: careManager,
+          existing_care_manager: lead.care_manager || "Unassigned",
           follow_up_date: followUpDate || "",
           note: notes,
         }),
