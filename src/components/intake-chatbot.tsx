@@ -13,7 +13,7 @@ import {
 } from "@/lib/chatbot";
 import type { VerticalConfig } from "@/data/verticals";
 import { getIntakeApiUrl } from "@/lib/api";
-import { pushDataLayer } from "@/lib/gtm";
+import { pushDataLayerEvent } from "@/lib/gtm";
 import { readAttribution } from "@/lib/utm";
 
 type FlowPhase = "typing" | "awaiting-input" | "consent" | "submitting" | "submitted";
@@ -224,7 +224,7 @@ export function IntakeChatbot({
   function handleOpen() {
     if (!formStartFiredRef.current && !state.submittedAt) {
       formStartFiredRef.current = true;
-      pushDataLayer("form_start", {
+      pushDataLayerEvent("form_start", {
         form_name: "intake_chatbot",
         vertical: vertical.slug,
         ab_variant: variant,
@@ -292,7 +292,7 @@ export function IntakeChatbot({
         if (!cancelled) {
           if (!leadFiredRef.current) {
             leadFiredRef.current = true;
-            pushDataLayer("generate_lead", {
+            pushDataLayerEvent("generate_lead", {
               lead_source: "intake_chatbot",
               vertical: vertical.slug,
               ab_variant: variant,

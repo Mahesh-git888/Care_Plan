@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { pushDataLayer } from "@/lib/gtm";
+import { pushDataLayerEvent } from "@/lib/gtm";
 
 // Fires the `scroll_90` event once when the visitor has scrolled past 90%
 // of the document height. Useful as an engagement signal in GA4.
@@ -18,7 +18,7 @@ export function ScrollTracker() {
       if (total <= 0) return;
       if (scrolled / total >= 0.9) {
         fired = true;
-        pushDataLayer("scroll_90", { scroll_depth: 90 });
+        pushDataLayerEvent("scroll_90", { scroll_depth: 90 });
         window.removeEventListener("scroll", onScroll);
       }
     }

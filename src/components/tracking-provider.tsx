@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { pushDataLayer } from "@/lib/gtm";
+import { pushDataLayerEvent } from "@/lib/gtm";
 import { captureAttributionFromUrl, readAttribution } from "@/lib/utm";
 
 // Mounts a global click listener that fires a sendBeacon to /api/v1/track
@@ -43,7 +43,7 @@ function send(kind: ClickKind, target: string) {
 
   // Push to GTM/GA4 first so Google sees the event even if the beacon
   // fails. Match the spec event names: click_call and whatsapp_click.
-  pushDataLayer(kind === "call_click" ? "click_call" : "whatsapp_click", {
+  pushDataLayerEvent(kind === "call_click" ? "click_call" : "whatsapp_click", {
     target,
     vertical,
     attribution,

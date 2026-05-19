@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { pushDataLayer } from "@/lib/gtm";
+import { pushDataLayerEvent } from "@/lib/gtm";
 import { readAttribution } from "@/lib/utm";
 
 // Fires the `generate_lead` event once when the Thank You page loads.
@@ -11,7 +11,7 @@ import { readAttribution } from "@/lib/utm";
 
 export function ThankYouConversion() {
   useEffect(() => {
-    pushDataLayer("generate_lead", {
+    pushDataLayerEvent("generate_lead", {
       lead_source: "thank_you_page",
       attribution: readAttribution(),
     });
