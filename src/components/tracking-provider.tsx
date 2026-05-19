@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { pushDataLayer } from "@/lib/gtm";
 import { captureAttributionFromUrl, readAttribution } from "@/lib/utm";
 
 // Mounts a global click listener that fires a sendBeacon to /api/v1/track
@@ -37,11 +38,22 @@ function detectVertical(): string {
 }
 
 function send(kind: ClickKind, target: string) {
+  const vertical = detectVertical();
+  const attribution = readAttribution();
+
+  // Push to GTM/GA4 first so Google sees the event even if the beacon
+  // fails. Match the spec event names: click_call and whatsapp_click.
+  pushDataLayer(kind === "call_click" ? "click_call" : "whatsapp_click", {
+    target,
+    vertical,
+    attribution,
+  });
+
   const payload = JSON.stringify({
     kind,
     target,
-    vertical: detectVertical(),
-    attribution: readAttribution(),
+    vertical,
+    attribution,
   });
 
   try {
@@ -54,7 +66,7 @@ function send(kind: ClickKind, target: string) {
     /* fall through to fetch */
   }
 
-  // sendBeacon unavailable or failed — fire-and-forget fetch.
+  // sendBeacon unavailable or failed. Fall back to fire-and-forget fetch.
   try {
     void fetch("/api/v1/track", {
       method: "POST",
@@ -63,7 +75,7 @@ function send(kind: ClickKind, target: string) {
       keepalive: true,
     });
   } catch {
-    /* swallow — tracking is best-effort */
+    /* swallow. Tracking is best-effort. */
   }
 }
 

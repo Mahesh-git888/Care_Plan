@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 
+import { GTMProvider } from "@/components/gtm-provider";
+import { ScrollTracker } from "@/components/scroll-tracker";
 import { TrackingProvider } from "@/components/tracking-provider";
 
 import "./globals.css";
@@ -109,7 +111,9 @@ export default function RootLayout({
   return (
     <html lang="en-IN">
       <body>
+        <GTMProvider />
         <TrackingProvider />
+        <ScrollTracker />
         {children}
         <Script
           id="ld-organization"

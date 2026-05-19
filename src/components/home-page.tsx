@@ -371,7 +371,7 @@ export function HomePage() {
                   <ul className="mt-3 space-y-2 text-sm leading-7 text-[#3a2c14]">
                     <li className="flex gap-3">
                       <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#ff5b2e]" />
-                      The same care manager from your first call onwards, never a queue or a call centre.
+                      The same care manager from your first call all the way through.
                     </li>
                     <li className="flex gap-3">
                       <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#ff5b2e]" />
@@ -379,7 +379,7 @@ export function HomePage() {
                     </li>
                     <li className="flex gap-3">
                       <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#ff5b2e]" />
-                      A plan that adjusts as life at home changes, with no contract and no minimum commitment.
+                      A plan that adjusts as life at home changes. Stop care any week.
                     </li>
                   </ul>
                 </div>
@@ -544,7 +544,7 @@ export function HomePage() {
                   </a>
                 </li>
               ) : null}
-              <li className="text-white/70">Mon–Sat · 8:00 AM – 8:00 PM IST</li>
+              <li className="text-white/70">Mon to Sat, 8:00 AM to 8:00 PM IST</li>
             </ul>
           </div>
         </div>

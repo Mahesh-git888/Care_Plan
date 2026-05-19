@@ -89,22 +89,22 @@ const sharedFaqs: FaqItem[] = [
   {
     question: "How soon will someone call us back?",
     answer:
-      "If care is needed soon, your care manager usually calls within 4 hours. If you are planning ahead, expect a call within 24 hours. The chatbot takes a few quick details so the first call gets straight to your situation.",
+      "If care is needed soon, a care manager usually calls within 4 hours. If you are planning ahead, expect a call within 24 hours. The chatbot gathers a few quick details so the first call gets straight to your situation.",
   },
   {
     question: "Will we have one person guiding us through this?",
     answer:
-      "Yes. A single care manager, a doctor or senior clinician, handles your first call, your written plan, the caregiver on the ground, the weekly updates and any escalations. You will not be passed between agents.",
+      "Your care manager is a doctor or senior clinician who handles your first call, your written plan, the caregiver on the ground, the weekly updates and any escalations. The same person stays with your family throughout.",
   },
   {
     question: "How are caregivers chosen and trained?",
     answer:
-      "Each caregiver is matched to your parent's routine, condition, language and home. They read the full care plan before day one. For dementia, every caregiver also passes an 80-point readiness check co-designed with the Dementia India Alliance.",
+      "Every caregiver is matched to your parent's routine, condition, language and home. They read the full care plan before day one. For dementia, each caregiver also passes an 80-point readiness check co-designed with the Dementia India Alliance.",
   },
   {
     question: "How will we know what is happening at home?",
     answer:
-      "You are added to a private WhatsApp group with your care manager. You get clear updates twice a week (daily in the first week of dementia or recovery cases), plus a weekly call from the care manager. The caregiver delivers the care. The care manager is your point of contact.",
+      "You are added to a private WhatsApp group with your care manager. You receive clear updates twice a week (daily during the first week of dementia or recovery cases) plus a weekly call. The caregiver delivers the care; your care manager is who you talk to.",
   },
   {
     question: "How much does it cost?",
@@ -114,7 +114,7 @@ const sharedFaqs: FaqItem[] = [
   {
     question: "Is Portea available in our city?",
     answer:
-      "We operate in 40+ Indian cities including Bangalore, Mumbai, Delhi NCR, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad, Jaipur and Chandigarh. If we do not cover your pin code directly, the care manager will tell you honestly on the first call.",
+      "We operate in 40+ Indian cities including Bangalore, Mumbai, Delhi NCR, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad, Jaipur and Chandigarh. If we do not cover your pin code directly, your care manager will say so honestly on the first call.",
   },
 ];
 
@@ -234,19 +234,19 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     ],
     highlights: [
       {
-        title: "Help with everyday routines",
+        title: "Help with the everyday",
         description:
-          "Support across movement, bathing, meals, companionship, medication reminders and the parts of the day that quietly become harder over time.",
+          "Support with movement, bathing, meals, companionship and the medication tray. The parts of the day that have started to feel harder than they used to.",
       },
       {
-        title: "One care manager. Not a call centre.",
+        title: "One care manager, every step",
         description:
-          "An MBBS doctor or senior clinical professional owns your family's relationship end-to-end, from the first call to weekly updates.",
+          "An MBBS doctor or senior clinician handles your family from the first call to the weekly update. The same person, every week.",
       },
       {
         title: "A better fit at home",
         description:
-          "Caregiver matching takes language, schedule, mobility needs, gender preference and home dynamics into account before care starts.",
+          "Caregiver matching takes language, schedule, mobility, gender preference and home dynamics into account before care begins.",
       },
     ],
     trustSignals: elderCareTrustBadges.map((badge) => badge.title),
@@ -440,7 +440,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
         "Confusion, repetition, disorientation or sundowning is escalating at home.",
         "A spouse or child is emotionally drained and needs steadier help.",
         "Wandering, falls, or refusing meals/medication has started becoming a real risk.",
-        "You need a caregiver who brings calm, not friction.",
+        "You want a caregiver who brings calm into the room.",
       ],
     },
     notForWho: {
@@ -487,7 +487,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "We focus on what really triggers distress, what helps and what to expect through the day.",
       },
       {
-        title: "Photos and specifics, not generic updates",
+        title: "Photos and specifics in every update",
         description:
           "Caregiver photos during meals, walks or exercises. NRI families especially value seeing care actually happen.",
       },
@@ -528,17 +528,17 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Can this help if evenings are the hardest time of day?",
         answer:
-          "Yes. The first call captures when confusion or agitation tends to rise. The schedule and the caregiver's shift are shaped around your home's specific pattern.",
+          "The first call captures when confusion or agitation tends to rise. The schedule and the caregiver's shift are shaped around that pattern at your home.",
       },
       {
         question: "Will the family still stay involved after care starts?",
         answer:
-          "Absolutely. You are added to a WhatsApp group with your care manager. You stay closely informed and the plan adjusts as the real picture at home becomes clearer.",
+          "You are added to a WhatsApp group with your care manager from day one. The family stays closely informed and the plan adjusts as the picture at home becomes clearer.",
       },
       {
         question: "Are caregivers really trained in dementia care?",
         answer:
-          "Yes. Our caregivers get specialist dementia training co-developed with the Dementia India Alliance. Every dementia caregiver also passes an 80-point readiness check before being matched to a family.",
+          "Our caregivers go through specialist dementia training developed with the Dementia India Alliance. Every dementia caregiver also passes an 80-point readiness check before being matched to a family.",
       },
     ],
     theme: {
@@ -690,7 +690,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "Confidence usually comes from simple things: clearer priorities, better follow-through, one team staying accountable.",
       },
       {
-        title: "“It felt like proper support, not discharge-day advice.”",
+        title: "“It felt like proper support all the way through.”",
         description:
           "The real difference shows up in week two. Most home setups go quiet by then. Your care manager is still on the line and the physio still shows up.",
       },
@@ -719,7 +719,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Can the support change if recovery feels harder at home?",
         answer:
-          "Yes. If pain, mobility, wound care or daily support look different in real life than on paper, the plan is adjusted. That is what the weekly call and monthly review are for.",
+          "If pain, mobility, wound care or daily support look different at home than on paper, the plan is adjusted. The weekly call and monthly review exist for exactly this.",
       },
     ],
     theme: {

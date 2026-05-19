@@ -34,10 +34,10 @@ export function DoctorsSection({ verticalLabel }: { verticalLabel?: string }) {
             The doctors behind your{verticalLabel ? ` ${verticalLabel.toLowerCase()}` : "ir"} care plan
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
-            Real clinicians. Not a brand name.
+            The doctors who write every care plan.
           </h2>
           <p className="mt-4 text-base font-medium leading-8 text-[#34555d]">
-            Every Portea care plan is written against protocols these two doctors maintain, and reviewed monthly for quality. If your case needs a specialist call, it goes to one of them directly.
+            Two clinicians own the protocols every Portea care manager works to. Each plan is reviewed monthly. When a case needs a specialist call, it goes to one of them directly.
           </p>
         </div>
 

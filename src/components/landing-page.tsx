@@ -573,7 +573,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                   <span>{phone.label}</span>
                 </a>
               </li>
-              <li className="text-white/70">Mon–Sat · 8:00 AM – 8:00 PM IST</li>
+              <li className="text-white/70">Mon to Sat, 8:00 AM to 8:00 PM IST</li>
             </ul>
           </div>
         </div>

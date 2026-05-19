@@ -13,6 +13,7 @@ import {
 } from "@/lib/chatbot";
 import type { VerticalConfig } from "@/data/verticals";
 import { getIntakeApiUrl } from "@/lib/api";
+import { pushDataLayer } from "@/lib/gtm";
 import { readAttribution } from "@/lib/utm";
 
 type FlowPhase = "typing" | "awaiting-input" | "consent" | "submitting" | "submitted";
@@ -214,9 +215,23 @@ export function IntakeChatbot({
   const [state, dispatch] = useReducer(reducer, storageKey, createInitialState);
   const [variant] = useState(() => (Math.random() < 0.5 ? "flow_a" : "flow_b"));
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
+  const formStartFiredRef = useRef(false);
+  const leadFiredRef = useRef(false);
 
   const activeStep = intakeSteps[state.currentStep];
   const activeValue = activeStep ? state.fields[activeStep.key] : "";
+
+  function handleOpen() {
+    if (!formStartFiredRef.current && !state.submittedAt) {
+      formStartFiredRef.current = true;
+      pushDataLayer("form_start", {
+        form_name: "intake_chatbot",
+        vertical: vertical.slug,
+        ab_variant: variant,
+      });
+    }
+    dispatch({ type: "OPEN" });
+  }
 
   // persist
   useEffect(() => {
@@ -275,6 +290,16 @@ export function IntakeChatbot({
         };
         if (!response.ok) throw new Error(result.error || "We couldn't submit your request.");
         if (!cancelled) {
+          if (!leadFiredRef.current) {
+            leadFiredRef.current = true;
+            pushDataLayer("generate_lead", {
+              lead_source: "intake_chatbot",
+              vertical: vertical.slug,
+              ab_variant: variant,
+              patient_id: result.patient_id,
+              city: state.fields.city,
+            });
+          }
           dispatch({
             type: "SUBMIT_SUCCESS",
             submittedAt: result.submittedAt || new Date().toISOString(),
@@ -325,7 +350,7 @@ export function IntakeChatbot({
     <>
       <button
         type="button"
-        onClick={() => dispatch({ type: "OPEN" })}
+        onClick={handleOpen}
         className={
           triggerClassName ||
           `inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white transition ${vertical.theme.accentStrong} shadow-lg`
