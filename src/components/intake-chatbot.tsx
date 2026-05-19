@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -16,8 +15,13 @@ import {
 } from "@/lib/chatbot";
 import type { VerticalConfig } from "@/data/verticals";
 import { getIntakeApiUrl } from "@/lib/api";
-import { pushDataLayerEvent } from "@/lib/gtm";
 import { readAttribution } from "@/lib/utm";
+
+// Singleton guard: only the first mounted instance registers the global
+// event listener and runs submissions. Defends against accidental remounts or
+// duplicate <IntakeChatbot> placements in the tree.
+let activeInstanceId: number | null = null;
+let nextInstanceId = 0;
 
 type FlowPhase = "typing" | "awaiting-input" | "consent" | "submitting" | "submitted";
 
@@ -297,18 +301,21 @@ function currentStepNumber(state: FlowState) {
   return Math.min(state.currentStep + 1, TOTAL_STEPS);
 }
 
-export function IntakeChatbot({
-  vertical,
-  triggerLabel,
-  triggerClassName,
-  triggerContent,
-}: {
-  vertical: VerticalConfig;
-  triggerLabel?: string;
-  triggerClassName?: string;
-  triggerContent?: ReactNode;
-}) {
+export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
   const router = useRouter();
+  const instanceIdRef = useRef<number | null>(null);
+  if (instanceIdRef.current === null) {
+    instanceIdRef.current = nextInstanceId++;
+  }
+  const isPrimary = useMemo(() => {
+    if (activeInstanceId === null) {
+      activeInstanceId = instanceIdRef.current;
+      return true;
+    }
+    return activeInstanceId === instanceIdRef.current;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // v2 bump after the step order was changed. Without this, anyone who
   // started the chatbot under the old order would resume on the wrong step.
   const storageKey = useMemo(() => `portea-intake-v2:${vertical.slug}`, [vertical.slug]);
@@ -317,7 +324,16 @@ export function IntakeChatbot({
   );
   const [variant] = useState(() => (Math.random() < 0.5 ? "flow_a" : "flow_b"));
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
-  const formStartFiredRef = useRef(false);
+
+  // Release the singleton claim on unmount so a re-mount (vertical change,
+  // strict-mode double-invoke) doesn't leave the next instance locked out.
+  useEffect(() => {
+    return () => {
+      if (activeInstanceId === instanceIdRef.current) {
+        activeInstanceId = null;
+      }
+    };
+  }, []);
 
   const activeStep = intakeSteps[state.currentStep];
   const activeValue = activeStep ? state.fields[activeStep.key] : "";
@@ -357,8 +373,10 @@ export function IntakeChatbot({
     return () => window.clearTimeout(t);
   }, [state.isOpen, state.phase, state.currentStep]);
 
-  // Listen for the form -> chatbot handoff event
+  // Listen for the form -> chatbot handoff event. Only the primary instance
+  // wires this listener so duplicates don't double-submit.
   useEffect(() => {
+    if (!isPrimary) return;
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail as
         | { vertical?: string; fields?: Partial<IntakeFields>; consentGiven?: boolean }
@@ -381,10 +399,12 @@ export function IntakeChatbot({
     };
     window.addEventListener("portea:open-chatbot", handler as EventListener);
     return () => window.removeEventListener("portea:open-chatbot", handler as EventListener);
-  }, [vertical.slug]);
+  }, [vertical.slug, isPrimary]);
 
-  // Submit when entering submitting phase
+  // Submit when entering submitting phase. Gated on isPrimary so a stray
+  // second instance can't double-POST.
   useEffect(() => {
+    if (!isPrimary) return;
     if (state.phase !== "submitting") return;
     let cancelled = false;
     const run = async () => {
@@ -447,19 +467,7 @@ export function IntakeChatbot({
     return () => {
       cancelled = true;
     };
-  }, [state.phase, state.fields, vertical.slug, variant, router]);
-
-  function handleOpen() {
-    if (!formStartFiredRef.current && !state.submittedAt) {
-      formStartFiredRef.current = true;
-      pushDataLayerEvent("form_start", {
-        form_name: "intake_chatbot",
-        vertical: vertical.slug,
-        ab_variant: variant,
-      });
-    }
-    dispatch({ type: "OPEN" });
-  }
+  }, [state.phase, state.fields, vertical.slug, variant, router, isPrimary]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -487,20 +495,12 @@ export function IntakeChatbot({
     dispatch({ type: "SUBMIT_START" });
   };
 
+  // Only the primary instance renders a visible modal. Duplicates render
+  // nothing so they cannot stack on top of each other.
+  if (!isPrimary) return null;
+
   return (
     <>
-      <button
-        type="button"
-        onClick={handleOpen}
-        className={
-          triggerClassName ||
-          `inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white transition ${vertical.theme.accentStrong} shadow-lg`
-        }
-        aria-haspopup="dialog"
-      >
-        {triggerContent || triggerLabel || vertical.ctaLabel}
-      </button>
-
       {state.isOpen ? (
         <div className="fixed inset-0 z-50">
           <div

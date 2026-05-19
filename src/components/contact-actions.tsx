@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 
-import { IntakeChatbot } from "@/components/intake-chatbot";
+import { ChatbotTrigger } from "@/components/chatbot-trigger";
 import { ChatIcon, PhoneIcon, WhatsAppIcon } from "@/components/ui-icons";
 import type { VerticalConfig } from "@/data/verticals";
 import { getPhoneContact, getWhatsAppContact } from "@/lib/contact";
@@ -52,7 +52,7 @@ export function ContactActions({
   return (
     <div className={compact ? "space-y-3" : "space-y-5"}>
       <div className="flex flex-wrap items-center gap-3">
-        <IntakeChatbot
+        <ChatbotTrigger
           vertical={vertical}
           triggerContent={
             <>
@@ -117,7 +117,7 @@ export function FloatingContactButtons({ vertical }: { vertical: VerticalConfig 
                   <span>WhatsApp us</span>
                 </a>
               ) : null}
-              <IntakeChatbot
+              <ChatbotTrigger
                 vertical={vertical}
                 triggerContent={
                   <span className="inline-flex items-center gap-3">

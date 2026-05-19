@@ -5,6 +5,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { ContactActions, FloatingContactButtons } from "@/components/contact-actions";
 import { DoctorsSection } from "@/components/doctors-section";
 import { HandwrittenNote } from "@/components/handwritten-note";
+import { IntakeChatbot } from "@/components/intake-chatbot";
 import { LeadForm } from "@/components/lead-form";
 import {
   CheckIcon,
@@ -76,6 +77,9 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
 
   return (
     <main className="min-h-screen bg-[#f4f9fa] pb-24 text-[#10242b]">
+      {/* Chatbot modal mounted once for the entire page. All trigger buttons
+          and the lead form dispatch a window event that this instance handles. */}
+      <IntakeChatbot vertical={vertical} />
       {/* Announcement bar */}
       <div className="gradient-banner text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-2 text-xs font-semibold sm:px-6 lg:px-10">
