@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getSession, isAdminConfigured } from "@/lib/admin-auth";
 import { readLeads } from "@/lib/lead-store";
+import { readUsers } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 
@@ -49,8 +50,17 @@ export async function GET(request: Request) {
     });
   }
 
+  // Dynamic CM list. Sourced from PORTEA_USERS_JSON so the dropdown reflects
+  // real accounts instead of the old hardcoded ["Meera", "Priya", "Rahul"].
+  // Falls back to those three if no users are configured (legacy mode).
+  const userList = readUsers();
+  const cms = userList.length > 0
+    ? userList.map((u) => u.name).filter((n, i, arr) => arr.indexOf(n) === i)
+    : ["Meera", "Priya", "Rahul"];
+
   return NextResponse.json({
     leads: filtered,
     viewer: { role: session.role, name: session.name, email: session.email },
+    cms,
   });
 }

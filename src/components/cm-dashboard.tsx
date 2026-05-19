@@ -30,7 +30,9 @@ const STATUS_PILL: Record<LifecycleStatus, string> = {
   lost: "bg-gray-100 text-gray-500",
 };
 
-const CM_OPTIONS = ["Unassigned", "Meera", "Priya", "Rahul"];
+// Fallback when /api/admin/leads hasn't responded yet or the user list is
+// empty. Replaced by the server-supplied list once leads load.
+const FALLBACK_CM_OPTIONS = ["Meera", "Priya", "Rahul"];
 
 type TimeWindow = "today" | "this_week" | "this_month" | "all";
 
@@ -104,6 +106,7 @@ export function CmDashboard() {
   const router = useRouter();
   const [leads, setLeads] = useState<LeadRecord[]>([]);
   const [viewer, setViewer] = useState<Viewer | null>(null);
+  const [cmNames, setCmNames] = useState<string[]>(FALLBACK_CM_OPTIONS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cm, setCm] = useState<string>("All CMs");
@@ -125,10 +128,12 @@ export function CmDashboard() {
         leads?: LeadRecord[];
         error?: string;
         viewer?: Viewer;
+        cms?: string[];
       };
       if (!res.ok) throw new Error(body.error || "Failed to load leads");
       setLeads(body.leads || []);
       if (body.viewer) setViewer(body.viewer);
+      if (Array.isArray(body.cms) && body.cms.length > 0) setCmNames(body.cms);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load leads");
     } finally {
@@ -231,7 +236,8 @@ export function CmDashboard() {
                 className="rounded-lg border-2 border-[#0f9aa8] bg-white px-3 py-1.5 text-sm font-medium text-[#0b7c87] outline-none focus:ring-2 focus:ring-[#0f9aa8]/30"
               >
                 <option value="All CMs">All CMs</option>
-                {CM_OPTIONS.map((o) => (
+                <option value="Unassigned">Unassigned</option>
+                {cmNames.map((o) => (
                   <option key={o} value={o}>
                     {o}
                   </option>
@@ -412,6 +418,8 @@ export function CmDashboard() {
       {selectedLead ? (
         <LeadDetailPanel
           lead={selectedLead}
+          cmNames={cmNames}
+          viewer={viewer}
           onClose={() => setSelectedId(null)}
           onSaved={(u) => {
             onLeadSaved(u);
@@ -470,10 +478,14 @@ function FilterPill({
 
 function LeadDetailPanel({
   lead,
+  cmNames,
+  viewer,
   onClose,
   onSaved,
 }: {
   lead: LeadRecord;
+  cmNames: string[];
+  viewer: Viewer | null;
   onClose: () => void;
   onSaved: (l: LeadRecord) => void;
 }) {
@@ -607,7 +619,11 @@ function LeadDetailPanel({
                   onChange={(e) => setCareManager(e.target.value)}
                   className="w-full rounded-lg border border-[#d7e7ea] bg-white px-3 py-2 text-sm"
                 >
-                  {CM_OPTIONS.map((o) => (
+                  <option value="Unassigned">Unassigned</option>
+                  {(viewer?.role === "cm"
+                    ? cmNames.filter((n) => n === viewer.name)
+                    : cmNames
+                  ).map((o) => (
                     <option key={o} value={o}>
                       {o}
                     </option>

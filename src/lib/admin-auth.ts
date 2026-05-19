@@ -14,6 +14,7 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
 
+import { getOverrideForEmail } from "@/lib/password-overrides";
 import { findUserByEmail, type UserRole } from "@/lib/users";
 
 export const COOKIE_NAME = "portea_admin_session";
