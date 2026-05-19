@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
 
-import { isAdminAuthed } from "@/lib/admin-auth";
+import { isAdminAuthed, isAdminConfigured } from "@/lib/admin-auth";
 import { readLeads } from "@/lib/lead-store";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  if (!process.env.PORTEA_ADMIN_PASSWORD?.trim()) {
-    return NextResponse.json({ error: "ADMIN password not configured" }, { status: 503 });
+  if (!isAdminConfigured()) {
+    return NextResponse.json(
+      { error: "Admin auth is not configured on this server." },
+      { status: 503 },
+    );
   }
   if (!(await isAdminAuthed())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { isAdminAuthed } from "@/lib/admin-auth";
+import { isAdminAuthed, isAdminConfigured } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 // branch when body.action === "update_lead" (see the docs/apps-script.md
 // snippet for the exact code to paste).
 export async function POST(request: Request) {
-  if (!process.env.PORTEA_ADMIN_PASSWORD?.trim()) {
+  if (!isAdminConfigured()) {
     return NextResponse.json({ ok: false, error: "Admin disabled" }, { status: 503 });
   }
   if (!(await isAdminAuthed())) {

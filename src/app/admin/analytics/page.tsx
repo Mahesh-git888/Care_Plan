@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AdminHeaderActions } from "@/components/admin-header-actions";
-import { isAdminAuthed } from "@/lib/admin-auth";
+import { isAdminAuthed, isAdminConfigured } from "@/lib/admin-auth";
 import { readLeads, type LeadRecord } from "@/lib/lead-store";
 
 export const metadata: Metadata = {
@@ -49,13 +49,14 @@ function kindBadge(kind: LeadRecord["kind"]) {
 }
 
 export default async function MarketingAnalyticsPage() {
-  if (!process.env.PORTEA_ADMIN_PASSWORD?.trim()) {
+  if (!isAdminConfigured()) {
     return (
       <main className="mx-auto max-w-3xl px-6 py-16 text-[#10242b]">
         <h1 className="text-3xl font-semibold">Analytics disabled</h1>
         <p className="mt-3 text-base text-[#445d66]">
-          Set <code className="rounded bg-slate-100 px-2 py-0.5">PORTEA_ADMIN_PASSWORD</code> to
-          enable.
+          Set <code className="rounded bg-slate-100 px-2 py-0.5">PORTEA_USERS_JSON</code>{" "}
+          (or the legacy <code className="rounded bg-slate-100 px-2 py-0.5">PORTEA_ADMIN_PASSWORD</code>)
+          to enable admin access.
         </p>
       </main>
     );

@@ -1,43 +1,83 @@
 import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-import { COOKIE_NAME, expectedCookieValue, isAdminAuthed } from "@/lib/admin-auth";
+import {
+  attemptLogin,
+  buildSessionPayload,
+  COOKIE_NAME,
+  getSession,
+  SESSION_TTL_SECONDS,
+  signSession,
+} from "@/lib/admin-auth";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
-  const { password } = body as { password?: string };
+  const { email, password } = body as { email?: string; password?: string };
 
-  const expected = expectedCookieValue();
-  const adminPassword = process.env.PORTEA_ADMIN_PASSWORD?.trim();
-
-  if (!adminPassword || !expected) {
-    return Response.json(
-      { error: "PORTEA_ADMIN_PASSWORD is not configured on the server." },
-      { status: 500 },
+  if (!password || typeof password !== "string") {
+    return NextResponse.json(
+      { error: "Email and password are required." },
+      { status: 400 },
     );
   }
 
-  if (password === adminPassword) {
-    const cookieStore = await cookies();
-    cookieStore.set(COOKIE_NAME, expected, {
-      httpOnly: true,
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
-    return Response.json({ success: true });
+  const result = attemptLogin(typeof email === "string" ? email : undefined, password);
+
+  if (!result.ok) {
+    if (result.reason === "not_configured") {
+      return NextResponse.json(
+        {
+          error:
+            "Admin auth is not configured on this server. Set PORTEA_USERS_JSON (and PORTEA_AUTH_SECRET) on Vercel.",
+        },
+        { status: 500 },
+      );
+    }
+    return NextResponse.json({ error: "Incorrect email or password." }, { status: 401 });
   }
 
-  return Response.json({ error: "Incorrect password" }, { status: 401 });
+  const payload = buildSessionPayload(result.user);
+  const token = signSession(payload);
+
+  const cookieStore = await cookies();
+  cookieStore.set(COOKIE_NAME, token, {
+    httpOnly: true,
+    path: "/",
+    maxAge: SESSION_TTL_SECONDS,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  return NextResponse.json({
+    success: true,
+    user: {
+      email: result.user.email,
+      name: result.user.name,
+      role: result.user.role,
+    },
+  });
 }
 
 export async function GET() {
-  return Response.json({ authenticated: await isAdminAuthed() });
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ authenticated: false }, { status: 200 });
+  }
+  return NextResponse.json({
+    authenticated: true,
+    user: {
+      email: session.email,
+      name: session.name,
+      role: session.role,
+      exp: session.exp,
+    },
+  });
 }
 
 export async function DELETE() {
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);
-  return Response.json({ success: true });
+  return NextResponse.json({ success: true });
 }

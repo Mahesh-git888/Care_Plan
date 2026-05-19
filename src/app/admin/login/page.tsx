@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ export default function AdminLoginPage() {
       const res = await fetch("/api/admin/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
       const data = (await res.json()) as { success?: boolean; error?: string };
 
@@ -26,7 +27,7 @@ export default function AdminLoginPage() {
         router.push("/admin/leads");
         router.refresh();
       } else {
-        setError(data.error || "Incorrect password");
+        setError(data.error || "Incorrect email or password");
         setPassword("");
       }
     } catch {
@@ -44,22 +45,45 @@ export default function AdminLoginPage() {
             Portea · Internal
           </p>
           <h1 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[#10242b]">
-            Leads admin
+            Care manager sign-in
           </h1>
-          <p className="mt-1 text-sm text-[#7a8c92]">Sign in to view leads</p>
+          <p className="mt-1 text-sm text-[#7a8c92]">
+            Use your work email and the password you were given.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-7 space-y-4">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Admin password"
-            className="w-full rounded-xl border border-[#d7e7ea] bg-white px-4 py-3 text-sm text-[#10242b] outline-none transition focus:border-[#0f9aa8] focus:ring-2 focus:ring-[#0f9aa8]/20"
-            autoFocus
-            required
-            autoComplete="current-password"
-          />
+        <form onSubmit={handleSubmit} className="mt-7 space-y-3">
+          <div>
+            <label htmlFor="email" className="sr-only">
+              Email address
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@portea.com"
+              className="w-full rounded-xl border border-[#d7e7ea] bg-white px-4 py-3 text-sm text-[#10242b] outline-none transition focus:border-[#0f9aa8] focus:ring-2 focus:ring-[#0f9aa8]/20"
+              autoFocus
+              autoComplete="username"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="sr-only">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full rounded-xl border border-[#d7e7ea] bg-white px-4 py-3 text-sm text-[#10242b] outline-none transition focus:border-[#0f9aa8] focus:ring-2 focus:ring-[#0f9aa8]/20"
+              required
+              autoComplete="current-password"
+            />
+          </div>
 
           {error ? (
             <p className="rounded-lg bg-rose-50 px-3 py-2 text-center text-sm text-rose-700">
@@ -72,12 +96,12 @@ export default function AdminLoginPage() {
             disabled={loading || !password}
             className="w-full cursor-pointer rounded-xl bg-[#0f9aa8] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0b7c87] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {loading ? "Checking…" : "Sign in"}
+            {loading ? "Checking..." : "Sign in"}
           </button>
         </form>
 
         <p className="mt-6 text-center text-xs text-[#7a8c92]">
-          Trouble signing in? Ask the marketing lead for the current password.
+          Sessions stay signed in for 24 hours. Trouble signing in? Ask your manager.
         </p>
       </div>
     </div>
