@@ -14,6 +14,7 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
 
+import { execute } from "@/lib/db";
 import { getOverrideForEmail } from "@/lib/password-overrides";
 import { findUserByEmail, type UserRole } from "@/lib/users";
 
@@ -236,8 +237,26 @@ export type AuditEvent = {
 };
 
 export function audit(event: AuditEvent): void {
+  // Always log to stdout (visible in Vercel Runtime Logs).
   // eslint-disable-next-line no-console
   console.log(JSON.stringify(event));
+  // Also persist to Postgres, fire-and-forget so it never blocks the request.
+  void execute(
+    `INSERT INTO login_audit (type, ts, email, user_id, ip, user_agent, reason)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [
+      event.type,
+      event.ts,
+      event.email ?? null,
+      event.user_id ?? null,
+      event.ip ?? null,
+      event.user_agent ?? null,
+      event.reason ?? null,
+    ],
+  ).catch((err) => {
+    // eslint-disable-next-line no-console
+    console.warn("[audit] db write failed", err);
+  });
 }
 
 export function extractClientIp(request: Request): string | undefined {
@@ -255,7 +274,10 @@ export type LoginResult =
     }
   | { ok: false; reason: "not_configured" | "invalid_credentials" };
 
-export function attemptLogin(email: string | undefined, password: string): LoginResult {
+export async function attemptLogin(
+  email: string | undefined,
+  password: string,
+): Promise<LoginResult> {
   if (!password) return { ok: false, reason: "invalid_credentials" };
 
   const usersJsonSet = Boolean(process.env.PORTEA_USERS_JSON?.trim());
@@ -266,7 +288,13 @@ export function attemptLogin(email: string | undefined, password: string): Login
     if (!email) return { ok: false, reason: "invalid_credentials" };
     const user = findUserByEmail(email);
     if (!user) return { ok: false, reason: "invalid_credentials" };
-    if (!verifyPassword(password, user.password_hash)) {
+
+    // A password the user set themselves (stored in Postgres) takes
+    // precedence over the seed hash in PORTEA_USERS_JSON.
+    const override = await getOverrideForEmail(user.email);
+    const hashToCheck = override?.password_hash ?? user.password_hash;
+
+    if (!verifyPassword(password, hashToCheck)) {
       return { ok: false, reason: "invalid_credentials" };
     }
     return {

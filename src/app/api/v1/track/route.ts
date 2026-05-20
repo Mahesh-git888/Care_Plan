@@ -34,16 +34,22 @@ export async function POST(request: Request) {
     request.headers.get("x-real-ip") ||
     null;
 
-  await appendLead({
-    id: randomUUID(),
-    kind,
-    created_at: new Date().toISOString(),
-    vertical: body.vertical,
-    click_target: body.target,
-    user_agent: request.headers.get("user-agent") ?? undefined,
-    ip_hash: hashIp(ip),
-    attribution: body.attribution ?? {},
-  });
+  try {
+    await appendLead({
+      id: randomUUID(),
+      kind,
+      created_at: new Date().toISOString(),
+      vertical: body.vertical,
+      click_target: body.target,
+      user_agent: request.headers.get("user-agent") ?? undefined,
+      ip_hash: hashIp(ip),
+      attribution: body.attribution ?? {},
+    });
+  } catch (err) {
+    // Click tracking is best-effort. Never surface an error to sendBeacon.
+    // eslint-disable-next-line no-console
+    console.warn("[track] failed to save click event", err);
+  }
 
   // 204 keeps sendBeacon happy.
   return new NextResponse(null, { status: 204 });

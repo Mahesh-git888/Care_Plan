@@ -75,24 +75,33 @@ export async function POST(request: Request) {
   const patientId = randomUUID();
   const receivedAt = new Date().toISOString();
 
-  await appendLead({
-    id: patientId,
-    kind: "intake",
-    created_at: receivedAt,
-    vertical,
-    full_name: fullName,
-    phone: normalizedPhone,
-    city,
-    situation,
-    ab_variant: body.ab_variant?.trim() || undefined,
-    elder_name: body.elder_name?.trim() || undefined,
-    condition: body.condition?.trim() || undefined,
-    needs: body.needs?.trim() || undefined,
-    relationship: body.relationship?.trim() || undefined,
-    consent_given: true,
-    status: "new",
-    attribution: body.attribution ?? {},
-  });
+  try {
+    await appendLead({
+      id: patientId,
+      kind: "intake",
+      created_at: receivedAt,
+      vertical,
+      full_name: fullName,
+      phone: normalizedPhone,
+      city,
+      situation,
+      ab_variant: body.ab_variant?.trim() || undefined,
+      elder_name: body.elder_name?.trim() || undefined,
+      condition: body.condition?.trim() || undefined,
+      needs: body.needs?.trim() || undefined,
+      relationship: body.relationship?.trim() || undefined,
+      consent_given: true,
+      status: "new",
+      attribution: body.attribution ?? {},
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error("[intake] failed to save lead", err);
+    return NextResponse.json(
+      { error: "We couldn't save your request. Please try again or call us." },
+      { status: 503 },
+    );
+  }
 
   // eslint-disable-next-line no-console
   console.log("[intake]", {

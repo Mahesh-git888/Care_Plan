@@ -52,7 +52,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const result = attemptLogin(typeof email === "string" ? email : undefined, password);
+  const result = await attemptLogin(
+    typeof email === "string" ? email : undefined,
+    password,
+  );
 
   if (!result.ok) {
     recordLoginAttempt(rateKey, false);

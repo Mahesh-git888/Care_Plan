@@ -506,11 +506,9 @@ function LeadDetailPanel({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          received_at: lead.created_at,
-          phone: lead.phone,
+          id: lead.id,
           status,
           care_manager: careManager,
-          existing_care_manager: lead.care_manager || "Unassigned",
           follow_up_date: followUpDate || "",
           note: notes,
         }),

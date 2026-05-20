@@ -65,7 +65,28 @@ export default async function MarketingAnalyticsPage() {
     redirect("/admin/login");
   }
 
-  const all = await readLeads(2000);
+  let all: LeadRecord[] = [];
+  let loadError: string | null = null;
+  try {
+    all = await readLeads(2000);
+  } catch (err) {
+    loadError =
+      err instanceof Error ? err.message : "Could not load leads from the database.";
+  }
+
+  if (loadError) {
+    return (
+      <main className="mx-auto max-w-3xl px-6 py-16 text-[#10242b]">
+        <h1 className="text-3xl font-semibold">Analytics unavailable</h1>
+        <p className="mt-3 text-base text-[#445d66]">{loadError}</p>
+        <p className="mt-2 text-sm text-[#7a8c92]">
+          Confirm <code className="rounded bg-slate-100 px-2 py-0.5">POSTGRES_URL</code> is
+          set on the server.
+        </p>
+      </main>
+    );
+  }
+
   const clicks = all.filter((l) => l.kind !== "intake");
   const intakes = all.filter((l) => l.kind === "intake");
 

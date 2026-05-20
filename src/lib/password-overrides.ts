@@ -1,100 +1,48 @@
 // Password overrides.
 //
-// The seed passwords for each user live in PORTEA_USERS_JSON. Once a user
-// changes their password through the dashboard we need to persist the new
-// hash somewhere the running app can both read and write. Vercel env vars
-// only support reads, so we use the existing Google Sheets + Apps Script
-// pipeline: a "PasswordOverrides" tab that the app upserts via doPost and
-// reads via doGet.
+// The seed passwords for each user live in PORTEA_USERS_JSON. When a user
+// changes their password through the dashboard, the new hash is persisted
+// here in the Postgres `password_overrides` table.
 //
 // Lookup order on login:
-//   1. Override row in Sheets   (newest password)
-//   2. password_hash in PORTEA_USERS_JSON   (seed)
-//   3. PORTEA_ADMIN_PASSWORD     (legacy fallback)
-//
-// Reads are cached for 60s per Vercel instance to avoid hammering Apps Script
-// on every login attempt.
+//   1. Override row in Postgres (newest password)
+//   2. password_hash in PORTEA_USERS_JSON (seed)
+//   3. PORTEA_ADMIN_PASSWORD (legacy fallback)
 
-const CACHE_TTL_MS = 60_000;
+import { execute, query } from "@/lib/db";
 
-type OverrideEntry = {
+export type OverrideEntry = {
   email: string;
   password_hash: string;
   updated_at?: string;
 };
 
-let cache: { at: number; entries: Map<string, OverrideEntry> } | null = null;
-
-function getWebhookUrl(): URL | null {
-  const raw = process.env.PORTEA_LEADS_WEBHOOK_URL?.trim();
-  if (!raw) return null;
+export async function getOverrideForEmail(email: string): Promise<OverrideEntry | null> {
+  const key = email.trim().toLowerCase();
+  if (!key) return null;
   try {
-    return new URL(raw);
-  } catch {
-    return null;
-  }
-}
-
-export function invalidateOverrideCache(): void {
-  cache = null;
-}
-
-export async function fetchPasswordOverrides(): Promise<Map<string, OverrideEntry>> {
-  if (cache && Date.now() - cache.at < CACHE_TTL_MS) return cache.entries;
-
-  const webhook = getWebhookUrl();
-  const secret = process.env.PORTEA_LEADS_READ_SECRET?.trim();
-  if (!webhook || !secret) {
-    // No persistence configured. Return an empty map so the caller falls
-    // back to seed credentials.
-    return new Map();
-  }
-
-  const url = new URL(webhook.toString());
-  url.searchParams.set("secret", secret);
-  url.searchParams.set("action", "get_password_overrides");
-
-  try {
-    const res = await fetch(url, {
-      method: "GET",
-      signal: AbortSignal.timeout(8000),
-      cache: "no-store",
-      redirect: "follow",
-    });
-    if (!res.ok) return cache?.entries ?? new Map();
-    const body = (await res.json()) as {
-      ok?: boolean;
-      overrides?: Array<{ email?: string; password_hash?: string; updated_at?: string }>;
+    const rows = await query<{
+      email: string;
+      password_hash: string;
+      updated_at: Date | string;
+    }>(
+      `SELECT email, password_hash, updated_at FROM password_overrides WHERE email = $1 LIMIT 1`,
+      [key],
+    );
+    if (!rows[0]) return null;
+    return {
+      email: rows[0].email,
+      password_hash: rows[0].password_hash,
+      updated_at:
+        rows[0].updated_at instanceof Date
+          ? rows[0].updated_at.toISOString()
+          : String(rows[0].updated_at),
     };
-    if (!body.ok || !Array.isArray(body.overrides)) {
-      return cache?.entries ?? new Map();
-    }
-    const map = new Map<string, OverrideEntry>();
-    for (const row of body.overrides) {
-      const email = String(row.email ?? "").toLowerCase().trim();
-      const hash = String(row.password_hash ?? "").trim();
-      if (email && hash) {
-        map.set(email, {
-          email,
-          password_hash: hash,
-          updated_at: row.updated_at ? String(row.updated_at) : undefined,
-        });
-      }
-    }
-    cache = { at: Date.now(), entries: map };
-    return map;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn("[password-overrides] fetch failed", err);
-    return cache?.entries ?? new Map();
+    console.warn("[password-overrides] read failed", err);
+    return null;
   }
-}
-
-export async function getOverrideForEmail(email: string): Promise<OverrideEntry | null> {
-  const key = email.toLowerCase().trim();
-  if (!key) return null;
-  const map = await fetchPasswordOverrides();
-  return map.get(key) ?? null;
 }
 
 export async function setPasswordOverride(
@@ -102,42 +50,24 @@ export async function setPasswordOverride(
   passwordHash: string,
   updatedBy: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const webhook = getWebhookUrl();
-  const secret = process.env.PORTEA_LEADS_READ_SECRET?.trim();
-  if (!webhook || !secret) {
-    return {
-      ok: false,
-      error:
-        "Password persistence requires PORTEA_LEADS_WEBHOOK_URL and PORTEA_LEADS_READ_SECRET on the server.",
-    };
+  const key = email.trim().toLowerCase();
+  if (!key || !passwordHash) {
+    return { ok: false, error: "Email and password hash are required." };
   }
-
   try {
-    const res = await fetch(webhook.toString(), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "set_user_password",
-        secret,
-        email: email.toLowerCase().trim(),
-        password_hash: passwordHash,
-        updated_by: updatedBy,
-      }),
-      signal: AbortSignal.timeout(10_000),
-      redirect: "follow",
-    });
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      // eslint-disable-next-line no-console
-      console.warn("[password-overrides] upstream non-2xx", res.status, text);
-      return { ok: false, error: `Apps Script returned ${res.status}` };
-    }
-    // Optimistically clear the cache so the next login reads the new hash.
-    invalidateOverrideCache();
+    await execute(
+      `INSERT INTO password_overrides (email, password_hash, updated_at, updated_by)
+       VALUES ($1, $2, now(), $3)
+       ON CONFLICT (email) DO UPDATE SET
+         password_hash = EXCLUDED.password_hash,
+         updated_at = now(),
+         updated_by = EXCLUDED.updated_by`,
+      [key, passwordHash, updatedBy],
+    );
     return { ok: true };
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn("[password-overrides] post failed", err);
-    return { ok: false, error: "Network error while saving the new password." };
+    console.warn("[password-overrides] write failed", err);
+    return { ok: false, error: "Failed to save the new password." };
   }
 }
