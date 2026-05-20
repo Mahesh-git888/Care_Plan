@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { isValidIndianMobile, writeQuickFormData } from "@/lib/chatbot";
+import { isValidIndianMobile, sanitizePhoneInput, writeQuickFormData } from "@/lib/chatbot";
 import { pushDataLayerEvent } from "@/lib/gtm";
 import type { VerticalConfig, VerticalSlug } from "@/data/verticals";
 
@@ -173,9 +173,8 @@ export function LeadForm({
             type="tel"
             inputMode="numeric"
             autoComplete="tel"
-            maxLength={13}
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => setPhone(sanitizePhoneInput(e.target.value))}
             placeholder="10-digit mobile number"
             className="w-full rounded-full border border-[#d7e7ea] bg-white px-4 py-2.5 text-sm text-[#10242b] outline-none transition focus:border-[#0f9aa8] focus:ring-2 focus:ring-[#0f9aa8]/20"
           />

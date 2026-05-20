@@ -95,6 +95,17 @@ export function isValidIndianMobile(raw: string): boolean {
   return d.length === 10 && /^[6-9]/.test(d);
 }
 
+// Sanitises raw phone input as the user types. Strips anything that isn't a
+// digit, drops a pasted +91 / leading-0 country prefix, and hard-caps the
+// result at 10 digits. Bind this to a phone input's onChange so the field can
+// never hold more (or non-numeric) characters than a 10-digit mobile number.
+export function sanitizePhoneInput(raw: string): string {
+  let digits = raw.replace(/\D/g, "");
+  if (digits.length > 10 && digits.startsWith("91")) digits = digits.slice(2);
+  else if (digits.length > 10 && digits.startsWith("0")) digits = digits.slice(1);
+  return digits.slice(0, 10);
+}
+
 // --- Quick form handoff -----------------------------------------------------
 //
 // The visible landing-page lead form captures (name, city, phone) + consent.

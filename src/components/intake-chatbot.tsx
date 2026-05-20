@@ -12,6 +12,7 @@ import {
   intakeSteps,
   isValidIndianMobile,
   readQuickFormData,
+  sanitizePhoneInput,
 } from "@/lib/chatbot";
 import type { VerticalConfig } from "@/data/verticals";
 import { getIntakeApiUrl } from "@/lib/api";
@@ -595,9 +596,14 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                                   <input
                                     type={step.type}
                                     value={editDraft}
-                                    onChange={(e) => setEditDraft(e.target.value)}
+                                    onChange={(e) =>
+                                      setEditDraft(
+                                        step.key === "phone"
+                                          ? sanitizePhoneInput(e.target.value)
+                                          : e.target.value,
+                                      )
+                                    }
                                     inputMode={step.key === "phone" ? "numeric" : undefined}
-                                    maxLength={step.key === "phone" ? 13 : undefined}
                                     className="w-full rounded-full border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500"
                                   />
                                 )}
@@ -750,13 +756,15 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                               dispatch({
                                 type: "UPDATE_FIELD",
                                 key: activeStep.key,
-                                value: event.target.value,
+                                value:
+                                  activeStep.key === "phone"
+                                    ? sanitizePhoneInput(event.target.value)
+                                    : event.target.value,
                               })
                             }
                             placeholder={activeStep.placeholder}
                             inputMode={activeStep.key === "phone" ? "numeric" : undefined}
                             autoComplete={activeStep.key === "phone" ? "tel" : undefined}
-                            maxLength={activeStep.key === "phone" ? 13 : undefined}
                             className="w-full rounded-full border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400"
                           />
                         )}
