@@ -160,7 +160,7 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
     persisted.messages = [
       makeMessage(
         "assistant",
-        `Thanks${quickForm.name ? `, ${quickForm.name.split(" ")[0]}` : ""}. A few quick questions and your care manager will call you back within 4 hours.`,
+        `Thanks${quickForm.name ? `, ${quickForm.name.split(" ")[0]}` : ""}. A few quick questions and your care manager will call you back within 12 hours.`,
       ),
     ];
     // Consume the handoff so a reload after the user closes the modal does not
@@ -180,7 +180,7 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
     persisted.messages = [
       makeMessage(
         "assistant",
-        "Hi, I'm Portea's care assistant. I'll ask a few quick questions, then a doctor-led care manager will call you back within 4 hours.",
+        "Hi, I'm Portea's care assistant. I'll ask a few quick questions, then a doctor-led care manager will call you back within 12 hours.",
       ),
     ];
     return {
@@ -267,7 +267,7 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
       const nextStepIdx = findNextEmptyStep(mergedFields, 0);
       const intro =
         action.intro ??
-        `Thanks${action.fields.name ? `, ${action.fields.name.split(" ")[0]}` : ""}. A few quick questions and your care manager will call you back within 4 hours.`;
+        `Thanks${action.fields.name ? `, ${action.fields.name.split(" ")[0]}` : ""}. A few quick questions and your care manager will call you back within 12 hours.`;
       return {
         ...state,
         fields: mergedFields,
@@ -558,7 +558,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                     <p className="mt-3 text-sm leading-6 text-slate-600">
                       Your care manager will call you on{" "}
                       <span className="font-semibold text-slate-800">{state.fields.phone}</span>{" "}
-                      within 4 hours.
+                      within 12 hours.
                     </p>
                     <div className="mt-6 flex gap-3">
                       <button
@@ -608,7 +608,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                       onClick={handleConsentSubmit}
                       className={`mt-5 w-full rounded-full px-4 py-3 text-sm font-semibold text-white transition ${vertical.theme.accentStrong}`}
                     >
-                      Submit and get a call within 4 hours
+                      Submit and get a call within 12 hours
                     </button>
                   </div>
 

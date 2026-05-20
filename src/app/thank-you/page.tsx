@@ -7,7 +7,7 @@ import { getPhoneContact } from "@/lib/contact";
 export const metadata: Metadata = {
   title: "Thank you · Portea",
   description:
-    "Thanks for reaching out. A Portea care manager will call you back within 4 hours.",
+    "Thanks for reaching out. A Portea care manager will call you back within 12 hours.",
   robots: { index: false, follow: false },
 };
 
@@ -25,7 +25,7 @@ export default function ThankYouPage() {
         </h1>
         <p className="mt-5 max-w-xl text-lg font-medium leading-8 text-[#445d66]">
           Your care manager, a medically trained professional, will call you back
-          within four hours. If your situation is urgent, please call us on{" "}
+          within 12 hours. If your situation is urgent, please call us on{" "}
           {phone.label}.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

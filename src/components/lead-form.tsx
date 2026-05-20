@@ -23,7 +23,7 @@ export function LeadForm({
   vertical,
   verticalOptions,
   headline = "Talk to a care manager today",
-  helperText = "Share three quick details. A doctor-led care manager will call you back within 4 hours.",
+  helperText = "Share three quick details. A doctor-led care manager will call you back within 12 hours.",
 }: Props) {
   const router = useRouter();
   const [selectedSlug, setSelectedSlug] = useState<VerticalSlug>(vertical.slug);
@@ -224,7 +224,7 @@ export function LeadForm({
       </button>
 
       <p className="mt-2.5 text-center text-[11px] font-medium text-[#7a8c92]">
-        Two more quick questions. Then a care manager calls within 4 hours.
+        Two more quick questions. Then a care manager calls within 12 hours.
       </p>
     </form>
   );

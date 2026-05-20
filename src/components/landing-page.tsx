@@ -117,9 +117,10 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                   <Link
                     key={item.slug}
                     href={`/${item.slug}`}
+                    aria-current={isActive ? "page" : undefined}
                     className={`rounded-full px-4 py-2 font-semibold transition ${
                       isActive
-                        ? "bg-[#102a31] text-white shadow-lg"
+                        ? "border border-[#0f9aa8] bg-white text-[#0b7c87] shadow-sm"
                         : "border border-[#cfe1e3] bg-transparent text-[#4a646c] hover:border-[#0f9aa8] hover:text-[#0b7c87]"
                     }`}
                   >
@@ -430,7 +431,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
               </p>
               <p className="mt-2 text-base font-medium text-[#10242b]">
                 Active inquiries get a call within{" "}
-                <span className="font-semibold text-[#ff5b2e]">4 hours</span>. Planning
+                <span className="font-semibold text-[#ff5b2e]">12 hours</span>. Planning
                 ahead? Within 24 hours.
               </p>
             </div>

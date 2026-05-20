@@ -89,7 +89,7 @@ const sharedFaqs: FaqItem[] = [
   {
     question: "How soon will someone call us back?",
     answer:
-      "If care is needed soon, a care manager usually calls within 4 hours. If you are planning ahead, expect a call within 24 hours. The chatbot gathers a few quick details so the first call gets straight to your situation.",
+      "If care is needed soon, a care manager usually calls within 12 hours. If you are planning ahead, expect a call within 24 hours. The chatbot gathers a few quick details so the first call gets straight to your situation.",
   },
   {
     question: "Will we have one person guiding us through this?",
@@ -209,7 +209,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       "For families who need help with the everyday: walking, bathing, meals, the medication tray, the small things that have started to slip. The plan is shaped around your parent's actual routine and your home's actual layout.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "Share a few details and a Portea care manager will call within 4 hours. No call-centre, no scripts. A doctor or senior clinician will speak with you directly.",
+      "Share a few details and a Portea care manager will call within 12 hours. No call-centre, no scripts. A doctor or senior clinician will speak with you directly.",
     whatsAppMessage:
       "Hi Portea, I'd like to learn about elder care at home for my parent.",
     images: [
@@ -279,7 +279,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "Use the chatbot, WhatsApp or call us. Share your name, your parent's condition, your city and what would help the most.",
       },
       {
-        title: "2. A doctor calls you back in 4 hours",
+        title: "2. A doctor calls you back in 12 hours",
         description:
           "A qualified doctor or senior clinician spends 15-30 minutes with you. Routine, mobility, medicines, the layout of the home, the people in it.",
       },
@@ -390,7 +390,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       "For families dealing with confusion, repetition, wandering risk, agitation, sundowning or the emotional strain that often comes with dementia at home.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "Tell us what's been hardest in the past week. A Portea care manager (a doctor or senior clinician) will call within 4 hours, no scripts, no rush.",
+      "Tell us what's been hardest in the past week. A Portea care manager (a doctor or senior clinician) will call within 12 hours, no scripts, no rush.",
     whatsAppMessage:
       "Hi Portea, I'd like to learn about dementia care at home for my parent.",
     images: [
@@ -460,7 +460,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "Use the chatbot, WhatsApp or call us. Tell us what made you reach out: wandering, agitation, refusing to eat, or just sheer exhaustion.",
       },
       {
-        title: "2. A doctor calls back in 4 hours",
+        title: "2. A doctor calls back in 12 hours",
         description:
           "A doctor or senior clinician spends time with you on the phone. Routine breakdowns, behaviour patterns, safety risks, what would actually help at home.",
       },
@@ -576,7 +576,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       "For families who know discharge is only the beginning and want a safer, better-organised start to recovery, wound care, medication, mobility, follow-up coordination and home physiotherapy under one plan.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "If discharge is in the next 72 hours or the patient is already home, share the details now, a care manager will call within 4 hours.",
+      "If discharge is in the next 72 hours or the patient is already home, share the details now, a care manager will call within 12 hours.",
     whatsAppMessage:
       "Hi Portea, I need post-hospital recovery care at home for a family member.",
     images: [
@@ -646,7 +646,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "Share the discharge date, the procedure and your city. The earlier we hear, the more we can have ready before the patient comes home.",
       },
       {
-        title: "2. A doctor calls back in 4 hours",
+        title: "2. A doctor calls back in 12 hours",
         description:
           "A doctor turns the discharge papers into practical next steps and a written plan you can use the same day.",
       },

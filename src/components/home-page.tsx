@@ -165,7 +165,7 @@ export function HomePage() {
                 vertical={elderCare}
                 verticalOptions={verticalList}
                 headline="Talk to a care manager today"
-                helperText="Share three quick details. A doctor-led care manager will call you back within 4 hours."
+                helperText="Share three quick details. A doctor-led care manager will call you back within 12 hours."
               />
             </div>
           </div>
@@ -300,9 +300,9 @@ export function HomePage() {
                 "Use the chatbot, WhatsApp or call us, and share a few details about your situation. There are no long forms to fill or scripts to follow.",
             },
             {
-              title: "A doctor calls back in 4 hours",
+              title: "A doctor calls back in 12 hours",
               description:
-                "Within four hours, a qualified doctor or senior clinician calls you back. The conversation usually takes 15 to 30 minutes, and it doesn't go through a call centre.",
+                "Within 12 hours, a qualified doctor or senior clinician calls you back. The conversation usually takes 15 to 30 minutes, and it doesn't go through a call centre.",
             },
             {
               title: "A written plan, same day",
