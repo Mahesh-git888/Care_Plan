@@ -99,7 +99,7 @@ const sharedFaqs: FaqItem[] = [
   {
     question: "How are caregivers chosen and trained?",
     answer:
-      "Every caregiver is matched to your parent's routine, condition, language and home. They read the full care plan before day one. For dementia, each caregiver also passes an 80-point readiness check co-designed with the Dementia India Alliance.",
+      "Every caregiver is matched to your parent's routine, condition, language and home. They read the full care plan before day one. For dementia, each caregiver also clears a specialist readiness check co-designed with the Dementia India Alliance.",
   },
   {
     question: "How will we know what is happening at home?",
@@ -122,7 +122,7 @@ const sharedTrustBadges: TrustBadge[] = [
   {
     title: "A plan written by doctors",
     description:
-      "Dr. Kavitha and Dr. Allia co-authored Portea's care protocols, and your care manager reviews every plan before sharing it with you.",
+      "Dr. Kavitha and Dr. Allia co-authored Portea's care protocols, and review your care plan before it's shared with you.",
   },
   {
     title: "One care manager throughout",
@@ -142,12 +142,12 @@ const dementiaTrustBadges: TrustBadge[] = [
   {
     title: "Trained by the Dementia India Alliance",
     description:
-      "Caregivers go through specialist dementia training and a 80-point readiness check before they step into your home.",
+      "Caregivers go through specialist dementia training and a readiness check before they step into your home.",
   },
   {
     title: "A plan written by doctors",
     description:
-      "Dementia protocols co-owned by Dr. Allia and Dr. Kavitha. Every plan is reviewed before it reaches you.",
+      "Dr. Kavitha and Dr. Allia co-authored Portea's care protocols, and review your care plan before it's shared with you.",
   },
   {
     title: "Daily updates in the first week",
@@ -170,7 +170,7 @@ const postDischargeTrustBadges: TrustBadge[] = [
   {
     title: "A plan written by doctors",
     description:
-      "Recovery protocols authored by Dr. Kavitha. Every plan is reviewed by your care manager before it reaches you.",
+      "Dr. Kavitha and Dr. Allia co-authored Portea's care protocols, and review your care plan before it's shared with you.",
   },
   {
     title: "Nurse, physio and caregiver in one plan",
@@ -200,7 +200,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       "home care for elderly",
       "geriatric care",
     ],
-    headline: "Doctor-designed elder care that comes home to your parents",
+    headline: "Doctor-designed elder care that comes home",
     accentPhrase: "comes home",
     subheadline:
       "One doctor-led care manager. A caregiver matched to your parent's routine and language. Twice-a-week WhatsApp updates that say what actually happened: meals, meds, mood, what changed.",
@@ -227,10 +227,10 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       },
     ],
     quickFacts: [
-      "One doctor-led care manager per family",
+      "One medically trained care manager per family",
       "Caregivers matched to routine, language & mobility",
-      "Structured WhatsApp updates 2× a week",
-      "Cancel any week, no lock-in",
+      "WhatsApp updates to family 2× a week",
+      "Doctor home visits, as needed",
     ],
     highlights: [
       {
@@ -372,7 +372,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     shortName: "Dementia care",
     metaTitle: "Dementia Care at Home in India · Trained by Dementia Alliance | Portea",
     metaDescription:
-      "Specialist dementia care at home. Caregivers trained by the Dementia India Alliance, an 80-point scoring sheet before placement, daily WhatsApp updates in week one, one MBBS care manager throughout.",
+      "Specialist dementia care at home. Caregivers trained by the Dementia India Alliance, a specialist readiness check before placement, daily WhatsApp updates in week one, one medically trained care manager throughout.",
     keywords: [
       "dementia care at home",
       "Alzheimer's home care India",
@@ -384,7 +384,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Specialist dementia care at home, trained by Dementia India Alliance",
     accentPhrase: "Dementia India Alliance",
     subheadline:
-      "Caregivers trained on dementia behaviour: sundowning, repetition, resistance. Every caregiver passes an 80-point readiness check before they walk in. One doctor-led care manager owns the plan and tells you what's working, week by week.",
+      "Caregivers trained on dementia behaviour: sundowning, repetition, resistance. Every caregiver passes a specialist readiness check before they walk in. One doctor-led care manager owns the plan and tells you what's working, week by week.",
     heroLabel: "Specialist dementia care",
     overview:
       "For families dealing with confusion, repetition, wandering risk, agitation, sundowning or the emotional strain that often comes with dementia at home.",
@@ -409,7 +409,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     ],
     quickFacts: [
       "Caregivers trained on dementia-specific routines",
-      "80-point readiness check before every placement",
+      "Specialist readiness check before every placement",
       "Doctor-reviewed care plan every month",
       "Daily updates for the first week of placement",
     ],
@@ -467,7 +467,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         title: "3. A plan built for dementia",
         description:
-          "A daily schedule shaped around your parent's triggers and the way they communicate. The caregiver is chosen using an 80-point readiness check.",
+          "A daily schedule shaped around your parent's triggers and the way they communicate. The caregiver is chosen using a specialist readiness check.",
       },
       {
         title: "4. Daily updates in the first week",
@@ -538,7 +538,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       {
         question: "Are caregivers really trained in dementia care?",
         answer:
-          "Our caregivers go through specialist dementia training developed with the Dementia India Alliance. Every dementia caregiver also passes an 80-point readiness check before being matched to a family.",
+          "Our caregivers go through specialist dementia training developed with the Dementia India Alliance. Every dementia caregiver also clears a specialist readiness check before being matched to a family.",
       },
     ],
     theme: {

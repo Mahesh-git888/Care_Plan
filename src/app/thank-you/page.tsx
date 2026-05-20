@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ThankYouConversion } from "@/components/thank-you-conversion";
+import { getPhoneContact } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "Thank you · Portea",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function ThankYouPage() {
+  const phone = getPhoneContact();
   return (
     <main className="min-h-screen bg-[#f4f9fa] text-[#10242b]">
       <ThankYouConversion />
@@ -22,16 +24,16 @@ export default function ThankYouPage() {
           Thank you for reaching out.
         </h1>
         <p className="mt-5 max-w-xl text-lg font-medium leading-8 text-[#445d66]">
-          Your care manager, a qualified doctor or senior clinician, will call you back
-          within four hours. If your situation is urgent, please call us on
-          1800 121 2323.
+          Your care manager, a medically trained professional, will call you back
+          within four hours. If your situation is urgent, please call us on{" "}
+          {phone.label}.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
-            href="tel:+918001212323"
+            href={phone.href}
             className="inline-flex items-center gap-2 rounded-full bg-[#0f9aa8] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0b7c87]"
           >
-            Call 1800 121 2323
+            Call {phone.label}
           </a>
           <Link
             href="/"

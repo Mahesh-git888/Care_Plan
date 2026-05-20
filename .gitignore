@@ -14,3 +14,6 @@ pnpm-debug.log*
 
 # Local lead store (when PORTEA_LEADS_FILE points inside the repo)
 portea-leads.jsonl
+
+.vercel
+.env*.local

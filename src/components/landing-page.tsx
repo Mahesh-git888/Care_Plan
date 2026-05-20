@@ -72,7 +72,7 @@ function Stars() {
 }
 
 export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
-  const [primaryImage, secondaryImage] = vertical.images;
+  const [primaryImage] = vertical.images;
   const phone = getPhoneContact();
 
   return (
@@ -120,7 +120,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                     className={`rounded-full px-4 py-2 font-semibold transition ${
                       isActive
                         ? "bg-[#102a31] text-white shadow-lg"
-                        : "border border-white/80 bg-white/80 text-[#4a646c] shadow-sm hover:bg-white"
+                        : "border border-[#cfe1e3] bg-transparent text-[#4a646c] hover:border-[#0f9aa8] hover:text-[#0b7c87]"
                     }`}
                   >
                     {item.shortName}
@@ -184,14 +184,6 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                     style={{ objectPosition: primaryImage.position ?? "center center" }}
                     priority
                   />
-                  <div className="absolute bottom-4 left-4 rounded-2xl bg-white/95 px-4 py-3 shadow-lg">
-                    <div className="flex items-center gap-2">
-                      <Stars />
-                      <span className="text-xs font-semibold text-[#10242b]">
-                        4.8 from 6,200+ families
-                      </span>
-                    </div>
-                  </div>
                 </div>
               </div>
               <LeadForm vertical={vertical} />
@@ -205,11 +197,16 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
 
       {/* Trust badges. Designed by doctors. */}
       <section id="trust" className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
-        <SectionIntro
-          label="Why Portea"
-          title="Doctors write the protocol. CMs run your case. Caregivers do the work."
-          description="Built for families who want one number to call, one care manager who knows the case, and weekly updates that say what's actually happening at home."
-        />
+        <div className="max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0b7c87]">
+            Why Portea
+          </p>
+          <h2 className="mt-3 text-2xl font-semibold leading-snug tracking-[-0.03em] text-[#10242b] sm:text-[1.75rem]">
+            Built for families who need not just a service, but end to end support. Our care
+            managers will help you navigate your family&apos;s condition, work with our doctors
+            to build your custom protocol, and coordinate your services.
+          </h2>
+        </div>
         <div
           className={`mt-10 grid gap-4 sm:grid-cols-2 ${
             vertical.trustBadges.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"
@@ -235,35 +232,6 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
               </article>
             );
           })}
-        </div>
-      </section>
-
-      {/* How we can help */}
-      <section id="how-we-help" className="bg-white/70">
-        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
-          <div className="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
-            <SectionIntro
-              label="How we can help"
-              title="What lands at home on week one"
-              description={vertical.overview}
-            />
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              {vertical.highlights.map((item) => (
-                <article
-                  key={item.title}
-                  className="rounded-[1.9rem] border border-[#d7e7ea] bg-white p-6 shadow-sm"
-                >
-                  <p className="text-lg font-semibold leading-7 tracking-[-0.03em] text-[#10242b]">
-                    {item.title}
-                  </p>
-                  <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                    {item.description}
-                  </p>
-                </article>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -354,48 +322,6 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                 </h3>
               </div>
               <ContactActions vertical={vertical} compact />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* What to expect */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
-          <div className="grid gap-10 lg:grid-cols-[0.96fr_1.04fr] lg:items-center">
-            <div>
-              <SectionIntro
-                label="What to expect"
-                title="Clearer conversations, calmer routines and less guesswork"
-              />
-              <div className="mt-8 space-y-5">
-                {vertical.whatToExpect.map((step) => (
-                  <div
-                    key={step.title}
-                    className="rounded-[1.7rem] border border-[#d9e8ea] bg-white p-5 shadow-sm"
-                  >
-                    <p className="text-base font-semibold leading-7 tracking-[-0.03em] text-[#10242b]">
-                      {step.title}
-                    </p>
-                    <p className="mt-2 text-sm font-medium leading-7 text-[#455e67]">
-                      {step.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white p-3 shadow-[0_26px_55px_-30px_rgba(16,42,49,0.24)]">
-              <div className="relative aspect-[16/11] overflow-hidden rounded-[1.5rem]">
-                <Image
-                  src={secondaryImage.src}
-                  alt={secondaryImage.alt}
-                  width={1400}
-                  height={980}
-                  className="h-full w-full object-cover"
-                  style={{ objectPosition: secondaryImage.position ?? "center center" }}
-                />
-              </div>
             </div>
           </div>
         </div>

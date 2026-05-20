@@ -97,10 +97,10 @@ export function HomePage() {
               <p className="mt-5 max-w-2xl text-lg font-medium leading-9 text-[#445d66]">
                 Portea looks after ageing parents at home, supports families through dementia,
                 and helps patients through the weeks after a hospital stay. Your care manager is
-                a doctor who handles your case from the first call onwards. The caregivers who
-                visit on day one are the ones who keep coming back. Every Wednesday and Sunday,
-                you'll get a clear WhatsApp update covering meals, medicines, mood, and what
-                changed at home.
+                a medically trained professional who handles your case from the first call
+                onwards. The caregivers who visit on day one are the ones who keep coming back.
+                Twice a week you'll get a clear WhatsApp update covering meals, medicines, mood,
+                and what changed at home.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-3">
@@ -245,8 +245,10 @@ export function HomePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0b7c87]">
               Why Portea
             </p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
-              Doctors write your plan, trained caregivers run it, and the same care manager stays with you week to week.
+            <h2 className="mt-3 text-2xl font-semibold leading-snug tracking-[-0.03em] text-[#10242b] sm:text-[1.75rem]">
+              Built for families who need not just a service, but end to end support. Our care
+              managers will help you navigate your family&apos;s condition, work with our doctors
+              to build your custom protocol, and coordinate your services.
             </h2>
           </div>
 
@@ -399,7 +401,7 @@ export function HomePage() {
                 Dementia care that brings calm home
               </p>
               <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                Our caregivers are trained on dementia behaviour and pass an 80-point readiness
+                Our caregivers are trained on dementia behaviour and pass a specialist readiness
                 check before they're matched to a family. Every plan is reviewed by a doctor.
               </p>
               <Link
