@@ -790,12 +790,12 @@ export const homeStats: StatItem[] = [
     icon: "users",
   },
   {
-    value: "15,00,000L+",
+    value: "15,00,000+",
     label: "annual home visits",
     icon: "home",
   },
   {
-    value: "40+",
+    value: "100+",
     label: "cities covered",
     icon: "mapPin",
   },
