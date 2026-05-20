@@ -429,9 +429,8 @@ export function HomePage() {
                 A safer first week home after hospital
               </p>
               <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                Your nurse, caregiver, physio and equipment all come under one care plan. You'll
-                get daily WhatsApp updates through the first seven days, which is when most
-                setbacks happen.
+                Your nurse, caregiver, physio and equipment all come under one care plan, with
+                clear WhatsApp updates to the family twice a week.
               </p>
               <Link
                 href="/post-discharge"

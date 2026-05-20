@@ -114,7 +114,7 @@ const sharedFaqs: FaqItem[] = [
   {
     question: "How will we know what is happening at home?",
     answer:
-      "You are added to a private WhatsApp group with your care manager. You receive clear updates twice a week (daily during the first week of dementia or recovery cases) plus a weekly call. The caregiver delivers the care; your care manager is who you talk to.",
+      "You are added to a private WhatsApp group with your care manager. You receive clear updates twice a week, plus a weekly call. The caregiver delivers the care; your care manager is who you talk to.",
   },
   {
     question: "How much does it cost?",
@@ -160,9 +160,9 @@ const dementiaTrustBadges: TrustBadge[] = [
       "Dr. Kavitha and Dr. Allia co-authored Portea's care protocols, and review your care plan before it's shared with you.",
   },
   {
-    title: "Daily updates in the first week",
+    title: "WhatsApp updates twice a week",
     description:
-      "WhatsApp updates every day for the first seven days. Triggers, what helped, what changed. Then it eases to twice a week.",
+      "Twice-a-week WhatsApp updates on what's working: triggers, what helped, what changed. Plus a weekly call from your care manager.",
   },
   {
     title: "One care manager. The same person.",
@@ -188,9 +188,9 @@ const postDischargeTrustBadges: TrustBadge[] = [
       "No juggling three vendors. Your care manager schedules every visit and keeps the family in one WhatsApp group.",
   },
   {
-    title: "Daily updates for the first 7 days",
+    title: "WhatsApp updates twice a week",
     description:
-      "The first week home is the riskiest. You get a daily WhatsApp summary, then it eases to twice a week.",
+      "Clear WhatsApp updates twice a week on recovery, medicines and mobility, with a weekly call from your care manager.",
   },
 ];
 
@@ -392,7 +392,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     shortName: "Dementia care",
     metaTitle: "Dementia Care at Home in India · Trained by Dementia Alliance | Portea",
     metaDescription:
-      "Specialist dementia care at home. Caregivers trained by the Dementia India Alliance, a specialist readiness check before placement, daily WhatsApp updates in week one, one medically trained care manager throughout.",
+      "Specialist dementia care at home. Caregivers trained by the Dementia India Alliance, a specialist readiness check before placement, WhatsApp updates twice a week, one medically trained care manager throughout.",
     keywords: [
       "dementia care at home",
       "Alzheimer's home care India",
@@ -404,13 +404,13 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Specialist dementia care at home, trained by Dementia India Alliance",
     accentPhrase: "Dementia India Alliance",
     subheadline:
-      "Caregivers trained on dementia behaviour: sundowning, repetition, resistance. Every caregiver passes a specialist readiness check before they walk in. One doctor-led care manager owns the plan and tells you what's working, week by week.",
+      "A dementia-trained care manager who's worked with others like you. Caregivers trained on dementia behaviour: sundowning, repetition, resistance. Weekly updates on how it's going.",
     heroLabel: "Specialist dementia care",
     overview:
       "For families dealing with confusion, repetition, wandering risk, agitation, sundowning or the emotional strain that often comes with dementia at home.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "Tell us what's been hardest in the past week. A Portea care manager (a doctor or senior clinician) will call within 12 hours, no scripts, no rush.",
+      "Tell us what's been hardest in the past week. A Portea care manager (a doctor or senior clinician) will call within 12 hours.",
     whatsAppMessage:
       "Hi Portea, I'd like to learn about dementia care at home for my parent.",
     images: [
@@ -431,7 +431,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       "Caregivers trained on dementia-specific routines",
       "Specialist readiness check before every placement",
       "Doctor-reviewed care plan every month",
-      "Daily updates for the first week of placement",
+      "WhatsApp updates to family 2× a week",
     ],
     highlights: [
       {
@@ -490,9 +490,9 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "A daily schedule shaped around your parent's triggers and the way they communicate. The caregiver is chosen using a specialist readiness check.",
       },
       {
-        title: "4. Daily updates in the first week",
+        title: "4. WhatsApp updates twice a week",
         description:
-          "WhatsApp updates every day for the first seven days. Then twice a week, with a weekly call from your care manager and a monthly review.",
+          "WhatsApp updates twice a week on triggers and what's helping, with a weekly call from your care manager and a monthly review.",
       },
     ],
     whatToExpect: [
@@ -600,7 +600,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     headline: "Safer recovery at home after hospital discharge",
     accentPhrase: "after hospital discharge",
     subheadline:
-      "Nurse visits, home physio and a trained caregiver, scheduled before discharge day, run from one plan, with daily WhatsApp updates through week one. Equipment delivered before the patient is home.",
+      "A care manager who has guided families through recoveries like yours. Nurse visits, home physio and a trained caregiver, ready before discharge day. Weekly updates on how recovery is going.",
     heroLabel: "Recovery at home",
     overview:
       "For families who know discharge is only the beginning and want a safer, better-organised start to recovery, wound care, medication, mobility, follow-up coordination and home physiotherapy under one plan.",
@@ -627,7 +627,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       "Care plan ready before discharge day",
       "Nurse + caregiver + physio under one plan",
       "Equipment delivered on Day 1",
-      "Daily updates for the first 7 days",
+      "WhatsApp updates to family 2× a week",
     ],
     highlights: [
       {
@@ -686,9 +686,9 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "The full plan on WhatsApp the same day. Caregiver, nurse visits and physio scheduled. Equipment delivered before the patient walks in.",
       },
       {
-        title: "4. Daily updates through week one",
+        title: "4. WhatsApp updates twice a week",
         description:
-          "WhatsApp updates every day for the first seven days. Then twice a week, with a weekly call from your care manager. The plan adjusts as recovery progresses.",
+          "WhatsApp updates twice a week on recovery progress, with a weekly call from your care manager. The plan adjusts as recovery progresses.",
       },
     ],
     whatToExpect: [
