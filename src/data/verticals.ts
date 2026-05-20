@@ -785,12 +785,12 @@ export type StatItem = {
 
 export const homeStats: StatItem[] = [
   {
-    value: "10L+",
+    value: "20,00,000+",
     label: "patients served across India",
     icon: "users",
   },
   {
-    value: "7L+",
+    value: "15,00,000L+",
     label: "annual home visits",
     icon: "home",
   },
@@ -800,7 +800,7 @@ export const homeStats: StatItem[] = [
     icon: "mapPin",
   },
   {
-    value: "63",
+    value: "100+",
     label: "hospital partnerships",
     icon: "hospital",
   },
