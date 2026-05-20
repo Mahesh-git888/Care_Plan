@@ -7,6 +7,7 @@ import { DoctorsSection } from "@/components/doctors-section";
 import { HandwrittenNote } from "@/components/handwritten-note";
 import { IntakeChatbot } from "@/components/intake-chatbot";
 import { LeadForm } from "@/components/lead-form";
+import { MobileMenu } from "@/components/mobile-menu";
 import {
   CheckIcon,
   ClockIcon,
@@ -19,7 +20,18 @@ import {
 } from "@/components/ui-icons";
 import { StatsStrip } from "@/components/stats-strip";
 import { verticalList, type VerticalConfig } from "@/data/verticals";
-import { getPhoneContact } from "@/lib/contact";
+import { getPhoneContact, getWhatsAppContact } from "@/lib/contact";
+
+// In-page sections a visitor can jump to from the mobile hamburger menu.
+const VERTICAL_NAV_LINKS = [
+  { href: "#trust", label: "Why Portea" },
+  { href: "#who-its-for", label: "Who it's for" },
+  { href: "#how-it-works", label: "How it works" },
+  { href: "#reviews", label: "Reviews" },
+  { href: "#doctors", label: "Our doctors" },
+  { href: "#faq", label: "FAQs" },
+  { href: "/", label: "All care programs" },
+];
 
 function renderHeadline(text: string, accentPhrase: string) {
   const parts = text.split(accentPhrase);
@@ -74,6 +86,7 @@ function Stars() {
 export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
   const [primaryImage, secondaryImage] = vertical.images;
   const phone = getPhoneContact();
+  const whatsapp = getWhatsAppContact(vertical.whatsAppMessage);
 
   return (
     <main className="min-h-screen bg-[#f4f9fa] pb-24 text-[#10242b]">
@@ -99,18 +112,21 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 hero-gradient" />
         <div className="relative mx-auto max-w-7xl px-5 py-6 sm:px-6 lg:px-10">
-          <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-4">
+          <header className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
               <BrandLogo />
               <Link
                 href="/"
-                className="hidden rounded-full border border-white/80 bg-white/90 px-4 py-2 text-sm font-semibold text-[#28424a] shadow-sm transition hover:bg-white sm:inline-flex"
+                className="hidden rounded-full border border-white/80 bg-white/90 px-4 py-2 text-sm font-semibold text-[#28424a] shadow-sm transition hover:bg-white lg:inline-flex"
               >
                 ← All programs
               </Link>
             </div>
 
-            <nav className="flex flex-wrap items-center gap-2 text-sm" aria-label="Care programs">
+            <nav
+              className="hidden flex-wrap items-center gap-2 text-sm lg:flex"
+              aria-label="Care programs"
+            >
               {verticalList.map((item) => {
                 const isActive = item.slug === vertical.slug;
                 return (
@@ -137,6 +153,13 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                 <span>{phone.label}</span>
               </a>
             </nav>
+
+            <MobileMenu
+              links={VERTICAL_NAV_LINKS}
+              phoneHref={phone.href}
+              phoneLabel={phone.label}
+              whatsappHref={whatsapp?.href}
+            />
           </header>
 
           {/* Hero */}
