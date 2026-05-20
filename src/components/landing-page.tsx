@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { ChatbotTrigger } from "@/components/chatbot-trigger";
 import { ContactActions, FloatingContactButtons } from "@/components/contact-actions";
 import { DoctorsSection } from "@/components/doctors-section";
 import { HandwrittenNote } from "@/components/handwritten-note";
@@ -144,13 +145,16 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                   </Link>
                 );
               })}
-              <a
-                href="#callback"
-                className="ml-2 hidden items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#0b7c87] lg:inline-flex"
-              >
-                <PhoneIcon className="h-4 w-4" />
-                <span>Talk to care manager</span>
-              </a>
+              <ChatbotTrigger
+                vertical={vertical}
+                triggerClassName="ml-2 hidden items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#0b7c87] lg:inline-flex"
+                triggerContent={
+                  <>
+                    <PhoneIcon className="h-4 w-4" />
+                    <span>Talk to care manager</span>
+                  </>
+                }
+              />
             </nav>
 
             <MobileMenu

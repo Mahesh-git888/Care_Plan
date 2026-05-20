@@ -2,8 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { ChatbotTrigger } from "@/components/chatbot-trigger";
 import { DoctorsSection } from "@/components/doctors-section";
 import { HandwrittenNote } from "@/components/handwritten-note";
+import { IntakeChatbot } from "@/components/intake-chatbot";
 import {
   ArrowUpRightIcon,
   CheckIcon,
@@ -36,6 +38,9 @@ export function HomePage() {
 
   return (
     <main className="min-h-screen bg-[#f4f9fa] pb-20 text-[#10242b]">
+      {/* Care assistant chatbot, opened by the "Talk to care manager" buttons */}
+      <IntakeChatbot vertical={elderCare} />
+
       {/* Announcement bar */}
       <div className="gradient-banner text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-2 text-xs font-semibold sm:px-6 lg:px-10">
@@ -68,13 +73,16 @@ export function HomePage() {
               <a href="#reviews" className="transition hover:text-[#10242b]">
                 Reviews
               </a>
-              <a
-                href="#callback"
-                className="inline-flex items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 text-white shadow-sm transition hover:bg-[#0b7c87]"
-              >
-                <PhoneIcon className="h-4 w-4" />
-                <span>Talk to care manager</span>
-              </a>
+              <ChatbotTrigger
+                vertical={elderCare}
+                triggerClassName="inline-flex items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#0b7c87]"
+                triggerContent={
+                  <>
+                    <PhoneIcon className="h-4 w-4" />
+                    <span>Talk to care manager</span>
+                  </>
+                }
+              />
             </nav>
             <MobileMenu
               links={HOME_NAV_LINKS}
