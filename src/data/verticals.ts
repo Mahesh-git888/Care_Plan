@@ -219,7 +219,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
       "For families who need help with the everyday: walking, bathing, meals, the medication tray, the small things that have started to slip. The plan is shaped around your parent's actual routine and your home's actual layout.",
     ctaLabel: "Talk to a care manager",
     responseNote:
-      "Share a few details and a Portea care manager will call within 12 hours. No call-centre, no scripts. A doctor or senior clinician will speak with you directly.",
+      "Share a few details and a Portea care manager will call within 12 hours. A doctor or senior clinician will speak with you directly.",
     whatsAppMessage:
       "Hi Portea, I'd like to learn about elder care at home for my parent.",
     images: [

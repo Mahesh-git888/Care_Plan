@@ -297,12 +297,12 @@ export function HomePage() {
             {
               title: "Tell us what's happening",
               description:
-                "Use the chatbot, WhatsApp or call us, and share a few details about your situation. There are no long forms to fill or scripts to follow.",
+                "Use the chatbot, WhatsApp or call us, and share a few details about your situation. It only takes a minute.",
             },
             {
               title: "A doctor calls back in 12 hours",
               description:
-                "Within 12 hours, a qualified doctor or senior clinician calls you back. The conversation usually takes 15 to 30 minutes, and it doesn't go through a call centre.",
+                "Within 12 hours, a qualified doctor or senior clinician calls you back. The conversation usually takes 15 to 30 minutes.",
             },
             {
               title: "A written plan, same day",
