@@ -72,7 +72,7 @@ function Stars() {
 }
 
 export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
-  const [primaryImage] = vertical.images;
+  const [primaryImage, secondaryImage] = vertical.images;
   const phone = getPhoneContact();
 
   return (
@@ -277,6 +277,22 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Visual band */}
+      <section className="mx-auto max-w-7xl px-5 py-4 sm:px-6 lg:px-10">
+        <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white p-3 shadow-[0_30px_60px_-28px_rgba(16,42,49,0.22)]">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-[1.6rem]">
+            <Image
+              src={secondaryImage.src}
+              alt={secondaryImage.alt}
+              width={1600}
+              height={900}
+              className="h-full w-full object-cover"
+              style={{ objectPosition: secondaryImage.position ?? "center center" }}
+            />
           </div>
         </div>
       </section>
