@@ -135,30 +135,34 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
   const persisted = sanitizePersistedState(window.localStorage.getItem(storageKey));
   const quickForm = readQuickFormData(verticalSlug);
 
-  // If the lead form just handed off data and the chatbot hasn't already
-  // submitted, pre-fill the matching fields, jump past them, and auto-open.
-  if (quickForm && !persisted.submittedAt) {
-    persisted.fields = {
-      ...persisted.fields,
+  // The lead form just handed off three fields. Start a COMPLETELY FRESH
+  // intake: only name/city/phone are pre-filled; the four elder questions
+  // start empty so the chatbot always asks them. We deliberately ignore any
+  // stale `persisted` state from a previous session, which would otherwise
+  // make the chatbot skip questions or jump straight to the review screen.
+  if (quickForm) {
+    const freshFields: IntakeFields = {
+      ...emptyFields,
       name: quickForm.name,
       city: quickForm.city,
       phone: quickForm.phone,
     };
-    persisted.consentGiven = persisted.consentGiven || quickForm.consentGiven;
-    persisted.currentStep = findNextEmptyStep(persisted.fields, 0);
-    persisted.messages = [
-      makeMessage(
-        "assistant",
-        `Thanks${quickForm.name ? `, ${quickForm.name.split(" ")[0]}` : ""}. A few quick questions and your care manager will call you back within 12 hours.`,
-      ),
-    ];
-    // Consume the handoff so a reload after the user closes the modal does not
-    // re-pop the chatbot. The chatbot's own localStorage carries the state forward.
+    const currentStep = findNextEmptyStep(freshFields, 0);
+    // Consume the handoff so a reload doesn't re-trigger it.
     clearQuickFormData(verticalSlug);
     return {
-      ...persisted,
+      currentStep,
+      fields: freshFields,
+      messages: [
+        makeMessage(
+          "assistant",
+          `Thanks${quickForm.name ? `, ${quickForm.name.split(" ")[0]}` : ""}. A few quick questions and your care manager will call you back within 12 hours.`,
+        ),
+      ],
+      consentGiven: quickForm.consentGiven,
+      submittedAt: null,
       isOpen: true,
-      phase: persisted.currentStep >= TOTAL_STEPS ? "consent" : "typing",
+      phase: currentStep >= TOTAL_STEPS ? "consent" : "typing",
       error: null,
     };
   }
@@ -249,8 +253,10 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
       // path the consent box is already ticked, so retrying is one click.
       return { ...state, phase: "consent", error: action.error };
     case "PREFILL_AND_OPEN": {
-      const mergedFields = { ...state.fields, ...action.fields };
-      const consent = state.consentGiven || action.consentGiven;
+      // Fresh intake from the three form fields only. We do NOT merge
+      // state.fields, so stale answers from a previous chatbot session can't
+      // make the bot skip the elder questions or jump to the review screen.
+      const mergedFields: IntakeFields = { ...emptyFields, ...action.fields };
       const nextStepIdx = findNextEmptyStep(mergedFields, 0);
       const intro =
         action.intro ??
@@ -258,7 +264,8 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
       return {
         ...state,
         fields: mergedFields,
-        consentGiven: consent,
+        consentGiven: action.consentGiven,
+        submittedAt: null,
         currentStep: nextStepIdx,
         messages: [makeMessage("assistant", intro)],
         isOpen: true,
