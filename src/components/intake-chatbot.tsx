@@ -30,7 +30,6 @@ type PersistedState = {
   fields: IntakeFields;
   messages: ChatMessage[];
   consentGiven: boolean;
-  autoSubmit: boolean;
   submittedAt: string | null;
 };
 
@@ -84,7 +83,6 @@ function sanitizePersistedState(raw: string | null): PersistedState {
     fields: { ...emptyFields },
     messages: [],
     consentGiven: false,
-    autoSubmit: false,
     submittedAt: null,
   };
 
@@ -110,7 +108,6 @@ function sanitizePersistedState(raw: string | null): PersistedState {
           )
         : [],
       consentGiven: Boolean(parsed.consentGiven),
-      autoSubmit: Boolean(parsed.autoSubmit),
       submittedAt: typeof parsed.submittedAt === "string" ? parsed.submittedAt : null,
     };
   } catch {
@@ -134,7 +131,6 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
       fields: { ...emptyFields },
       messages: [],
       consentGiven: false,
-      autoSubmit: false,
       submittedAt: null,
       isOpen: false,
       phase: "typing",
@@ -155,7 +151,6 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
       phone: quickForm.phone,
     };
     persisted.consentGiven = persisted.consentGiven || quickForm.consentGiven;
-    persisted.autoSubmit = persisted.autoSubmit || quickForm.consentGiven;
     persisted.currentStep = findNextEmptyStep(persisted.fields, 0);
     persisted.messages = [
       makeMessage(
@@ -169,7 +164,7 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
     return {
       ...persisted,
       isOpen: true,
-      phase: persisted.currentStep >= TOTAL_STEPS ? "submitting" : "typing",
+      phase: persisted.currentStep >= TOTAL_STEPS ? "consent" : "typing",
       error: null,
     };
   }
@@ -231,11 +226,9 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
       const nextMessages = [...state.messages, makeMessage("user", action.value)];
       const nextStepIdx = findNextEmptyStep(nextFields, state.currentStep + 1);
       const isDone = nextStepIdx >= TOTAL_STEPS;
-      const nextPhase: FlowPhase = isDone
-        ? state.autoSubmit
-          ? "submitting"
-          : "consent"
-        : "typing";
+      // When every question is answered, go to the review screen. The user
+      // checks (and can edit) everything before the final submit.
+      const nextPhase: FlowPhase = isDone ? "consent" : "typing";
       return {
         ...state,
         fields: nextFields,
@@ -272,11 +265,10 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
         ...state,
         fields: mergedFields,
         consentGiven: consent,
-        autoSubmit: consent,
         currentStep: nextStepIdx,
         messages: [makeMessage("assistant", intro)],
         isOpen: true,
-        phase: nextStepIdx >= TOTAL_STEPS ? "submitting" : "typing",
+        phase: nextStepIdx >= TOTAL_STEPS ? "consent" : "typing",
         error: null,
       };
     }
@@ -286,7 +278,6 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
         fields: { ...emptyFields },
         messages: [],
         consentGiven: false,
-        autoSubmit: false,
         submittedAt: null,
         isOpen: true,
         phase: "typing",
@@ -325,6 +316,11 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
   const [variant] = useState(() => (Math.random() < 0.5 ? "flow_a" : "flow_b"));
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
 
+  // Inline editing on the review screen.
+  const [editingKey, setEditingKey] = useState<IntakeFieldKey | null>(null);
+  const [editDraft, setEditDraft] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
+
   // Release the singleton claim on unmount so a re-mount (vertical change,
   // strict-mode double-invoke) doesn't leave the next instance locked out.
   useEffect(() => {
@@ -338,8 +334,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
   const activeStep = intakeSteps[state.currentStep];
   const activeValue = activeStep ? state.fields[activeStep.key] : "";
 
-  // Persist (without the autoSubmit + transient fields that should reset on
-  // reload after a successful submission)
+  // Persist the in-progress chatbot state to localStorage.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const persisted: PersistedState = {
@@ -347,7 +342,6 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
       fields: state.fields,
       messages: state.messages,
       consentGiven: state.consentGiven,
-      autoSubmit: state.autoSubmit,
       submittedAt: state.submittedAt,
     };
     window.localStorage.setItem(storageKey, JSON.stringify(persisted));
@@ -356,7 +350,6 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
     state.fields,
     state.messages,
     state.consentGiven,
-    state.autoSubmit,
     state.submittedAt,
     storageKey,
   ]);
@@ -488,12 +481,42 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
   };
 
   const handleConsentSubmit = () => {
+    if (editingKey) {
+      setEditError("Please save or cancel your edit first.");
+      return;
+    }
     if (!state.consentGiven) {
       dispatch({ type: "SUBMIT_ERROR", error: "Please confirm consent so we can call you back." });
       return;
     }
     dispatch({ type: "SUBMIT_START" });
   };
+
+  // Review-screen inline editing.
+  function startEdit(key: IntakeFieldKey) {
+    setEditingKey(key);
+    setEditDraft(state.fields[key] ?? "");
+    setEditError(null);
+  }
+  function cancelEdit() {
+    setEditingKey(null);
+    setEditError(null);
+  }
+  function saveEdit() {
+    if (!editingKey) return;
+    const trimmed = editDraft.trim();
+    if (!trimmed) {
+      setEditError("This can't be left empty.");
+      return;
+    }
+    if (editingKey === "phone" && !isValidIndianMobile(trimmed)) {
+      setEditError("Enter a valid 10-digit Indian mobile number.");
+      return;
+    }
+    dispatch({ type: "UPDATE_FIELD", key: editingKey, value: trimmed });
+    setEditingKey(null);
+    setEditError(null);
+  }
 
   // Only the primary instance renders a visible modal. Duplicates render
   // nothing so they cannot stack on top of each other.
@@ -572,7 +595,86 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                   </div>
                 </div>
               ) : state.phase === "consent" ? (
-                <div className="flex flex-1 flex-col px-5 py-6">
+                <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-6">
+                  {/* Editable review */}
+                  <div className="rounded-[1.5rem] border border-slate-200 p-5">
+                    <p className="text-sm font-semibold text-slate-900">Review your details</p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      Tap Edit to change anything before you submit.
+                    </p>
+                    <ul className="mt-3 divide-y divide-slate-100">
+                      {intakeSteps.map((step) => {
+                        const isEditing = editingKey === step.key;
+                        return (
+                          <li key={step.key} className="py-2.5">
+                            {isEditing ? (
+                              <div className="space-y-2">
+                                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                                  {step.label}
+                                </p>
+                                {step.type === "textarea" ? (
+                                  <textarea
+                                    value={editDraft}
+                                    onChange={(e) => setEditDraft(e.target.value)}
+                                    rows={2}
+                                    className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500"
+                                  />
+                                ) : (
+                                  <input
+                                    type={step.type}
+                                    value={editDraft}
+                                    onChange={(e) => setEditDraft(e.target.value)}
+                                    inputMode={step.key === "phone" ? "numeric" : undefined}
+                                    maxLength={step.key === "phone" ? 13 : undefined}
+                                    className="w-full rounded-full border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500"
+                                  />
+                                )}
+                                {editError ? (
+                                  <p className="text-xs font-medium text-rose-600">{editError}</p>
+                                ) : null}
+                                <div className="flex gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={saveEdit}
+                                    className={`rounded-full px-3.5 py-1.5 text-xs font-semibold text-white transition ${vertical.theme.accentStrong}`}
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={cancelEdit}
+                                    className="rounded-full border border-slate-200 px-3.5 py-1.5 text-xs font-medium text-slate-600 transition hover:border-slate-300"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                                    {step.label}
+                                  </p>
+                                  <p className="mt-0.5 break-words text-sm text-slate-800">
+                                    {state.fields[step.key] || "Not added"}
+                                  </p>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => startEdit(step.key)}
+                                  className="flex-none text-xs font-semibold text-[#0f9aa8] transition hover:underline"
+                                >
+                                  Edit
+                                </button>
+                              </div>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+
+                  {/* Consent + submit */}
                   <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                       One last thing
@@ -610,18 +712,6 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                     >
                       Submit and get a call within 12 hours
                     </button>
-                  </div>
-
-                  <div className="mt-6 grid gap-3 rounded-[1.5rem] border border-slate-200 p-5 text-sm text-slate-700">
-                    <p className="font-semibold text-slate-900">What you shared:</p>
-                    <dl className="grid grid-cols-1 gap-y-1 text-xs sm:text-sm">
-                      <div className="flex gap-2"><dt className="font-semibold">Elder:</dt><dd>{state.fields.elderName}</dd></div>
-                      <div className="flex gap-2"><dt className="font-semibold">Condition:</dt><dd>{state.fields.condition}</dd></div>
-                      <div className="flex gap-2"><dt className="font-semibold">Help needed:</dt><dd>{state.fields.needs}</dd></div>
-                      <div className="flex gap-2"><dt className="font-semibold">City:</dt><dd>{state.fields.city}</dd></div>
-                      <div className="flex gap-2"><dt className="font-semibold">Caller:</dt><dd>{state.fields.name} ({state.fields.relationship})</dd></div>
-                      <div className="flex gap-2"><dt className="font-semibold">Phone:</dt><dd>{state.fields.phone}</dd></div>
-                    </dl>
                   </div>
                 </div>
               ) : (
@@ -703,9 +793,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                           className={`w-full rounded-full px-4 py-3 text-sm font-semibold text-white transition ${vertical.theme.accentStrong}`}
                         >
                           {findNextEmptyStep(state.fields, state.currentStep + 1) >= TOTAL_STEPS
-                            ? state.autoSubmit
-                              ? "Submit"
-                              : "Continue"
+                            ? "Review"
                             : "Next"}
                         </button>
                       </form>
