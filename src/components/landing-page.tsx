@@ -281,22 +281,6 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
         </div>
       </section>
 
-      {/* Visual band */}
-      <section className="mx-auto max-w-7xl px-5 py-4 sm:px-6 lg:px-10">
-        <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white p-3 shadow-[0_30px_60px_-28px_rgba(16,42,49,0.22)]">
-          <div className="relative aspect-[16/9] overflow-hidden rounded-[1.6rem]">
-            <Image
-              src={secondaryImage.src}
-              alt={secondaryImage.alt}
-              width={1600}
-              height={900}
-              className="h-full w-full object-cover"
-              style={{ objectPosition: secondaryImage.position ?? "center center" }}
-            />
-          </div>
-        </div>
-      </section>
-
       {/* How it works */}
       <section id="how-it-works" className="bg-[#f7fbfb]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
@@ -306,27 +290,46 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
             description="The same four steps for every family. Every care manager runs this flow, every time, in this order."
           />
 
-          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {vertical.howItWorks.map((step, idx) => (
-              <li
-                key={step.title}
-                className="relative rounded-[1.9rem] border border-[#d8e8ea] bg-white p-6 shadow-sm"
-              >
-                <span
-                  className="absolute -top-4 left-6 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#ff5b2e] text-sm font-bold text-white shadow-md"
-                  aria-hidden="true"
+          <div className="mt-10 grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+            {/* A real photo of care at home, beside the process */}
+            <div
+              className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white p-3 shadow-[0_30px_60px_-28px_rgba(16,42,49,0.22)]"
+              style={{ aspectRatio: secondaryImage.aspect }}
+            >
+              <div className="relative h-full w-full overflow-hidden rounded-[1.6rem]">
+                <Image
+                  src={secondaryImage.src}
+                  alt={secondaryImage.alt}
+                  width={1200}
+                  height={1200}
+                  className="h-full w-full object-cover"
+                  style={{ objectPosition: secondaryImage.position ?? "center center" }}
+                />
+              </div>
+            </div>
+
+            <ol className="grid gap-4 pt-2 sm:grid-cols-2">
+              {vertical.howItWorks.map((step, idx) => (
+                <li
+                  key={step.title}
+                  className="relative rounded-[1.9rem] border border-[#d8e8ea] bg-white p-6 shadow-sm"
                 >
-                  {idx + 1}
-                </span>
-                <p className="mt-4 text-base font-semibold leading-7 tracking-[-0.03em] text-[#10242b]">
-                  {step.title}
-                </p>
-                <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
-                  {step.description}
-                </p>
-              </li>
-            ))}
-          </ol>
+                  <span
+                    className="absolute -top-4 left-6 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#ff5b2e] text-sm font-bold text-white shadow-md"
+                    aria-hidden="true"
+                  >
+                    {idx + 1}
+                  </span>
+                  <p className="mt-4 text-base font-semibold leading-7 tracking-[-0.03em] text-[#10242b]">
+                    {step.title}
+                  </p>
+                  <p className="mt-3 text-sm font-medium leading-7 text-[#455e67]">
+                    {step.description}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </div>
 
           <div className="mt-10 rounded-[1.9rem] border border-[#d8e8ea] bg-white p-6 shadow-sm sm:p-8">
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
