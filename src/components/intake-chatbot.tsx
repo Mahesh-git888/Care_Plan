@@ -54,6 +54,24 @@ type FlowAction =
 
 const TOTAL_STEPS = intakeSteps.length;
 
+const DIRECT_GREETING =
+  "Hi, I'm Portea's care assistant. I'll ask a few quick questions, then a doctor-led care manager will call you back within 12 hours.";
+
+// A clean, blank intake. Used both for the very first conversation and to
+// restart after a previous request was already submitted.
+function freshChat(open: boolean): FlowState {
+  return {
+    currentStep: 0,
+    fields: { ...emptyFields },
+    messages: [makeMessage("assistant", DIRECT_GREETING)],
+    consentGiven: false,
+    submittedAt: null,
+    isOpen: open,
+    phase: "typing",
+    error: null,
+  };
+}
+
 function makeMessage(role: ChatMessage["role"], text: string) {
   return {
     id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -168,21 +186,17 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
     };
   }
 
+  // A previous request was already submitted in this browser. Don't resurrect
+  // that stale "thank you" screen — it would leave the chatbot permanently
+  // stuck on the acknowledgment. Start a fresh conversation instead.
+  if (persisted.submittedAt) {
+    return freshChat(false);
+  }
+
   // Direct-chatbot path: if the user has never interacted, seed a friendly
   // greeting so the very first visible line isn't a question with no context.
-  if (persisted.messages.length === 0 && !persisted.submittedAt) {
-    persisted.messages = [
-      makeMessage(
-        "assistant",
-        "Hi, I'm Portea's care assistant. I'll ask a few quick questions, then a doctor-led care manager will call you back within 12 hours.",
-      ),
-    ];
-    return {
-      ...persisted,
-      isOpen: false,
-      phase: "typing",
-      error: null,
-    };
+  if (persisted.messages.length === 0) {
+    return freshChat(false);
   }
 
   return {
@@ -196,6 +210,9 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
 function reducer(state: FlowState, action: FlowAction): FlowState {
   switch (action.type) {
     case "OPEN":
+      // If a request was already submitted, reopening should start a brand new
+      // conversation rather than show the old "thank you" screen.
+      if (state.submittedAt) return freshChat(true);
       return { ...state, isOpen: true, error: null };
     case "CLOSE":
       return { ...state, isOpen: false, error: null };
@@ -585,28 +602,19 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                                 <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
                                   {step.label}
                                 </p>
-                                {step.type === "textarea" ? (
-                                  <textarea
-                                    value={editDraft}
-                                    onChange={(e) => setEditDraft(e.target.value)}
-                                    rows={2}
-                                    className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500"
-                                  />
-                                ) : (
-                                  <input
-                                    type={step.type}
-                                    value={editDraft}
-                                    onChange={(e) =>
-                                      setEditDraft(
-                                        step.key === "phone"
-                                          ? sanitizePhoneInput(e.target.value)
-                                          : e.target.value,
-                                      )
-                                    }
-                                    inputMode={step.key === "phone" ? "numeric" : undefined}
-                                    className="w-full rounded-full border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500"
-                                  />
-                                )}
+                                <input
+                                  type={step.type}
+                                  value={editDraft}
+                                  onChange={(e) =>
+                                    setEditDraft(
+                                      step.key === "phone"
+                                        ? sanitizePhoneInput(e.target.value)
+                                        : e.target.value,
+                                    )
+                                  }
+                                  inputMode={step.key === "phone" ? "numeric" : undefined}
+                                  className="w-full rounded-full border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500"
+                                />
                                 {editError ? (
                                   <p className="text-xs font-medium text-rose-600">{editError}</p>
                                 ) : null}
@@ -734,40 +742,24 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
 
                     {activeStep && state.phase === "awaiting-input" ? (
                       <form onSubmit={handleSubmit} className="space-y-3">
-                        {activeStep.type === "textarea" ? (
-                          <textarea
-                            value={activeValue}
-                            onChange={(event) =>
-                              dispatch({
-                                type: "UPDATE_FIELD",
-                                key: activeStep.key,
-                                value: event.target.value,
-                              })
-                            }
-                            placeholder={activeStep.placeholder}
-                            rows={3}
-                            className="w-full rounded-[1.5rem] border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400"
-                          />
-                        ) : (
-                          <input
-                            type={activeStep.type}
-                            value={activeValue}
-                            onChange={(event) =>
-                              dispatch({
-                                type: "UPDATE_FIELD",
-                                key: activeStep.key,
-                                value:
-                                  activeStep.key === "phone"
-                                    ? sanitizePhoneInput(event.target.value)
-                                    : event.target.value,
-                              })
-                            }
-                            placeholder={activeStep.placeholder}
-                            inputMode={activeStep.key === "phone" ? "numeric" : undefined}
-                            autoComplete={activeStep.key === "phone" ? "tel" : undefined}
-                            className="w-full rounded-full border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400"
-                          />
-                        )}
+                        <input
+                          type={activeStep.type}
+                          value={activeValue}
+                          onChange={(event) =>
+                            dispatch({
+                              type: "UPDATE_FIELD",
+                              key: activeStep.key,
+                              value:
+                                activeStep.key === "phone"
+                                  ? sanitizePhoneInput(event.target.value)
+                                  : event.target.value,
+                            })
+                          }
+                          placeholder={activeStep.placeholder}
+                          inputMode={activeStep.key === "phone" ? "numeric" : undefined}
+                          autoComplete={activeStep.key === "phone" ? "tel" : undefined}
+                          className="w-full rounded-full border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400"
+                        />
                         <button
                           type="submit"
                           className={`w-full rounded-full px-4 py-3 text-sm font-semibold text-white transition ${vertical.theme.accentStrong}`}

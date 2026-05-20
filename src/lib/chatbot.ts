@@ -27,7 +27,7 @@ export const intakeSteps = [
     label: "kind of help needed",
     prompt: "What kind of help is most needed at home right now?",
     placeholder: "e.g. caregiver, nurse, physio, full-day support",
-    type: "textarea",
+    type: "text",
   },
   {
     key: "relationship",
