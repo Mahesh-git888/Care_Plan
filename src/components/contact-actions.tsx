@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 import { ChatbotTrigger } from "@/components/chatbot-trigger";
@@ -87,13 +87,48 @@ export function FloatingContactButtons({ vertical }: { vertical: VerticalConfig 
   const phone = getPhoneContact();
   const whatsapp = getWhatsAppContact(vertical.whatsAppMessage);
   const [open, setOpen] = useState(false);
+  // Tucks the floating button out of the way while the visitor scrolls, so it
+  // never sits on top of the text. It slides back when scrolling stops or the
+  // visitor scrolls up. Always visible while the contact menu is open.
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setHidden(false);
+      return;
+    }
+    let lastY = window.scrollY;
+    let revealTimer: number;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y > lastY + 6) {
+        setHidden(true); // scrolling down -> tuck away
+      } else if (y < lastY - 6) {
+        setHidden(false); // scrolling up -> bring back
+      }
+      lastY = y;
+      window.clearTimeout(revealTimer);
+      revealTimer = window.setTimeout(() => setHidden(false), 700);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(revealTimer);
+    };
+  }, [open]);
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40">
       <div className="pointer-events-auto mx-auto flex max-w-7xl items-end justify-between px-3 pb-4 sm:px-6">
         <div className="hidden md:block" />
 
-        <div className="flex flex-col items-end gap-3">
+        <div
+          className={`flex flex-col items-end gap-3 transition-all duration-300 ${
+            hidden
+              ? "pointer-events-none translate-y-[140%] opacity-0"
+              : "translate-y-0 opacity-100"
+          }`}
+        >
           {open ? (
             <div className="flex flex-col items-end gap-3">
               <a
