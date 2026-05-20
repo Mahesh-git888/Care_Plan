@@ -50,6 +50,15 @@ export type Testimonial = {
   context: string;
 };
 
+// The big handwritten-style appreciation note shown at the top of the
+// testimonials section, one per vertical.
+export type AppreciationNote = {
+  scriptTitle: string; // the large cursive recipient line
+  body: string[]; // paragraphs
+  closing: string; // the emphasised handwritten line
+  signature: string; // who wrote it
+};
+
 export type TrustBadge = {
   title: string;
   description: string;
@@ -79,6 +88,7 @@ export type VerticalConfig = {
   howItWorks: ProcessStep[];
   whatToExpect: ProcessStep[];
   familyVoices: OutcomeCard[];
+  appreciationNote: AppreciationNote;
   testimonials: Testimonial[];
   faqs: FaqItem[];
   theme: PageTheme;
@@ -328,18 +338,28 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "Good support often shows up as small but meaningful relief: fewer last-minute worries, clearer routines, more confidence at home.",
       },
     ],
+    appreciationNote: {
+      scriptTitle: "Doctor Kavitha",
+      body: [
+        "Thank you for the strong, loyal and sensitive support given to us by the entire Portea team.",
+        "All along, from the doctors to the care manager to the caregivers and everyone working behind the scenes, you made sure my mother and our family were supported throughout.",
+        "We were never made to feel like it was a commercial transaction.",
+      ],
+      closing: "It was truly an extension of family. We are truly grateful.",
+      signature: "Ananya R.",
+    },
     testimonials: [
       {
         quote:
-          "We live in the US and could not be there every day. Portea's care manager became our eyes and ears at home in Bangalore. The weekly updates and the care plan made everything easier.",
-        author: "Anita R.",
-        context: "Daughter of an 82-year-old in Bangalore",
+          "My husband and I are both advancing in age, and a worry can come up late in the evening. I've called Portea after 6:30 pm, and once as an emergency at 9 pm. The care manager answered immediately and gave us a clear solution each time. Knowing the team is always there to respond gives us a genuine sense of security and peace of mind.",
+        author: "Meenakshi R.",
+        context: "Elderly couple, Bangalore",
       },
       {
         quote:
-          "What I appreciated most was that one doctor was responsible for my mother's care. No bouncing around between agents. We trusted her, and she stayed with us through every change.",
-        author: "Suresh M.",
-        context: "Son of a 76-year-old in Mumbai",
+          "My 88-year-old father was diagnosed with advanced cancer and chose palliative care at home. Portea arranged a round-the-clock qualified nurse, set up the comfort equipment he needed within a day, and Dr Kavitha was available on call throughout. The care was timely, complete and deeply compassionate. They made his final days as comfortable as we could have hoped.",
+        author: "Karthik S.",
+        context: "Son, palliative care at home",
       },
     ],
     faqs: [
@@ -509,18 +529,28 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "Progress often looks practical: fewer disruptions, smoother evenings, and more confidence for everyone involved.",
       },
     ],
+    appreciationNote: {
+      scriptTitle: "The Portea Team",
+      body: [
+        "Rahul has been with my father since mid-December, and he has cared for him really well.",
+        "He handles every difficult situation that dementia brings, day after day, and the medical team kept cross-checking the care throughout.",
+        "Having Rahul there has given me genuine peace of mind about my father's daily routine.",
+      ],
+      closing: "I truly hope his dedication is recognised within Portea.",
+      signature: "Vivek K.",
+    },
     testimonials: [
       {
         quote:
-          "You have been a constant source of guidance and support over the past few months and you did your utmost to make mummy's last days so comfortable. You cared for her like family, and we will always be thankful. Your compassion made all the difference.",
-        author: "Family of a dementia patient under Dr. Kavitha's care",
-        context: "Hand-written note received by Portea",
+          "Both my parents are in the early stages of dementia. Portea's team built a plan focused on dementia therapy and brought a therapist home for cognitive stimulation. Within a couple of weeks we saw a real improvement in their cognition and a slowing of the progression. They even began writing down how they feel, something they had never done before.",
+        author: "Rohan M.",
+        context: "Son, parents in early-stage dementia, Bangalore",
       },
       {
         quote:
-          "My father stopped recognising names but he recognised the Portea didi. That calmed everyone in the house. The care manager helped us understand his pattern instead of fighting it.",
-        author: "Priya N.",
-        context: "Daughter, Pune",
+          "After each therapy session we feel happier and more relaxed. We had no idea what the sessions would be like at first. Now we look forward to the therapist coming, and her warmth makes the whole day better.",
+        author: "An elder in Portea's dementia therapy programme",
+        context: "Dementia therapy at home, Bangalore",
       },
     ],
     faqs: [
@@ -695,18 +725,28 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
           "The real difference shows up in week two. Most home setups go quiet by then. Your care manager is still on the line and the physio still shows up.",
       },
     ],
+    appreciationNote: {
+      scriptTitle: "The Portea Team",
+      body: [
+        "After my mother suffered a brain stroke, she came home on a Ryles feeding tube and a Foley catheter, needing round-the-clock monitoring.",
+        "We were skeptical that home care could match a rehab centre. Within a month the feeding tube was removed; after five months, the catheter was no longer needed.",
+        "Nurse Rani Lucky stayed with my mother for over seven months and cared for her as if she were her own.",
+      ],
+      closing: "My mother has now fully recovered. Thank you, the entire Portea team.",
+      signature: "Arjun B.",
+    },
     testimonials: [
       {
         quote:
-          "My father came home after a hip surgery and we were terrified about the first week. Portea's nurse, physio and caregiver arrived like clockwork. Within four days he was walking with a walker.",
-        author: "Ramesh K.",
-        context: "Son, Hyderabad",
+          "My mother needed home care after her operation, and our whole family is profusely thankful to Portea. The caregiver supported her recovery for more than five months, and she has now recovered fully. Thank you from the bottom of my heart, a big salute to the Portea team.",
+        author: "Deepak J.",
+        context: "Son, post-operative home care",
       },
       {
         quote:
-          "The care manager called every single day in the first week. We always knew what was next. That was a different kind of healthcare experience.",
-        author: "Latha S.",
-        context: "Wife of a stroke patient, Chennai",
+          "My father is recovering from a stroke that left him half-paralysed. Portea's nursing and physiotherapy support has been wonderful. The professionals are amicable, patient and genuinely understand what he needs. We were considering a rehab centre, but after seeing the care and the quick response at home, we chose to continue.",
+        author: "Nikhil A.",
+        context: "Son of a stroke patient",
       },
     ],
     faqs: [

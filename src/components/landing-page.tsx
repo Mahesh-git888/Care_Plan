@@ -340,7 +340,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
 
           <div className="mt-12 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
             <div className="flex flex-col items-center justify-center">
-              <HandwrittenNote />
+              <HandwrittenNote note={vertical.appreciationNote} />
             </div>
 
             <div className="space-y-5">

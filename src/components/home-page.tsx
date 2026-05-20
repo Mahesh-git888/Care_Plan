@@ -350,8 +350,8 @@ export function HomePage() {
                 The notes that mean the most are the ones we don&apos;t ask for.
               </h2>
               <p className="mt-4 text-base font-medium leading-8 text-[#5c4a2c]">
-                Sent to Dr. Kavitha and the Portea team by a family whose mother spent her last
-                months in our care. Reproduced verbatim, with permission.
+                A real note of thanks from a family the Portea team supported. Names changed
+                on request; the words are their own.
               </p>
 
               <div className="mt-7 grid gap-3">
@@ -376,7 +376,7 @@ export function HomePage() {
             </div>
 
             <div className="flex items-center justify-center">
-              <HandwrittenNote />
+              <HandwrittenNote note={elderCare.appreciationNote} />
             </div>
           </div>
         </div>
