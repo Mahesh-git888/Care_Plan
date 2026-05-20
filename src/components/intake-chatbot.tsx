@@ -17,12 +17,6 @@ import type { VerticalConfig } from "@/data/verticals";
 import { getIntakeApiUrl } from "@/lib/api";
 import { readAttribution } from "@/lib/utm";
 
-// Singleton guard: only the first mounted instance registers the global
-// event listener and runs submissions. Defends against accidental remounts or
-// duplicate <IntakeChatbot> placements in the tree.
-let activeInstanceId: number | null = null;
-let nextInstanceId = 0;
-
 type FlowPhase = "typing" | "awaiting-input" | "consent" | "submitting" | "submitted";
 
 type PersistedState = {
@@ -294,18 +288,6 @@ function currentStepNumber(state: FlowState) {
 
 export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
   const router = useRouter();
-  const instanceIdRef = useRef<number | null>(null);
-  if (instanceIdRef.current === null) {
-    instanceIdRef.current = nextInstanceId++;
-  }
-  const isPrimary = useMemo(() => {
-    if (activeInstanceId === null) {
-      activeInstanceId = instanceIdRef.current;
-      return true;
-    }
-    return activeInstanceId === instanceIdRef.current;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // v2 bump after the step order was changed. Without this, anyone who
   // started the chatbot under the old order would resume on the wrong step.
@@ -320,16 +302,6 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
   const [editingKey, setEditingKey] = useState<IntakeFieldKey | null>(null);
   const [editDraft, setEditDraft] = useState("");
   const [editError, setEditError] = useState<string | null>(null);
-
-  // Release the singleton claim on unmount so a re-mount (vertical change,
-  // strict-mode double-invoke) doesn't leave the next instance locked out.
-  useEffect(() => {
-    return () => {
-      if (activeInstanceId === instanceIdRef.current) {
-        activeInstanceId = null;
-      }
-    };
-  }, []);
 
   const activeStep = intakeSteps[state.currentStep];
   const activeValue = activeStep ? state.fields[activeStep.key] : "";
@@ -366,10 +338,9 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
     return () => window.clearTimeout(t);
   }, [state.isOpen, state.phase, state.currentStep]);
 
-  // Listen for the form -> chatbot handoff event. Only the primary instance
-  // wires this listener so duplicates don't double-submit.
+  // Listen for the form -> chatbot handoff event (from the lead form and the
+  // chatbot trigger buttons).
   useEffect(() => {
-    if (!isPrimary) return;
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail as
         | { vertical?: string; fields?: Partial<IntakeFields>; consentGiven?: boolean }
@@ -392,12 +363,10 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
     };
     window.addEventListener("portea:open-chatbot", handler as EventListener);
     return () => window.removeEventListener("portea:open-chatbot", handler as EventListener);
-  }, [vertical.slug, isPrimary]);
+  }, [vertical.slug]);
 
-  // Submit when entering submitting phase. Gated on isPrimary so a stray
-  // second instance can't double-POST.
+  // Submit when entering the submitting phase.
   useEffect(() => {
-    if (!isPrimary) return;
     if (state.phase !== "submitting") return;
     let cancelled = false;
     const run = async () => {
@@ -460,7 +429,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
     return () => {
       cancelled = true;
     };
-  }, [state.phase, state.fields, vertical.slug, variant, router, isPrimary]);
+  }, [state.phase, state.fields, vertical.slug, variant, router]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -517,10 +486,6 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
     setEditingKey(null);
     setEditError(null);
   }
-
-  // Only the primary instance renders a visible modal. Duplicates render
-  // nothing so they cannot stack on top of each other.
-  if (!isPrimary) return null;
 
   return (
     <>
