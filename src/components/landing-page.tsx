@@ -145,12 +145,11 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                 );
               })}
               <a
-                href={phone.href}
-                data-track="call"
+                href="#callback"
                 className="ml-2 hidden items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#0b7c87] lg:inline-flex"
               >
                 <PhoneIcon className="h-4 w-4" />
-                <span>{phone.label}</span>
+                <span>Talk to care manager</span>
               </a>
             </nav>
 
@@ -210,7 +209,9 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                   />
                 </div>
               </div>
-              <LeadForm vertical={vertical} />
+              <div id="callback" className="scroll-mt-24">
+                <LeadForm vertical={vertical} />
+              </div>
             </div>
           </div>
         </div>

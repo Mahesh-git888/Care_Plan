@@ -69,12 +69,11 @@ export function HomePage() {
                 Reviews
               </a>
               <a
-                href={phone.href}
-                data-track="call"
+                href="#callback"
                 className="inline-flex items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 text-white shadow-sm transition hover:bg-[#0b7c87]"
               >
                 <PhoneIcon className="h-4 w-4" />
-                <span>{phone.label}</span>
+                <span>Talk to care manager</span>
               </a>
             </nav>
             <MobileMenu
@@ -161,12 +160,14 @@ export function HomePage() {
                   />
                 </div>
               </div>
-              <LeadForm
-                vertical={elderCare}
-                verticalOptions={verticalList}
-                headline="Talk to a care manager today"
-                helperText="Share three quick details. A doctor-led care manager will call you back within 12 hours."
-              />
+              <div id="callback" className="scroll-mt-24">
+                <LeadForm
+                  vertical={elderCare}
+                  verticalOptions={verticalList}
+                  headline="Talk to a care manager today"
+                  helperText="Share three quick details. A doctor-led care manager will call you back within 12 hours."
+                />
+              </div>
             </div>
           </div>
         </div>
