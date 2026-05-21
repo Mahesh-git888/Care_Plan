@@ -269,7 +269,7 @@ export function HomePage() {
                   key={badge.title}
                   className="rounded-[1.7rem] border border-[#d7e7ea] bg-white p-6 shadow-sm"
                 >
-                  <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#fff1ec] text-[#ff5b2e]">
+                  <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e6f6f7] text-[#0f9aa8]">
                     <Icon className="h-5 w-5" />
                   </div>
                   <p className="mt-4 text-base font-semibold leading-7 tracking-[-0.02em] text-[#10242b]">

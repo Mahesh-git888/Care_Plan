@@ -250,7 +250,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                 key={badge.title}
                 className="group rounded-[1.7rem] border border-[#d7e7ea] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#fff1ec] text-[#ff5b2e]">
+                <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e6f6f7] text-[#0f9aa8]">
                   <Icon className="h-5 w-5" />
                 </div>
                 <p className="mt-4 text-base font-semibold leading-7 tracking-[-0.02em] text-[#10242b]">
@@ -309,17 +309,17 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
 
             <div className="mt-auto pt-6">
               <p className="text-sm font-medium leading-7 text-[#68584c]">
-                Not looking for a full managed care plan? You can explore Portea&apos;s
-                individual home-health services instead.
+                Not looking for a full managed care plan? Explore Portea&apos;s individual
+                home-health services instead.
               </p>
               <a
                 href="https://www.portea.com/"
                 target="_blank"
                 rel="noreferrer noopener"
-                className="mt-2.5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#0b7c87] transition hover:underline"
+                className="mt-3 inline-flex items-center justify-center gap-2 rounded-full bg-[#0f9aa8] px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_-18px_rgba(15,154,168,0.9)] transition hover:bg-[#0b7c87]"
               >
-                Go to portea.com
-                <ArrowUpRightIcon className="h-3.5 w-3.5" />
+                Visit portea.com
+                <ArrowUpRightIcon className="h-4 w-4" />
               </a>
             </div>
           </div>

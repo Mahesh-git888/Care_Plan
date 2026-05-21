@@ -29,7 +29,7 @@ export function StatsStrip() {
               key={stat.label}
               className="flex flex-col items-start gap-3 rounded-2xl border border-[#d9e8ea] bg-white px-4 py-5 shadow-sm sm:flex-row sm:items-center sm:gap-4 sm:px-5"
             >
-              <span className="inline-flex h-11 w-11 flex-none items-center justify-center rounded-full bg-[#ff5b2e] text-white sm:h-12 sm:w-12">
+              <span className="inline-flex h-11 w-11 flex-none items-center justify-center rounded-full bg-[#e6f6f7] text-[#0f9aa8] sm:h-12 sm:w-12">
                 <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
               </span>
               <div className="min-w-0">
