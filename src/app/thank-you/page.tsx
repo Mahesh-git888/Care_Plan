@@ -25,8 +25,7 @@ export default function ThankYouPage() {
         </h1>
         <p className="mt-5 max-w-xl text-lg font-medium leading-8 text-[#445d66]">
           Your care manager, a medically trained professional, will call you back
-          within 12 hours. If your situation is urgent, please call us on{" "}
-          {phone.label}.
+          within 12 hours.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
