@@ -217,7 +217,7 @@ export function LeadForm({
       <button
         type="submit"
         disabled={submitting}
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#ff5b2e] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(255,91,46,0.95)] transition hover:bg-[#ec4e22] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#0f9aa8] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(15,154,168,0.9)] transition hover:bg-[#0b7c87] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {submitting ? "Continuing..." : "Continue"}
       </button>

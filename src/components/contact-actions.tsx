@@ -21,10 +21,10 @@ function BaseButton({
 }) {
   const className =
     kind === "primary"
-      ? "inline-flex items-center justify-center gap-2 rounded-full bg-[#ff5b2e] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(255,91,46,0.95)] transition hover:bg-[#ec4e22]"
+      ? "inline-flex items-center justify-center gap-2 rounded-full bg-[#0f9aa8] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(15,154,168,0.9)] transition hover:bg-[#0b7c87]"
       : kind === "whatsapp"
-        ? "inline-flex items-center justify-center gap-2 rounded-full bg-[#1abc5b] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(26,188,91,0.85)] transition hover:bg-[#149c4b]"
-        : "inline-flex items-center justify-center gap-2 rounded-full border border-[#c8dde0] bg-white px-5 py-4 text-sm font-semibold text-[#0f2d36] transition hover:border-[#8db9bf] hover:bg-[#f7fbfb]";
+        ? "inline-flex items-center justify-center gap-2 rounded-full bg-[#25d366] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(37,211,102,0.85)] transition hover:bg-[#1da851]"
+        : "inline-flex items-center justify-center gap-2 rounded-full border border-[#0f9aa8] bg-white px-5 py-4 text-sm font-semibold text-[#0b7c87] transition hover:border-[#0b7c87] hover:bg-[#f0fafb]";
 
   return (
     <a
@@ -60,7 +60,7 @@ export function ContactActions({
               <span>{vertical.ctaLabel}</span>
             </>
           }
-          triggerClassName="inline-flex items-center justify-center gap-2 rounded-full bg-[#ff5b2e] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(255,91,46,0.95)] transition hover:bg-[#ec4e22]"
+          triggerClassName="inline-flex items-center justify-center gap-2 rounded-full bg-[#0f9aa8] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(15,154,168,0.9)] transition hover:bg-[#0b7c87]"
         />
 
         <BaseButton href={phone.href} ariaLabel={`Call Portea on ${phone.label}`}>
@@ -145,7 +145,7 @@ export function FloatingContactButtons({ vertical }: { vertical: VerticalConfig 
                   href={whatsapp.href}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="inline-flex items-center gap-3 rounded-full bg-[#1abc5b] px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-[#149c4b]"
+                  className="inline-flex items-center gap-3 rounded-full bg-[#25d366] px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-[#1da851]"
                   aria-label="WhatsApp Portea"
                 >
                   <WhatsAppIcon className="h-4 w-4" />
@@ -168,7 +168,7 @@ export function FloatingContactButtons({ vertical }: { vertical: VerticalConfig 
           <button
             type="button"
             onClick={() => setOpen((s) => !s)}
-            className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#ff5b2e] text-white shadow-[0_22px_45px_-22px_rgba(255,91,46,0.9)] transition hover:bg-[#ec4e22]"
+            className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#0f9aa8] text-white shadow-[0_22px_45px_-22px_rgba(15,154,168,0.9)] transition hover:bg-[#0b7c87]"
             aria-label={open ? "Close contact options" : "Open contact options"}
             aria-expanded={open}
           >

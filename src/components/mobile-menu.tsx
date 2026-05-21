@@ -99,7 +99,7 @@ export function MobileMenu({ links, phoneHref, phoneLabel, whatsappHref }: Props
                   target="_blank"
                   rel="noreferrer noopener"
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2 rounded-full bg-[#1abc5b] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#149c4b]"
+                  className="flex items-center justify-center gap-2 rounded-full bg-[#25d366] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1da851]"
                 >
                   <WhatsAppIcon className="h-4 w-4" />
                   WhatsApp us
