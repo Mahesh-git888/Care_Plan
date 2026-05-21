@@ -10,6 +10,7 @@ import { IntakeChatbot } from "@/components/intake-chatbot";
 import { LeadForm } from "@/components/lead-form";
 import { MobileMenu } from "@/components/mobile-menu";
 import {
+  ArrowUpRightIcon,
   CheckIcon,
   ClockIcon,
   HeartIcon,
@@ -305,6 +306,22 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                 </li>
               ))}
             </ul>
+
+            <div className="mt-auto pt-6">
+              <p className="text-sm font-medium leading-7 text-[#68584c]">
+                Not looking for a full managed care plan? You can explore Portea&apos;s
+                individual home-health services instead.
+              </p>
+              <a
+                href="https://www.portea.com/"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="mt-2.5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#0b7c87] transition hover:underline"
+              >
+                Go to portea.com
+                <ArrowUpRightIcon className="h-3.5 w-3.5" />
+              </a>
+            </div>
           </div>
         </div>
       </section>

@@ -102,12 +102,11 @@ export function HomePage() {
                 Home care your family can actually <span className="text-[#ff5b2e]">trust</span>.
               </h1>
               <p className="mt-5 max-w-2xl text-lg font-medium leading-9 text-[#445d66]">
-                Portea looks after ageing parents at home, supports families through dementia,
-                and helps patients through the weeks after a hospital stay. Your care manager is
-                a medically trained professional who handles your case from the first call
-                onwards. The caregivers who visit on day one are the ones who keep coming back.
-                Twice a week you'll get a clear WhatsApp update covering meals, medicines, mood,
-                and what changed at home.
+                Portea looks after ageing parents at home, whether the need is dementia care,
+                post-surgery recovery, or palliative care. A medically trained care manager
+                handles everything from the first call, sends weekly updates, and adjusts as
+                your parents&apos; needs change. Your caregivers, nurses, and physiotherapists
+                know your parents&apos; history and clinical needs before the first visit.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-3">
