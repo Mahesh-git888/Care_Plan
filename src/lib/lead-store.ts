@@ -7,6 +7,7 @@
 import { execute, query } from "@/lib/db";
 import {
   LIFECYCLE_STATUSES,
+  type AiBrief,
   type LeadAttribution,
   type LeadRecord,
   type LifecycleStatus,
@@ -15,6 +16,7 @@ import {
 // Re-export types for files that already import from "@/lib/lead-store".
 export {
   LIFECYCLE_STATUSES,
+  type AiBrief,
   type LeadAttribution,
   type LeadKind,
   type LeadRecord,
@@ -46,6 +48,8 @@ type LeadRow = {
   notes: string | null;
   updated_at: Date | string | null;
   updated_by: string | null;
+  ai_brief: AiBrief | null;
+  ai_brief_at: Date | string | null;
 };
 
 function toIso(value: Date | string | null | undefined): string | undefined {
@@ -77,6 +81,8 @@ function rowToLead(row: LeadRow): LeadRecord {
     user_agent: row.user_agent ?? undefined,
     ip_hash: row.ip_hash ?? undefined,
     attribution: row.attribution ?? {},
+    ai_brief: row.ai_brief ?? undefined,
+    ai_brief_at: toIso(row.ai_brief_at),
   };
 }
 
@@ -216,6 +222,15 @@ export async function updateLead(update: LeadUpdate): Promise<boolean> {
   const rowCount = await execute(
     `UPDATE leads SET ${sets.join(", ")} WHERE id = $${i}`,
     params,
+  );
+  return rowCount > 0;
+}
+
+// Persist a generated AI pre-call brief for one lead.
+export async function updateLeadBrief(id: string, brief: AiBrief): Promise<boolean> {
+  const rowCount = await execute(
+    `UPDATE leads SET ai_brief = $1::jsonb, ai_brief_at = now() WHERE id = $2`,
+    [JSON.stringify(brief), id],
   );
   return rowCount > 0;
 }

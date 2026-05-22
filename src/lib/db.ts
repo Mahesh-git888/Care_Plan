@@ -82,6 +82,10 @@ export function ensureSchema(): Promise<void> {
         `CREATE INDEX IF NOT EXISTS leads_created_at_idx ON leads (created_at DESC);`,
       );
       await p.query(`CREATE INDEX IF NOT EXISTS leads_kind_idx ON leads (kind);`);
+      // Columns added after the initial schema. ALTER ... IF NOT EXISTS keeps
+      // existing deployments in sync without a separate migration step.
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS ai_brief JSONB;`);
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS ai_brief_at TIMESTAMPTZ;`);
       await p.query(`
         CREATE TABLE IF NOT EXISTS password_overrides (
           email          TEXT PRIMARY KEY,

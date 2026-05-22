@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import {
   LIFECYCLE_STATUSES,
+  type AiBrief,
   type LeadRecord,
   type LifecycleStatus,
 } from "@/lib/lead-types";
@@ -421,6 +422,7 @@ export function CmDashboard() {
           cmNames={cmNames}
           viewer={viewer}
           onClose={() => setSelectedId(null)}
+          onPatch={onLeadSaved}
           onSaved={(u) => {
             onLeadSaved(u);
             setSelectedId(null);
@@ -481,15 +483,20 @@ function LeadDetailPanel({
   cmNames,
   viewer,
   onClose,
+  onPatch,
   onSaved,
 }: {
   lead: LeadRecord;
   cmNames: string[];
   viewer: Viewer | null;
   onClose: () => void;
+  onPatch: (l: LeadRecord) => void;
   onSaved: (l: LeadRecord) => void;
 }) {
   const [status, setStatus] = useState<LifecycleStatus>(lead.status || "new");
+  const [brief, setBrief] = useState<AiBrief | undefined>(lead.ai_brief);
+  const [briefLoading, setBriefLoading] = useState(false);
+  const [briefError, setBriefError] = useState<string | null>(null);
   const [careManager, setCareManager] = useState<string>(lead.care_manager || "Unassigned");
   const [followUpDate, setFollowUpDate] = useState<string>(
     lead.follow_up_date ? lead.follow_up_date.slice(0, 10) : "",
@@ -525,6 +532,34 @@ function LeadDetailPanel({
       setFeedback(err instanceof Error ? err.message : "Save failed");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleGenerateBrief() {
+    setBriefLoading(true);
+    setBriefError(null);
+    try {
+      const res = await fetch("/api/admin/leads/brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: lead.id }),
+      });
+      const body = (await res.json()) as {
+        ok?: boolean;
+        brief?: AiBrief;
+        error?: string;
+      };
+      if (!res.ok || !body.ok || !body.brief) {
+        throw new Error(body.error || "Could not generate the brief.");
+      }
+      setBrief(body.brief);
+      onPatch({ ...lead, ai_brief: body.brief });
+    } catch (err) {
+      setBriefError(
+        err instanceof Error ? err.message : "Could not generate the brief.",
+      );
+    } finally {
+      setBriefLoading(false);
     }
   }
 
@@ -592,6 +627,82 @@ function LeadDetailPanel({
                 <span className="text-[#7a8c92]">organic / direct</span>
               )}
             </Fact>
+          </div>
+
+          {/* Pre-call brief */}
+          <div className="space-y-3 rounded-2xl border border-[#e2e8eb] p-5">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-sm font-semibold text-[#10242b]">Pre-call brief</h3>
+              {brief ? (
+                <button
+                  type="button"
+                  onClick={handleGenerateBrief}
+                  disabled={briefLoading}
+                  className="text-xs font-semibold text-[#0b7c87] hover:underline disabled:opacity-50"
+                >
+                  {briefLoading ? "Working..." : "Regenerate"}
+                </button>
+              ) : null}
+            </div>
+
+            {!brief && !briefLoading ? (
+              <>
+                <p className="text-xs text-[#7a8c92]">
+                  Generate a quick summary and recommended questions before you call
+                  this family.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleGenerateBrief}
+                  className="rounded-full bg-[#0f9aa8] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0b7c87]"
+                >
+                  Generate brief
+                </button>
+              </>
+            ) : null}
+
+            {briefLoading ? (
+              <p className="text-sm text-[#7a8c92]">Generating brief...</p>
+            ) : null}
+
+            {briefError ? (
+              <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                {briefError}
+              </p>
+            ) : null}
+
+            {brief && !briefLoading ? (
+              <div className="space-y-4">
+                <table className="w-full text-sm">
+                  <tbody className="divide-y divide-[#eaf2f4]">
+                    {brief.summary.map((row) => (
+                      <tr key={row.label}>
+                        <td className="w-32 py-2 pr-4 align-top text-xs font-semibold uppercase tracking-[0.12em] text-[#7a8c92]">
+                          {row.label}
+                        </td>
+                        <td className="py-2 text-sm text-[#10242b]">{row.value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7a8c92]">
+                    Recommended questions
+                  </p>
+                  <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm text-[#10242b]">
+                    {brief.questions.map((q, i) => (
+                      <li key={i}>{q}</li>
+                    ))}
+                  </ol>
+                </div>
+                {brief.generated_by === "stub" ? (
+                  <p className="text-xs text-[#a0adb2]">
+                    Sample brief. Live AI generation activates once the Vertex AI key
+                    is added.
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
           </div>
 
           {/* Editable fields */}

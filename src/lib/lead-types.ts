@@ -36,6 +36,17 @@ export const LIFECYCLE_STATUSES: LifecycleStatus[] = [
   "lost",
 ];
 
+// AI-generated pre-call brief: a compact summary table plus recommended
+// questions for the care manager's discovery call.
+export type AiBriefRow = { label: string; value: string };
+
+export type AiBrief = {
+  summary: AiBriefRow[];
+  questions: string[];
+  // "stub" while running on sample data; the model name once live AI is wired.
+  generated_by?: string;
+};
+
 export type LeadRecord = {
   id: string;
   kind: LeadKind;
@@ -58,4 +69,6 @@ export type LeadRecord = {
   click_target?: string;
   user_agent?: string;
   ip_hash?: string;
+  ai_brief?: AiBrief;
+  ai_brief_at?: string;
 };
