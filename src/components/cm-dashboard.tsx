@@ -680,7 +680,13 @@ function LeadDetailPanel({
                         <td className="w-32 py-2 pr-4 align-top text-xs font-semibold uppercase tracking-[0.12em] text-[#7a8c92]">
                           {row.label}
                         </td>
-                        <td className="py-2 text-sm text-[#10242b]">{row.value}</td>
+                        <td className="py-2 text-sm text-[#10242b]">
+                          {row.label.toLowerCase() === "urgency" ? (
+                            <UrgencyValue value={row.value} />
+                          ) : (
+                            row.value
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -808,5 +814,35 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       </span>
       <span className="mt-1 block">{children}</span>
     </label>
+  );
+}
+
+// Colour-coding for the brief's triage tiers.
+const URGENCY_STYLE: Record<string, string> = {
+  green: "bg-green-100 text-green-700",
+  amber: "bg-amber-100 text-amber-700",
+  red: "bg-red-100 text-red-700",
+};
+
+// Renders the brief's "Urgency" value with the tier word (Green / Amber / Red)
+// shown as a colour-coded pill, followed by the reason text.
+function UrgencyValue({ value }: { value: string }) {
+  const match = value.match(/^\s*(green|amber|red)\b[\s:.-]*/i);
+  if (!match) {
+    return <>{value}</>;
+  }
+  const tier = match[1].toLowerCase();
+  const rest = value.slice(match[0].length).trim();
+  return (
+    <span>
+      <span
+        className={`mr-2 inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${
+          URGENCY_STYLE[tier] ?? "bg-gray-100 text-gray-600"
+        }`}
+      >
+        {tier}
+      </span>
+      {rest}
+    </span>
   );
 }
