@@ -1,21 +1,33 @@
 // AI pre-call brief generation.
 //
 // Turns a raw intake lead into a care manager's pre-call brief: a compact
-// summary table plus a set of recommended questions for the discovery call.
+// summary table plus recommended questions for the discovery call.
 //
-// CURRENT STATE: stub implementation. generateBrief() returns a structured
-// brief built from the lead's own fields plus sensible placeholder questions.
-// It needs no API key, no account and no network call, so the whole feature
-// (database, API route, dashboard card) can be built and tested right now.
+// Provider: Google Gemini (AI Studio). Reads GEMINI_API_KEY from the
+// environment. When that key is absent the module falls back to a stub brief
+// built from the lead's own fields, so the feature still works in local dev
+// or before the key is configured.
 //
-// GOING LIVE: replace the body of generateBrief() with a real Gemini (Vertex
-// AI) call. The input (LeadRecord) and output (AiBrief) shapes do not change,
-// so nothing else in the app needs touching.
-//
-// This module uses no Node built-ins beyond what Next.js route handlers
-// already allow. Do NOT import it from a "use client" component.
+// Do NOT import this file from a "use client" component.
 
-import type { AiBrief, LeadRecord } from "@/lib/lead-types";
+import { GoogleGenAI } from "@google/genai";
+
+import type { AiBrief, AiBriefRow, LeadRecord } from "@/lib/lead-types";
+
+// Model is overridable so a renamed or retired model can be fixed without a
+// code change. If you hit a "model not found" error, set GEMINI_MODEL to the
+// exact name shown in Google AI Studio.
+const MODEL = process.env.GEMINI_MODEL?.trim() || "gemini-2.5-flash";
+
+function geminiKey(): string {
+  return process.env.GEMINI_API_KEY?.trim() || "";
+}
+
+// True once the Gemini API key is configured. Until then generateBrief()
+// returns the stub brief instead of calling the model.
+export function isAiBriefLive(): boolean {
+  return geminiKey().length > 0;
+}
 
 function val(v: string | undefined | null, fallback = "Not provided"): string {
   const t = (v ?? "").trim();
@@ -28,21 +40,70 @@ const VERTICAL_LABELS: Record<string, string> = {
   "post-discharge": "Post-discharge recovery care",
 };
 
-// True once a real AI provider is configured. Until then generateBrief()
-// returns the stub brief. Kept here so the route/UI can show the right copy.
-export function isAiBriefLive(): boolean {
-  return Boolean(process.env.GCP_PROJECT_ID?.trim());
+const SYSTEM_PROMPT = `You are a clinical intake assistant for Portea, an Indian home healthcare company that runs a managed elder care service. Every new family is called by a care manager. A Portea care manager is a medically trained clinician with roughly one year of experience, working under doctor supervision, not a senior specialist. Write the brief so it actively guides a relatively junior clinician: be clear, specific, and explicit about anything that needs attention. Do not assume senior clinical judgment.
+
+Portea runs three home care programs:
+- Managed elder care: ongoing daily support for ageing parents at home (caregivers, nursing, physiotherapy, nutrition).
+- Dementia care: specialist care for elders with dementia or Alzheimer's, with trained dementia caregivers.
+- Post-discharge recovery care: structured support for the weeks after a hospital stay or surgery.
+
+Urgency has three tiers:
+- Green (routine): a planning enquiry, nothing time-sensitive, the family is exploring options.
+- Amber (urgent, non-emergency): a recent surgery or discharge, a sharp decline, a fall without serious injury, medication or safety gaps, or a family under visible strain. Needs prompt attention.
+- Red (emergency): signs of an acute medical crisis (chest pain, breathing difficulty, stroke signs, severe bleeding, loss of consciousness, a fall with injury). Portea does not provide emergency response. For Red, the brief must clearly tell the care manager to advise the family to call 108 or go to a hospital.
+
+Your output has two parts:
+1. A summary table with exactly these 7 rows: Elder, Condition, Main need, Caller, Location, Program fit, Urgency.
+2. Five to six recommended questions, tailored to this elder's specific condition, for the care manager to ask on the discovery call.
+
+Rules:
+- Be concise and concrete. Each table value is one short line.
+- Use plain, professional language. No jargon, no marketing tone.
+- Do not invent medical facts. If something is missing from the intake, write "Not provided" or turn it into a question instead.
+- "Program fit" must be one of the three programs above, with a 3 to 6 word reason.
+- "Urgency" must start with Green, Amber, or Red, followed by a short, clear reason. The care manager is junior and will rely on this line, so make the reason easy to act on. If Red, include the advice to direct the family to emergency care.
+- Questions must be specific to the condition given, not generic, and clearly worded so a junior care manager can ask them directly and understand why each one matters. Avoid clinical jargon. Where a particular answer would be a concern, phrase the question so the care manager naturally probes for it.
+- Return ONLY valid JSON in exactly this shape, with no extra text before or after:
+
+{
+  "summary": [
+    {"label": "Elder", "value": "..."},
+    {"label": "Condition", "value": "..."},
+    {"label": "Main need", "value": "..."},
+    {"label": "Caller", "value": "..."},
+    {"label": "Location", "value": "..."},
+    {"label": "Program fit", "value": "..."},
+    {"label": "Urgency", "value": "..."}
+  ],
+  "questions": ["...", "...", "...", "...", "...", "..."]
+}`;
+
+function buildUserMessage(lead: LeadRecord): string {
+  const program = lead.vertical
+    ? VERTICAL_LABELS[lead.vertical] ?? lead.vertical
+    : "not specified";
+  return [
+    "New intake record:",
+    `- Elder's name: ${val(lead.elder_name)}`,
+    `- Condition / diagnosis: ${val(lead.condition)}`,
+    `- Help needed: ${val(lead.needs)}`,
+    `- Caller's name: ${val(lead.full_name)}`,
+    `- Caller's relationship to the elder: ${val(lead.relationship)}`,
+    `- City / area: ${val(lead.city)}`,
+    `- Program enquired through: ${program}`,
+    `- Free-text notes: ${val(lead.situation, "none")}`,
+  ].join("\n");
 }
 
-// Stub brief. Builds the summary table from the lead's real fields (that part
-// never needed AI) and supplies generic but sensible discovery-call questions.
+// --- Stub (used when no API key is configured) -----------------------------
+
 function stubBrief(lead: LeadRecord): AiBrief {
   const caller =
     lead.full_name && lead.relationship
       ? `${lead.full_name} (${lead.relationship})`
       : val(lead.full_name);
 
-  const summary: AiBrief["summary"] = [
+  const summary: AiBriefRow[] = [
     { label: "Elder", value: val(lead.elder_name) },
     { label: "Condition", value: val(lead.condition) },
     { label: "Main need", value: val(lead.needs) },
@@ -69,14 +130,65 @@ function stubBrief(lead: LeadRecord): AiBrief {
   return { summary, questions, generated_by: "stub" };
 }
 
-// Generate a pre-call brief for one lead.
-//
-// Currently always returns the stub. When the Vertex AI credentials are set,
-// swap the body for a real Gemini call that returns the same AiBrief shape.
+// --- Live Gemini call ------------------------------------------------------
+
+function asBriefRows(v: unknown): AiBriefRow[] {
+  if (!Array.isArray(v)) return [];
+  const rows: AiBriefRow[] = [];
+  for (const item of v) {
+    if (item && typeof item === "object") {
+      const rec = item as Record<string, unknown>;
+      const label = String(rec.label ?? "").trim();
+      const value = String(rec.value ?? "").trim();
+      if (label && value) rows.push({ label, value });
+    }
+  }
+  return rows;
+}
+
+function asQuestions(v: unknown): string[] {
+  if (!Array.isArray(v)) return [];
+  return v.map((q) => String(q ?? "").trim()).filter((q) => q.length > 0);
+}
+
+async function callGemini(lead: LeadRecord): Promise<AiBrief> {
+  const ai = new GoogleGenAI({ apiKey: geminiKey() });
+  const response = await ai.models.generateContent({
+    model: MODEL,
+    contents: buildUserMessage(lead),
+    config: {
+      systemInstruction: SYSTEM_PROMPT,
+      responseMimeType: "application/json",
+      temperature: 0.4,
+      maxOutputTokens: 2048,
+      thinkingConfig: { thinkingBudget: 0 },
+    },
+  });
+
+  const text = (response.text ?? "").trim();
+  if (!text) throw new Error("Gemini returned an empty response");
+
+  let parsed: { summary?: unknown; questions?: unknown };
+  try {
+    parsed = JSON.parse(text) as { summary?: unknown; questions?: unknown };
+  } catch {
+    throw new Error("Gemini did not return valid JSON");
+  }
+
+  const summary = asBriefRows(parsed.summary);
+  const questions = asQuestions(parsed.questions);
+  if (summary.length === 0 || questions.length === 0) {
+    throw new Error("Gemini returned an incomplete brief");
+  }
+
+  return { summary, questions, generated_by: MODEL };
+}
+
+// Generate a pre-call brief for one lead. Calls Gemini when the API key is
+// configured, otherwise returns the stub brief.
 export async function generateBrief(lead: LeadRecord): Promise<AiBrief> {
-  // --- Live AI call goes here once GCP credentials are configured. ---
-  // if (isAiBriefLive()) {
-  //   return callGeminiForBrief(lead);
-  // }
+  if (isAiBriefLive()) {
+    return callGemini(lead);
+  }
   return stubBrief(lead);
 }
