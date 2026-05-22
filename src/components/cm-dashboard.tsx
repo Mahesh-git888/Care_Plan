@@ -817,30 +817,40 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-// Colour-coding for the brief's triage tiers.
+// Colour-coding for the brief's urgency levels.
 const URGENCY_STYLE: Record<string, string> = {
-  green: "bg-green-100 text-green-700",
-  amber: "bg-amber-100 text-amber-700",
-  red: "bg-red-100 text-red-700",
+  low: "bg-green-100 text-green-700",
+  medium: "bg-amber-100 text-amber-700",
+  high: "bg-red-100 text-red-700",
 };
 
-// Renders the brief's "Urgency" value with the tier word (Green / Amber / Red)
-// shown as a colour-coded pill, followed by the reason text.
+// Maps any urgency word the AI returns to a current level. Accepts the legacy
+// Green / Amber / Red wording too, so briefs generated earlier still colour
+// correctly without needing a regenerate.
+const URGENCY_ALIASES: Record<string, string> = {
+  low: "low",
+  green: "low",
+  medium: "medium",
+  amber: "medium",
+  high: "high",
+  red: "high",
+};
+
+// Renders the brief's "Urgency" value with the level word (Low / Medium /
+// High) shown as a colour-coded pill, followed by the reason text.
 function UrgencyValue({ value }: { value: string }) {
-  const match = value.match(/^\s*(green|amber|red)\b[\s:.-]*/i);
+  const match = value.match(/^\s*(low|medium|high|green|amber|red)\b[\s:.-]*/i);
   if (!match) {
     return <>{value}</>;
   }
-  const tier = match[1].toLowerCase();
+  const level = URGENCY_ALIASES[match[1].toLowerCase()] ?? "low";
   const rest = value.slice(match[0].length).trim();
   return (
     <span>
       <span
-        className={`mr-2 inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${
-          URGENCY_STYLE[tier] ?? "bg-gray-100 text-gray-600"
-        }`}
+        className={`mr-2 inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${URGENCY_STYLE[level]}`}
       >
-        {tier}
+        {level}
       </span>
       {rest}
     </span>
