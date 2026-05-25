@@ -10,6 +10,7 @@ import {
   type LeadRecord,
   type LifecycleStatus,
 } from "@/lib/lead-types";
+import { PasswordChangeModal } from "@/components/password-change-modal";
 
 const STATUS_LABELS: Record<LifecycleStatus, string> = {
   new: "new",
@@ -101,7 +102,12 @@ function isThisMonth(iso?: string): boolean {
   return d.getTime() >= startOfThisMonth();
 }
 
-type Viewer = { role: "admin" | "cm"; name: string; email: string };
+type Viewer = {
+  role: "admin" | "cm";
+  name: string;
+  email: string;
+  must_change_password?: boolean;
+};
 
 export function CmDashboard() {
   const router = useRouter();
@@ -115,6 +121,7 @@ export function CmDashboard() {
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("all");
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -145,6 +152,12 @@ export function CmDashboard() {
   useEffect(() => {
     void fetchLeads();
   }, [fetchLeads]);
+
+  // Force a password change when the session says the user is still on a
+  // temporary (admin-set) password. The modal blocks the rest of the UI.
+  useEffect(() => {
+    if (viewer?.must_change_password) setPasswordModalOpen(true);
+  }, [viewer]);
 
   async function handleSignOut() {
     await fetch("/api/admin/auth", { method: "DELETE" });
@@ -230,6 +243,21 @@ export function CmDashboard() {
             >
               Marketing analytics →
             </Link>
+            {viewer?.role === "admin" ? (
+              <Link
+                href="/admin/users"
+                className="rounded-full border border-[#d7e7ea] bg-white px-4 py-2 text-sm font-medium text-[#0b7c87] hover:bg-[#f7fbfb]"
+              >
+                Manage users
+              </Link>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => setPasswordModalOpen(true)}
+              className="rounded-lg border border-[#d7e7ea] bg-white px-3 py-1.5 text-sm font-medium text-[#10242b] hover:bg-[#f7fbfb]"
+            >
+              Change password
+            </button>
             {viewer?.role === "admin" ? (
               <select
                 value={cm}
@@ -426,6 +454,17 @@ export function CmDashboard() {
           onSaved={(u) => {
             onLeadSaved(u);
             setSelectedId(null);
+          }}
+        />
+      ) : null}
+
+      {passwordModalOpen ? (
+        <PasswordChangeModal
+          forced={viewer?.must_change_password ?? false}
+          onClose={() => setPasswordModalOpen(false)}
+          onDone={() => {
+            setPasswordModalOpen(false);
+            void fetchLeads(); // refresh viewer so must_change_password clears
           }}
         />
       ) : null}

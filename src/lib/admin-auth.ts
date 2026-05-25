@@ -14,9 +14,8 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
 
-import { execute } from "@/lib/db";
-import { getOverrideForEmail } from "@/lib/password-overrides";
-import { findUserByEmail, type UserRole } from "@/lib/users";
+import { execute, query } from "@/lib/db";
+import { findUserByEmail, hasAnyUser, type UserRole } from "@/lib/users";
 
 export const COOKIE_NAME = "portea_admin_session";
 
@@ -31,6 +30,9 @@ export type SessionPayload = {
   email: string;
   name: string;
   role: UserRole;
+  // Set when the user is on a temporary password (just created, or admin
+  // reset). The dashboard forces a password change before unlocking the UI.
+  mustChangePassword?: boolean;
   iat: number; // issued at, seconds since epoch
   exp: number; // expiry, seconds since epoch
 };
@@ -135,6 +137,7 @@ export function buildSessionPayload(user: {
   email: string;
   name: string;
   role: UserRole;
+  mustChangePassword?: boolean;
 }): SessionPayload {
   const iat = nowSeconds();
   return {
@@ -142,6 +145,7 @@ export function buildSessionPayload(user: {
     email: user.email,
     name: user.name,
     role: user.role,
+    ...(user.mustChangePassword ? { mustChangePassword: true } : {}),
     iat,
     exp: iat + SESSION_TTL_SECONDS,
   };
@@ -161,9 +165,9 @@ export async function isAdminAuthed(): Promise<boolean> {
   return (await getSession()) !== null;
 }
 
-// True if either PORTEA_USERS_JSON or PORTEA_ADMIN_PASSWORD is set. Routes
-// short-circuit with a 503 when this is false (admin is not configured at
-// all on this server). Use in place of checking PORTEA_ADMIN_PASSWORD alone.
+// True if any auth path is configured: PORTEA_USERS_JSON (seed), legacy
+// PORTEA_ADMIN_PASSWORD, or at least one user already in the DB. Routes
+// short-circuit with a 503 when this is false.
 export function isAdminConfigured(): boolean {
   return Boolean(
     process.env.PORTEA_USERS_JSON?.trim() || process.env.PORTEA_ADMIN_PASSWORD?.trim(),
@@ -270,7 +274,13 @@ export function extractClientIp(request: Request): string | undefined {
 export type LoginResult =
   | {
       ok: true;
-      user: { id: string; email: string; name: string; role: UserRole };
+      user: {
+        id: string;
+        email: string;
+        name: string;
+        role: UserRole;
+        mustChangePassword: boolean;
+      };
     }
   | { ok: false; reason: "not_configured" | "invalid_credentials" };
 
@@ -280,32 +290,36 @@ export async function attemptLogin(
 ): Promise<LoginResult> {
   if (!password) return { ok: false, reason: "invalid_credentials" };
 
-  const usersJsonSet = Boolean(process.env.PORTEA_USERS_JSON?.trim());
-  const legacyPassword = process.env.PORTEA_ADMIN_PASSWORD?.trim();
-
-  // Path 1: per-user accounts via PORTEA_USERS_JSON
-  if (usersJsonSet) {
-    if (!email) return { ok: false, reason: "invalid_credentials" };
-    const user = findUserByEmail(email);
-    if (!user) return { ok: false, reason: "invalid_credentials" };
-
-    // A password the user set themselves (stored in Postgres) takes
-    // precedence over the seed hash in PORTEA_USERS_JSON.
-    const override = await getOverrideForEmail(user.email);
-    const hashToCheck = override?.password_hash ?? user.password_hash;
-
-    if (!verifyPassword(password, hashToCheck)) {
-      return { ok: false, reason: "invalid_credentials" };
+  // Path 1: per-user accounts from the Postgres "users" table. The table is
+  // auto-seeded from PORTEA_USERS_JSON on first read, so legacy deployments
+  // keep working without any extra migration step.
+  if (email) {
+    const user = await findUserByEmail(email);
+    if (user) {
+      if (!user.active) return { ok: false, reason: "invalid_credentials" };
+      if (!verifyPassword(password, user.password_hash)) {
+        return { ok: false, reason: "invalid_credentials" };
+      }
+      return {
+        ok: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          mustChangePassword: user.must_change_password,
+        },
+      };
     }
-    return {
-      ok: true,
-      user: { id: user.id, email: user.email, name: user.name, role: user.role },
-    };
   }
 
-  // Path 2: legacy single-password fallback
+  // Path 2: legacy single-password fallback. Honoured only when no DB user
+  // is configured at all.
+  const legacyPassword = process.env.PORTEA_ADMIN_PASSWORD?.trim();
   if (legacyPassword) {
-    if (password !== legacyPassword) return { ok: false, reason: "invalid_credentials" };
+    if (password !== legacyPassword) {
+      return { ok: false, reason: "invalid_credentials" };
+    }
     return {
       ok: true,
       user: {
@@ -313,9 +327,16 @@ export async function attemptLogin(
         email: email?.trim().toLowerCase() || "admin@portea.local",
         name: "Admin",
         role: "admin",
+        mustChangePassword: false,
       },
     };
   }
 
+  // No DB user found and no legacy password. Was the system ever configured
+  // (env JSON set, or any user in DB)? If so, this is just a wrong-credentials
+  // attempt. If not, the server has no auth set up at all.
+  const usersJsonSet = Boolean(process.env.PORTEA_USERS_JSON?.trim());
+  if (usersJsonSet) return { ok: false, reason: "invalid_credentials" };
+  if (await hasAnyUser()) return { ok: false, reason: "invalid_credentials" };
   return { ok: false, reason: "not_configured" };
 }

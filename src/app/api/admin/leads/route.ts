@@ -63,17 +63,22 @@ export async function GET(request: Request) {
   // Only role === "cm" users are included so admins don't accidentally appear
   // as assignable care managers in the dashboard dropdowns.
   // Falls back to those three names if no users are configured (legacy mode).
-  const userList = readUsers();
+  const userList = await readUsers();
   const cms = userList.length > 0
     ? userList
-        .filter((u) => u.role === "cm")
+        .filter((u) => u.role === "cm" && u.active)
         .map((u) => u.name)
         .filter((n, i, arr) => arr.indexOf(n) === i)
     : ["Meera", "Priya", "Rahul"];
 
   return NextResponse.json({
     leads: filtered,
-    viewer: { role: session.role, name: session.name, email: session.email },
+    viewer: {
+      role: session.role,
+      name: session.name,
+      email: session.email,
+      must_change_password: session.mustChangePassword ?? false,
+    },
     cms,
   });
 }

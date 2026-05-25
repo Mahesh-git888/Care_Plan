@@ -87,6 +87,21 @@ export function ensureSchema(): Promise<void> {
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS ai_brief JSONB;`);
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS ai_brief_at TIMESTAMPTZ;`);
       await p.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id                    TEXT PRIMARY KEY,
+          email                 TEXT NOT NULL UNIQUE,
+          name                  TEXT NOT NULL,
+          role                  TEXT NOT NULL CHECK (role IN ('admin','cm')),
+          password_hash         TEXT NOT NULL,
+          must_change_password  BOOLEAN NOT NULL DEFAULT FALSE,
+          active                BOOLEAN NOT NULL DEFAULT TRUE,
+          created_at            TIMESTAMPTZ NOT NULL DEFAULT now(),
+          created_by            TEXT,
+          updated_at            TIMESTAMPTZ
+        );
+      `);
+      await p.query(`CREATE INDEX IF NOT EXISTS users_email_idx ON users (email);`);
+      await p.query(`
         CREATE TABLE IF NOT EXISTS password_overrides (
           email          TEXT PRIMARY KEY,
           password_hash  TEXT NOT NULL,

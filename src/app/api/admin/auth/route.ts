@@ -113,6 +113,7 @@ export async function POST(request: NextRequest) {
       email: result.user.email,
       name: result.user.name,
       role: result.user.role,
+      must_change_password: result.user.mustChangePassword,
     },
   });
 }
