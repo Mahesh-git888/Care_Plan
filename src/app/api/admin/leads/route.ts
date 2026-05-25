@@ -60,10 +60,15 @@ export async function GET(request: Request) {
 
   // Dynamic CM list. Sourced from PORTEA_USERS_JSON so the dropdown reflects
   // real accounts instead of the old hardcoded ["Meera", "Priya", "Rahul"].
-  // Falls back to those three if no users are configured (legacy mode).
+  // Only role === "cm" users are included so admins don't accidentally appear
+  // as assignable care managers in the dashboard dropdowns.
+  // Falls back to those three names if no users are configured (legacy mode).
   const userList = readUsers();
   const cms = userList.length > 0
-    ? userList.map((u) => u.name).filter((n, i, arr) => arr.indexOf(n) === i)
+    ? userList
+        .filter((u) => u.role === "cm")
+        .map((u) => u.name)
+        .filter((n, i, arr) => arr.indexOf(n) === i)
     : ["Meera", "Priya", "Rahul"];
 
   return NextResponse.json({
