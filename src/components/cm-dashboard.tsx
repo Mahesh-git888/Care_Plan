@@ -883,16 +883,13 @@ function LeadDetailPanel({
           <div className="space-y-5 rounded-2xl border border-[#e2e8eb] p-5">
             <div>
               <h3 className="text-sm font-semibold text-[#10242b]">After the call</h3>
-              <p className="mt-0.5 text-xs text-[#7a8c92]">
-                Save the recording, transcribe it, and capture observations. The audio
-                itself is never stored on our side, only the transcript.
-              </p>
+           
             </div>
 
             <div className="space-y-3">
               <label className="block">
                 <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-[#7a8c92]">
-                  Recording link (e.g. from the Portea ops portal)
+                  Recording link 
                 </span>
                 <input
                   type="url"
