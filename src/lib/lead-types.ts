@@ -71,4 +71,12 @@ export type LeadRecord = {
   ip_hash?: string;
   ai_brief?: AiBrief;
   ai_brief_at?: string;
+  // Post-call data captured by the care manager. The transcript is generated
+  // from the recording (URL or uploaded file); the audio itself is never
+  // stored on our side.
+  notes?: string;
+  call_recording_url?: string;
+  call_observations?: string;
+  call_transcript?: string;
+  call_transcript_at?: string;
 };

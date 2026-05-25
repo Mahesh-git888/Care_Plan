@@ -86,6 +86,14 @@ export async function POST(request: Request) {
     follow_up_date:
       typeof body.follow_up_date === "string" ? body.follow_up_date : undefined,
     note: typeof body.note === "string" ? body.note : undefined,
+    call_recording_url:
+      typeof body.call_recording_url === "string"
+        ? body.call_recording_url
+        : undefined,
+    call_observations:
+      typeof body.call_observations === "string"
+        ? body.call_observations
+        : undefined,
     updated_by: session.email,
   });
 

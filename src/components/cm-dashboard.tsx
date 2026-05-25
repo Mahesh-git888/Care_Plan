@@ -11,6 +11,7 @@ import {
   type LifecycleStatus,
 } from "@/lib/lead-types";
 import { PasswordChangeModal } from "@/components/password-change-modal";
+import { upload as uploadToBlob } from "@vercel/blob/client";
 
 const STATUS_LABELS: Record<LifecycleStatus, string> = {
   new: "new",
@@ -536,6 +537,18 @@ function LeadDetailPanel({
   const [brief, setBrief] = useState<AiBrief | undefined>(lead.ai_brief);
   const [briefLoading, setBriefLoading] = useState(false);
   const [briefError, setBriefError] = useState<string | null>(null);
+
+  // Feature 2: post-call recording, transcript, observations.
+  const [recordingUrl, setRecordingUrl] = useState(lead.call_recording_url ?? "");
+  const [observations, setObservations] = useState(lead.call_observations ?? "");
+  const [transcript, setTranscript] = useState<string | undefined>(
+    lead.call_transcript,
+  );
+  const [transcribing, setTranscribing] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [transcribeError, setTranscribeError] = useState<string | null>(null);
+  const [savingCallInfo, setSavingCallInfo] = useState(false);
+  const [callInfoFeedback, setCallInfoFeedback] = useState<string | null>(null);
   const [careManager, setCareManager] = useState<string>(lead.care_manager || "Unassigned");
   const [followUpDate, setFollowUpDate] = useState<string>(
     lead.follow_up_date ? lead.follow_up_date.slice(0, 10) : "",
@@ -571,6 +584,122 @@ function LeadDetailPanel({
       setFeedback(err instanceof Error ? err.message : "Save failed");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function transcribeFromUrl() {
+    const url = recordingUrl.trim();
+    if (!url) {
+      setTranscribeError("Please paste a recording link first.");
+      return;
+    }
+    setTranscribing(true);
+    setTranscribeError(null);
+    try {
+      const res = await fetch("/api/admin/leads/transcribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: lead.id, source: "url", url }),
+      });
+      const body = (await res.json()) as {
+        ok?: boolean;
+        transcript?: string;
+        transcript_at?: string;
+        error?: string;
+      };
+      if (!res.ok || !body.ok || !body.transcript) {
+        throw new Error(body.error || "Transcription failed.");
+      }
+      setTranscript(body.transcript);
+      onPatch({
+        ...lead,
+        call_recording_url: url,
+        call_transcript: body.transcript,
+        call_transcript_at: body.transcript_at,
+      });
+    } catch (err) {
+      setTranscribeError(
+        err instanceof Error ? err.message : "Transcription failed.",
+      );
+    } finally {
+      setTranscribing(false);
+    }
+  }
+
+  async function uploadAndTranscribe(file: File) {
+    setTranscribeError(null);
+    setUploadingFile(true);
+    try {
+      // Direct client-to-blob upload using the upload-token route. Bypasses
+      // the Next.js API body limit so large MP3 files go through.
+      const blob = await uploadToBlob(file.name, file, {
+        access: "public",
+        handleUploadUrl: "/api/admin/leads/upload-token",
+      });
+      setUploadingFile(false);
+      setTranscribing(true);
+      const res = await fetch("/api/admin/leads/transcribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: lead.id,
+          source: "blob",
+          blob_url: blob.url,
+        }),
+      });
+      const body = (await res.json()) as {
+        ok?: boolean;
+        transcript?: string;
+        transcript_at?: string;
+        error?: string;
+      };
+      if (!res.ok || !body.ok || !body.transcript) {
+        throw new Error(body.error || "Transcription failed.");
+      }
+      setTranscript(body.transcript);
+      onPatch({
+        ...lead,
+        call_transcript: body.transcript,
+        call_transcript_at: body.transcript_at,
+      });
+    } catch (err) {
+      setTranscribeError(
+        err instanceof Error ? err.message : "Upload or transcription failed.",
+      );
+    } finally {
+      setUploadingFile(false);
+      setTranscribing(false);
+    }
+  }
+
+  async function saveCallInfo() {
+    setSavingCallInfo(true);
+    setCallInfoFeedback(null);
+    try {
+      const res = await fetch("/api/admin/leads/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: lead.id,
+          call_recording_url: recordingUrl.trim(),
+          call_observations: observations,
+        }),
+      });
+      const body = (await res.json()) as { ok?: boolean; error?: string };
+      if (!res.ok || !body.ok) throw new Error(body.error || "Save failed.");
+      setCallInfoFeedback("Saved ✓");
+      onPatch({
+        ...lead,
+        call_recording_url: recordingUrl.trim(),
+        call_observations: observations,
+      });
+      setTimeout(() => setCallInfoFeedback(null), 2500);
+    } catch (err) {
+      setCallInfoFeedback(
+        err instanceof Error ? err.message : "Save failed.",
+      );
+    } finally {
+      setSavingCallInfo(false);
     }
   }
 
@@ -746,6 +875,132 @@ function LeadDetailPanel({
                     is added.
                   </p>
                 ) : null}
+              </div>
+            ) : null}
+          </div>
+
+          {/* After the call: recording, transcript, observations */}
+          <div className="space-y-5 rounded-2xl border border-[#e2e8eb] p-5">
+            <div>
+              <h3 className="text-sm font-semibold text-[#10242b]">After the call</h3>
+              <p className="mt-0.5 text-xs text-[#7a8c92]">
+                Save the recording, transcribe it, and capture observations. The audio
+                itself is never stored on our side, only the transcript.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <label className="block">
+                <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-[#7a8c92]">
+                  Recording link (e.g. from the Portea ops portal)
+                </span>
+                <input
+                  type="url"
+                  value={recordingUrl}
+                  onChange={(e) => setRecordingUrl(e.target.value)}
+                  placeholder="Paste the link here"
+                  disabled={transcribing || uploadingFile}
+                  className="mt-1 w-full rounded-lg border border-[#d7e7ea] px-3 py-2 text-sm outline-none focus:border-[#0f9aa8] focus:ring-2 focus:ring-[#0f9aa8]/20"
+                />
+              </label>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={transcribeFromUrl}
+                  disabled={!recordingUrl.trim() || transcribing || uploadingFile}
+                  className="rounded-full bg-[#0f9aa8] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0b7c87] disabled:opacity-50"
+                >
+                  {transcribing
+                    ? "Transcribing..."
+                    : transcript
+                      ? "Re-transcribe from link"
+                      : "Transcribe from link"}
+                </button>
+                <span className="text-xs text-[#7a8c92]">or</span>
+                <label
+                  className={`cursor-pointer rounded-full border border-[#d7e7ea] bg-white px-4 py-2 text-sm font-semibold text-[#10242b] hover:bg-[#f7fbfb] ${
+                    transcribing || uploadingFile
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }`}
+                >
+                  {uploadingFile ? "Uploading..." : "Upload audio file"}
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    disabled={transcribing || uploadingFile}
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      if (file) void uploadAndTranscribe(file);
+                      event.target.value = "";
+                    }}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+              {transcribing || uploadingFile ? (
+                <p className="text-xs text-[#7a8c92]">
+                  {uploadingFile
+                    ? "Sending the file to secure storage..."
+                    : "Transcribing the audio. This can take 30 to 60 seconds for longer calls."}
+                </p>
+              ) : null}
+              {transcribeError ? (
+                <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                  {transcribeError}
+                </p>
+              ) : null}
+            </div>
+
+            {transcript ? (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#7a8c92]">
+                  Transcript
+                </p>
+                <pre className="mt-1 max-h-72 overflow-y-auto whitespace-pre-wrap rounded-lg border border-[#e2e8eb] bg-[#f7fbfb] p-3 text-sm leading-relaxed text-[#10242b]">
+                  {transcript}
+                </pre>
+              </div>
+            ) : null}
+
+            <label className="block">
+              <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-[#7a8c92]">
+                Observations from the call
+              </span>
+              <textarea
+                value={observations}
+                onChange={(e) => setObservations(e.target.value)}
+                rows={4}
+                placeholder="What stood out: patient's state, family dynamic, anything urgent or to follow up on."
+                className="mt-1 w-full rounded-lg border border-[#d7e7ea] px-3 py-2 text-sm outline-none focus:border-[#0f9aa8] focus:ring-2 focus:ring-[#0f9aa8]/20"
+              />
+            </label>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={saveCallInfo}
+                disabled={savingCallInfo}
+                className="rounded-full bg-[#0f9aa8] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0b7c87] disabled:opacity-50"
+              >
+                {savingCallInfo ? "Saving..." : "Save link & observations"}
+              </button>
+              {callInfoFeedback ? (
+                <span className="text-xs text-[#7a8c92]">{callInfoFeedback}</span>
+              ) : null}
+            </div>
+
+            {lead.notes ? (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#7a8c92]">
+                  Notes history
+                </p>
+                <pre className="mt-1 max-h-48 overflow-y-auto whitespace-pre-wrap rounded-lg border border-[#e2e8eb] bg-[#f7fbfb] p-3 text-xs leading-relaxed text-[#10242b]">
+                  {lead.notes}
+                </pre>
+                <p className="mt-1 text-xs text-[#7a8c92]">
+                  Add a new note via the &quot;Quick note&quot; field in the Care manager update box below.
+                </p>
               </div>
             ) : null}
           </div>

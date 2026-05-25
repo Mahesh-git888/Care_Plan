@@ -50,6 +50,10 @@ type LeadRow = {
   updated_by: string | null;
   ai_brief: AiBrief | null;
   ai_brief_at: Date | string | null;
+  call_recording_url: string | null;
+  call_observations: string | null;
+  call_transcript: string | null;
+  call_transcript_at: Date | string | null;
 };
 
 function toIso(value: Date | string | null | undefined): string | undefined {
@@ -83,6 +87,11 @@ function rowToLead(row: LeadRow): LeadRecord {
     attribution: row.attribution ?? {},
     ai_brief: row.ai_brief ?? undefined,
     ai_brief_at: toIso(row.ai_brief_at),
+    notes: row.notes ?? undefined,
+    call_recording_url: row.call_recording_url ?? undefined,
+    call_observations: row.call_observations ?? undefined,
+    call_transcript: row.call_transcript ?? undefined,
+    call_transcript_at: toIso(row.call_transcript_at),
   };
 }
 
@@ -180,6 +189,8 @@ export type LeadUpdate = {
   care_manager?: string;
   follow_up_date?: string;
   note?: string;
+  call_recording_url?: string;
+  call_observations?: string;
   updated_by?: string;
 };
 
@@ -208,6 +219,14 @@ export async function updateLead(update: LeadUpdate): Promise<boolean> {
     params.push(stamped);
     i++;
   }
+  if (update.call_recording_url !== undefined) {
+    sets.push(`call_recording_url = $${i++}`);
+    params.push(update.call_recording_url || null);
+  }
+  if (update.call_observations !== undefined) {
+    sets.push(`call_observations = $${i++}`);
+    params.push(update.call_observations || null);
+  }
   if (update.updated_by !== undefined) {
     sets.push(`updated_by = $${i++}`);
     params.push(update.updated_by);
@@ -222,6 +241,19 @@ export async function updateLead(update: LeadUpdate): Promise<boolean> {
   const rowCount = await execute(
     `UPDATE leads SET ${sets.join(", ")} WHERE id = $${i}`,
     params,
+  );
+  return rowCount > 0;
+}
+
+// Save a transcript and the time it was generated. Used by the transcribe
+// route after Gemini returns successfully.
+export async function updateLeadTranscript(
+  id: string,
+  transcript: string,
+): Promise<boolean> {
+  const rowCount = await execute(
+    `UPDATE leads SET call_transcript = $1, call_transcript_at = now(), updated_at = now() WHERE id = $2`,
+    [transcript, id],
   );
   return rowCount > 0;
 }

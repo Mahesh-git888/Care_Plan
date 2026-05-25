@@ -86,6 +86,14 @@ export function ensureSchema(): Promise<void> {
       // existing deployments in sync without a separate migration step.
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS ai_brief JSONB;`);
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS ai_brief_at TIMESTAMPTZ;`);
+      // Feature 2: post-call data. Recording URL points to wherever the audio
+      // lives (the Portea ops portal, etc.). The transcript is what we store;
+      // we never keep the audio bytes ourselves. Observations is the CM's
+      // structured judgement after the call.
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS call_recording_url TEXT;`);
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS call_observations TEXT;`);
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS call_transcript TEXT;`);
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS call_transcript_at TIMESTAMPTZ;`);
       await p.query(`
         CREATE TABLE IF NOT EXISTS users (
           id                    TEXT PRIMARY KEY,
