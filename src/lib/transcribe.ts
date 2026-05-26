@@ -20,7 +20,9 @@ const TRANSCRIPTION_PROMPT = `You are transcribing a phone call between a Portea
 
 Output a clean, readable transcript with speaker labels.
 - Format each turn as "CM:" or "Family:" followed by what they said.
-- Preserve Hindi and English exactly as spoken. Do not translate.
+- Use the script that matches the language of each word, NOT the speaker's nationality. English words go in Roman/Latin script even when the speaker has an Indian accent. Do NOT transliterate English speech into Devanagari, Tamil, Kannada or any other Indian script. Example: if the CM says "This is Doctor Kavita speaking from Portea Home Care", write it exactly as "This is Doctor Kavita speaking from Portea Home Care", NOT "दिस इज डॉक्टर कविता स्पीकिंग फ्रॉम पोर्टिया होम केयर".
+- Hindi words should appear in Devanagari (or in Roman-script Hinglish if that is more natural in context). Tamil, Telugu, Kannada and other Indian language words should appear in their native script.
+- Do not translate. Preserve the actual language mix used in the call.
 - Include only what is actually said. No commentary, no summary, no preamble.
 - If a segment is unclear or noisy, write [inaudible] for that span.
 - Do not invent content. If you cannot understand a segment, mark it [inaudible].
