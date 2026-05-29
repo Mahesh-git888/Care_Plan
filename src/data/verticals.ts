@@ -785,18 +785,18 @@ export type StatItem = {
 
 export const homeStats: StatItem[] = [
   {
-    value: "20,00,000+",
-    label: "patients served across India",
+    value: "2M+",
+    label: "patients served since 2013",
     icon: "users",
   },
   {
-    value: "15,00,000+",
-    label: "annual home visits",
+    value: "10,000+",
+    label: "clinicians in our network",
     icon: "home",
   },
   {
-    value: "100+",
-    label: "cities covered",
+    value: "135+",
+    label: "cities across India",
     icon: "mapPin",
   },
   {

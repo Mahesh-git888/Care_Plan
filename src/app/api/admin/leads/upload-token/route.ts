@@ -54,6 +54,8 @@ export async function POST(request: Request) {
         // haven't wired in yet; we'd rather reject fast than have transcription
         // fail later.
         maximumSizeInBytes: 50 * 1024 * 1024,
+        // Add a random suffix so two CMs uploading "call.mp3" can't collide.
+        addRandomSuffix: true,
       }),
       onUploadCompleted: async () => {
         // Nothing to do server-side. The client calls /transcribe next with
