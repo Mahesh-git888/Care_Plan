@@ -297,6 +297,19 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* Portea Medical stats */}
+      <div className="mx-auto max-w-7xl px-5 pt-12 text-center sm:px-6 lg:px-10">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0b7c87]">
+          Portea Medical
+        </p>
+        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#10242b] sm:text-3xl">
+          India&apos;s largest home healthcare company since 2013
+        </h2>
+      </div>
+      <div className="mt-8">
+        <StatsStrip />
+      </div>
+
       {/* The reality today: problem + solution */}
       <section className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
         <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
@@ -503,19 +516,6 @@ export function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Portea Medical stats */}
-      <div className="mx-auto max-w-7xl px-5 pt-4 text-center sm:px-6 lg:px-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0b7c87]">
-          Portea Medical
-        </p>
-        <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#10242b] sm:text-3xl">
-          India&apos;s largest home healthcare company since 2013
-        </h2>
-      </div>
-      <div className="mt-8">
-        <StatsStrip />
-      </div>
 
       {/* Meet the doctors */}
       <DoctorsSection />
