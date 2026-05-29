@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -271,13 +272,28 @@ export function HomePage() {
               </div>
             </div>
 
-            <div id="callback" className="scroll-mt-24">
-              <LeadForm
-                vertical={elderCare}
-                verticalOptions={verticalList}
-                headline="Get a free care assessment"
-                helperText="Share three quick details. A doctor-led care manager will call you back within 12 hours."
-              />
+            <div className="grid gap-4">
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-white p-3 shadow-[0_30px_60px_-28px_rgba(16,42,49,0.22)]">
+                <div className="relative aspect-[16/11] overflow-hidden rounded-[1.5rem]">
+                  <Image
+                    src={elderCare.images[0].src}
+                    alt={elderCare.images[0].alt}
+                    width={1400}
+                    height={980}
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: elderCare.images[0].position ?? "center center" }}
+                    priority
+                  />
+                </div>
+              </div>
+              <div id="callback" className="scroll-mt-24">
+                <LeadForm
+                  vertical={elderCare}
+                  verticalOptions={verticalList}
+                  headline="Get a free care assessment"
+                  helperText="Share three quick details. A doctor-led care manager will call you back within 12 hours."
+                />
+              </div>
             </div>
           </div>
         </div>
