@@ -3,11 +3,13 @@ import Link from "next/link";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { ChatbotTrigger } from "@/components/chatbot-trigger";
+import { FloatingContactButtons } from "@/components/contact-actions";
 import { DoctorsSection } from "@/components/doctors-section";
 import { HandwrittenNote } from "@/components/handwritten-note";
 import { IntakeChatbot } from "@/components/intake-chatbot";
 import {
   ArrowUpRightIcon,
+  ChatIcon,
   CheckIcon,
   PhoneIcon,
   WhatsAppIcon,
@@ -172,6 +174,9 @@ export function HomePage() {
       {/* Care assistant chatbot, opened by the assessment buttons */}
       <IntakeChatbot vertical={elderCare} />
 
+      {/* Floating call / WhatsApp / chat, constant across scroll */}
+      <FloatingContactButtons vertical={elderCare} />
+
       {/* Announcement bar */}
       <div className="gradient-banner text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-2 text-xs font-semibold sm:px-6 lg:px-10">
@@ -185,36 +190,39 @@ export function HomePage() {
         </div>
       </div>
 
+      {/* Sticky nav, constant across scroll */}
+      <header className="sticky top-0 z-40 border-b border-[#e2eef0] bg-white/85 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-5 px-5 py-3 sm:px-6 lg:px-10">
+          <BrandLogo />
+          <nav
+            className="hidden flex-wrap items-center gap-3 text-sm font-semibold text-[#4b656d] lg:flex"
+            aria-label="Primary"
+          >
+            {HOME_NAV_LINKS.map((link) => (
+              <a key={link.href} href={link.href} className="transition hover:text-[#10242b]">
+                {link.label}
+              </a>
+            ))}
+            <ChatbotTrigger
+              vertical={elderCare}
+              triggerClassName="inline-flex items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#0b7c87]"
+              triggerContent={<span>Get a care assessment</span>}
+            />
+          </nav>
+          <MobileMenu
+            links={HOME_NAV_LINKS}
+            phoneHref={phone.href}
+            phoneLabel={phone.label}
+            whatsappHref={whatsapp?.href}
+          />
+        </div>
+      </header>
+
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 hero-gradient" />
         <div className="relative mx-auto max-w-7xl px-5 py-6 sm:px-6 lg:px-10">
-          <header className="flex items-center justify-between gap-5">
-            <BrandLogo />
-            <nav
-              className="hidden flex-wrap items-center gap-3 text-sm font-semibold text-[#4b656d] lg:flex"
-              aria-label="Primary"
-            >
-              {HOME_NAV_LINKS.map((link) => (
-                <a key={link.href} href={link.href} className="transition hover:text-[#10242b]">
-                  {link.label}
-                </a>
-              ))}
-              <ChatbotTrigger
-                vertical={elderCare}
-                triggerClassName="inline-flex items-center gap-2 rounded-full bg-[#0f9aa8] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#0b7c87]"
-                triggerContent={<span>Get a care assessment</span>}
-              />
-            </nav>
-            <MobileMenu
-              links={HOME_NAV_LINKS}
-              phoneHref={phone.href}
-              phoneLabel={phone.label}
-              whatsappHref={whatsapp?.href}
-            />
-          </header>
-
-          <div className="grid gap-10 pb-14 pt-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-16 lg:pb-20 lg:pt-14">
+          <div className="grid gap-10 pb-14 pt-4 lg:grid-cols-[1.02fr_0.98fr] lg:items-start lg:gap-16 lg:pb-20 lg:pt-8">
             <div className="max-w-3xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-[#cfe4e7] bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87] shadow-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#0f9aa8]" />
@@ -234,17 +242,29 @@ export function HomePage() {
                   triggerClassName="inline-flex items-center gap-2 rounded-full bg-[#0f9aa8] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(15,154,168,0.9)] transition hover:bg-[#0b7c87]"
                   triggerContent={
                     <>
-                      <span>Get a free care assessment</span>
-                      <ArrowUpRightIcon className="h-4 w-4" />
+                      <ChatIcon className="h-4 w-4" />
+                      <span>Talk to a care manager</span>
                     </>
                   }
                 />
                 <a
-                  href="#how-it-works"
+                  href={phone.href}
                   className="inline-flex items-center gap-2 rounded-full border border-[#0f9aa8] bg-white px-6 py-4 text-sm font-semibold text-[#0b7c87] transition hover:border-[#0b7c87] hover:bg-[#f0fafb]"
                 >
-                  See how it works
+                  <PhoneIcon className="h-4 w-4" />
+                  Call {phone.label}
                 </a>
+                {whatsapp ? (
+                  <a
+                    href={whatsapp.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#25d366] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(37,211,102,0.85)] transition hover:bg-[#1da851]"
+                  >
+                    <WhatsAppIcon className="h-4 w-4 text-white" />
+                    WhatsApp us
+                  </a>
+                ) : null}
               </div>
 
               <p className="mt-4 text-sm font-medium text-[#54727a]">
