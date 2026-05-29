@@ -8,10 +8,21 @@ import { DoctorsSection } from "@/components/doctors-section";
 import { HandwrittenNote } from "@/components/handwritten-note";
 import { IntakeChatbot } from "@/components/intake-chatbot";
 import {
+  AlertTriangleIcon,
+  AppleIcon,
   ArrowUpRightIcon,
+  BedIcon,
   ChatIcon,
   CheckIcon,
+  ClockIcon,
+  DumbbellIcon,
+  FlaskIcon,
+  LayersIcon,
+  LifeBuoyIcon,
   PhoneIcon,
+  StethoscopeIcon,
+  SyringeIcon,
+  UsersIcon,
   WhatsAppIcon,
 } from "@/components/ui-icons";
 import { LeadForm } from "@/components/lead-form";
@@ -29,22 +40,22 @@ const HOME_NAV_LINKS = [
 
 const PROBLEMS = [
   {
-    emoji: "📱",
+    Icon: PhoneIcon,
     title: "You're coordinating over phone calls",
     body: "Managing 4 to 5 providers (doctor, physio, pharmacy, domestic help, hospital) across WhatsApp messages and missed calls.",
   },
   {
-    emoji: "🧩",
+    Icon: LayersIcon,
     title: "No one has the full picture",
     body: "The cardiologist doesn't know what the endocrinologist prescribed. The physio doesn't know about the fall last month.",
   },
   {
-    emoji: "⏰",
+    Icon: ClockIcon,
     title: "You find out late",
     body: "Your parent fell two weeks ago and didn't tell you. The maid noticed a rash but didn't know who to call.",
   },
   {
-    emoji: "🚨",
+    Icon: AlertTriangleIcon,
     title: "Emergencies are chaos",
     body: "No one knows the blood type, the medication list, or which hospital to go to at 2am.",
   },
@@ -71,42 +82,42 @@ const STEPS = [
 
 const SERVICES = [
   {
-    emoji: "🧑‍⚕️",
+    Icon: UsersIcon,
     title: "Caregiver",
     body: "Trained nursing attendant, 12h or 24h. Your care manager trains them on your parent's specific condition and routines.",
   },
   {
-    emoji: "💉",
+    Icon: SyringeIcon,
     title: "Nursing",
     body: "Wound care, vitals monitoring, injections, catheter management, infusions. Scheduled visits or on-call.",
   },
   {
-    emoji: "🩺",
+    Icon: StethoscopeIcon,
     title: "Doctor visits",
     body: "Teleconsults or home visits. Geriatrician, GP, or specialist referrals based on your parent's conditions.",
   },
   {
-    emoji: "🏋️",
+    Icon: DumbbellIcon,
     title: "Physiotherapy",
     body: "At-home sessions for mobility, post-surgical rehab, chronic pain, fall prevention, and strength building.",
   },
   {
-    emoji: "🔬",
+    Icon: FlaskIcon,
     title: "Labs and diagnostics",
     body: "Blood work, HbA1c, thyroid panels, cardiac markers. Collected at home, reports sent to your care manager and family.",
   },
   {
-    emoji: "🛏️",
+    Icon: BedIcon,
     title: "Equipment",
     body: "Hospital bed, wheelchair, oxygen concentrator, BP monitor, pulse oximeter. Rental or purchase, delivered and set up.",
   },
   {
-    emoji: "🥗",
+    Icon: AppleIcon,
     title: "Nutrition",
     body: "Dietitian assessment and meal planning. Condition-specific guidance for diabetes, cardiac, renal, or post-surgical recovery.",
   },
   {
-    emoji: "🧠",
+    Icon: LifeBuoyIcon,
     title: "Counselor",
     body: "For the patient and the family. Managing anxiety, depression, grief, caregiver burnout, and cognitive decline.",
   },
@@ -222,7 +233,7 @@ export function HomePage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 hero-gradient" />
         <div className="relative mx-auto max-w-7xl px-5 py-6 sm:px-6 lg:px-10">
-          <div className="grid gap-10 pb-14 pt-4 lg:grid-cols-[1.02fr_0.98fr] lg:items-start lg:gap-16 lg:pb-20 lg:pt-8">
+          <div className="grid gap-10 pb-14 pt-4 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-16 lg:pb-20 lg:pt-8">
             <div className="max-w-3xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-[#cfe4e7] bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87] shadow-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#0f9aa8]" />
@@ -341,10 +352,10 @@ export function HomePage() {
               Nobody is in charge of your parent&apos;s care
             </h2>
             <div className="mt-8 space-y-5">
-              {PROBLEMS.map(({ emoji, title, body }) => (
+              {PROBLEMS.map(({ Icon, title, body }) => (
                 <div key={title} className="flex gap-4">
-                  <span className="inline-flex h-11 w-11 flex-none items-center justify-center rounded-2xl bg-[#fff1ec] text-xl">
-                    {emoji}
+                  <span className="inline-flex h-11 w-11 flex-none items-center justify-center rounded-2xl bg-[#fff1ec] text-[#ff5b2e]">
+                    <Icon className="h-5 w-5" />
                   </span>
                   <div>
                     <p className="text-base font-semibold tracking-[-0.02em] text-[#10242b]">
@@ -427,13 +438,13 @@ export function HomePage() {
         </div>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SERVICES.map(({ emoji, title, body }) => (
+          {SERVICES.map(({ Icon, title, body }) => (
             <article
               key={title}
               className="rounded-[1.7rem] border border-[#d7e7ea] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e6f6f7] text-2xl">
-                {emoji}
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e6f6f7] text-[#0f9aa8]">
+                <Icon className="h-5 w-5" />
               </div>
               <p className="mt-4 text-base font-semibold tracking-[-0.02em] text-[#10242b]">
                 {title}

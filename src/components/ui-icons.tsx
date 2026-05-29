@@ -301,3 +301,116 @@ export function MapPinIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+function iconSvg(children: React.ReactNode, className?: string) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      {children}
+    </svg>
+  );
+}
+
+export function LayersIcon({ className }: IconProps) {
+  return iconSvg(
+    <>
+      <polygon points="12 2 2 7 12 12 22 7 12 2" />
+      <polyline points="2 17 12 22 22 17" />
+      <polyline points="2 12 12 17 22 12" />
+    </>,
+    className,
+  );
+}
+
+export function AlertTriangleIcon({ className }: IconProps) {
+  return iconSvg(
+    <>
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </>,
+    className,
+  );
+}
+
+export function SyringeIcon({ className }: IconProps) {
+  return iconSvg(
+    <>
+      <path d="m18 2 4 4" />
+      <path d="m17 7 3-3" />
+      <path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5" />
+      <path d="m9 11 4 4" />
+      <path d="m5 19-3 3" />
+      <path d="m14 4 6 6" />
+    </>,
+    className,
+  );
+}
+
+export function DumbbellIcon({ className }: IconProps) {
+  return iconSvg(
+    <>
+      <path d="M3.5 9v6" />
+      <path d="M6.5 7v10" />
+      <path d="M17.5 7v10" />
+      <path d="M20.5 9v6" />
+      <path d="M6.5 12h11" />
+    </>,
+    className,
+  );
+}
+
+export function FlaskIcon({ className }: IconProps) {
+  return iconSvg(
+    <>
+      <path d="M9 3h6" />
+      <path d="M10 3v6.5L5.3 18A1.5 1.5 0 0 0 6.6 20.5h10.8A1.5 1.5 0 0 0 18.7 18L14 9.5V3" />
+      <path d="M7.5 14h9" />
+    </>,
+    className,
+  );
+}
+
+export function BedIcon({ className }: IconProps) {
+  return iconSvg(
+    <>
+      <path d="M2 5v15" />
+      <path d="M2 9h18a2 2 0 0 1 2 2v9" />
+      <path d="M2 16h20" />
+      <path d="M7 9V7a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2" />
+    </>,
+    className,
+  );
+}
+
+export function AppleIcon({ className }: IconProps) {
+  return iconSvg(
+    <>
+      <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" />
+      <path d="M10 2c1 .5 2 2 2 5" />
+    </>,
+    className,
+  );
+}
+
+export function LifeBuoyIcon({ className }: IconProps) {
+  return iconSvg(
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="4" />
+      <line x1="4.93" y1="4.93" x2="9.17" y2="9.17" />
+      <line x1="14.83" y1="14.83" x2="19.07" y2="19.07" />
+      <line x1="14.83" y1="9.17" x2="19.07" y2="4.93" />
+      <line x1="9.17" y1="14.83" x2="4.93" y2="19.07" />
+    </>,
+    className,
+  );
+}
