@@ -9,14 +9,7 @@ import { IntakeChatbot } from "@/components/intake-chatbot";
 import {
   ArrowUpRightIcon,
   CheckIcon,
-  ClockIcon,
-  HeartIcon,
-  HomeIcon,
-  HospitalIcon,
   PhoneIcon,
-  ShieldIcon,
-  StethoscopeIcon,
-  UsersIcon,
   WhatsAppIcon,
 } from "@/components/ui-icons";
 import { LeadForm } from "@/components/lead-form";
@@ -34,22 +27,22 @@ const HOME_NAV_LINKS = [
 
 const PROBLEMS = [
   {
-    Icon: PhoneIcon,
+    emoji: "📱",
     title: "You're coordinating over phone calls",
     body: "Managing 4 to 5 providers (doctor, physio, pharmacy, domestic help, hospital) across WhatsApp messages and missed calls.",
   },
   {
-    Icon: ShieldIcon,
+    emoji: "🧩",
     title: "No one has the full picture",
     body: "The cardiologist doesn't know what the endocrinologist prescribed. The physio doesn't know about the fall last month.",
   },
   {
-    Icon: ClockIcon,
+    emoji: "⏰",
     title: "You find out late",
     body: "Your parent fell two weeks ago and didn't tell you. The maid noticed a rash but didn't know who to call.",
   },
   {
-    Icon: HeartIcon,
+    emoji: "🚨",
     title: "Emergencies are chaos",
     body: "No one knows the blood type, the medication list, or which hospital to go to at 2am.",
   },
@@ -76,62 +69,44 @@ const STEPS = [
 
 const SERVICES = [
   {
-    Icon: UsersIcon,
+    emoji: "🧑‍⚕️",
     title: "Caregiver",
     body: "Trained nursing attendant, 12h or 24h. Your care manager trains them on your parent's specific condition and routines.",
   },
   {
-    Icon: StethoscopeIcon,
+    emoji: "💉",
     title: "Nursing",
     body: "Wound care, vitals monitoring, injections, catheter management, infusions. Scheduled visits or on-call.",
   },
   {
-    Icon: HospitalIcon,
+    emoji: "🩺",
     title: "Doctor visits",
     body: "Teleconsults or home visits. Geriatrician, GP, or specialist referrals based on your parent's conditions.",
   },
   {
-    Icon: HeartIcon,
+    emoji: "🏋️",
     title: "Physiotherapy",
     body: "At-home sessions for mobility, post-surgical rehab, chronic pain, fall prevention, and strength building.",
   },
   {
-    Icon: ShieldIcon,
+    emoji: "🔬",
     title: "Labs and diagnostics",
     body: "Blood work, HbA1c, thyroid panels, cardiac markers. Collected at home, reports sent to your care manager and family.",
   },
   {
-    Icon: HomeIcon,
+    emoji: "🛏️",
     title: "Equipment",
     body: "Hospital bed, wheelchair, oxygen concentrator, BP monitor, pulse oximeter. Rental or purchase, delivered and set up.",
   },
   {
-    Icon: CheckIcon,
+    emoji: "🥗",
     title: "Nutrition",
     body: "Dietitian assessment and meal planning. Condition-specific guidance for diabetes, cardiac, renal, or post-surgical recovery.",
   },
   {
-    Icon: HeartIcon,
+    emoji: "🧠",
     title: "Counselor",
     body: "For the patient and the family. Managing anxiety, depression, grief, caregiver burnout, and cognitive decline.",
-  },
-];
-
-const SPECIALIZED = [
-  {
-    name: "Dementia and memory care",
-    body: "Structured cognitive support, trained attendants, family psychologist access, and safety planning for moderate-stage patients.",
-    href: "/dementia",
-  },
-  {
-    name: "Post-surgical recovery",
-    body: "Discharge coordination, physio and nursing at home, wound care, medication management, and return-to-function tracking.",
-    href: "/post-discharge",
-  },
-  {
-    name: "Daily elder care",
-    body: "A dedicated care manager, trained caregivers, nursing, physiotherapy and nutrition for ageing parents, all under one plan.",
-    href: "/elder-care",
   },
 ];
 
@@ -163,11 +138,34 @@ const FAQS = [
 ];
 
 export function HomePage() {
-  const [elderCare] = verticalList;
+  const [elderCare, dementiaCare, postDischargeCare] = verticalList;
   const phone = getPhoneContact();
   const whatsapp = getWhatsAppContact(
     "Hi Portea, I'd like a free care assessment for my parent.",
   );
+
+  // Specialized programs reuse the vertical images so the cards look like the
+  // previous version's program cards.
+  const specialized = [
+    {
+      name: "Dementia and memory care",
+      body: "Structured cognitive support, trained attendants, family psychologist access, and safety planning for moderate-stage patients.",
+      href: "/dementia",
+      image: dementiaCare.images[0],
+    },
+    {
+      name: "Post-surgical recovery",
+      body: "Discharge coordination, physio and nursing at home, wound care, medication management, and return-to-function tracking.",
+      href: "/post-discharge",
+      image: postDischargeCare.images[0],
+    },
+    {
+      name: "Daily elder care",
+      body: "A dedicated care manager, trained caregivers, nursing, physiotherapy and nutrition for ageing parents, all under one plan.",
+      href: "/elder-care",
+      image: elderCare.images[0],
+    },
+  ];
 
   return (
     <main className="min-h-screen bg-[#f4f9fa] pb-20 text-[#10242b]">
@@ -310,10 +308,10 @@ export function HomePage() {
               Nobody is in charge of your parent&apos;s care
             </h2>
             <div className="mt-8 space-y-5">
-              {PROBLEMS.map(({ Icon, title, body }) => (
+              {PROBLEMS.map(({ emoji, title, body }) => (
                 <div key={title} className="flex gap-4">
-                  <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-2xl bg-[#fff1ec] text-[#ff5b2e]">
-                    <Icon className="h-5 w-5" />
+                  <span className="inline-flex h-11 w-11 flex-none items-center justify-center rounded-2xl bg-[#fff1ec] text-xl">
+                    {emoji}
                   </span>
                   <div>
                     <p className="text-base font-semibold tracking-[-0.02em] text-[#10242b]">
@@ -396,13 +394,13 @@ export function HomePage() {
         </div>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SERVICES.map(({ Icon, title, body }) => (
+          {SERVICES.map(({ emoji, title, body }) => (
             <article
               key={title}
               className="rounded-[1.7rem] border border-[#d7e7ea] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e6f6f7] text-[#0f9aa8]">
-                <Icon className="h-5 w-5" />
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e6f6f7] text-2xl">
+                {emoji}
               </div>
               <p className="mt-4 text-base font-semibold tracking-[-0.02em] text-[#10242b]">
                 {title}
@@ -430,23 +428,35 @@ export function HomePage() {
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
-            {SPECIALIZED.map((program) => (
+            {specialized.map((program) => (
               <article
                 key={program.href}
-                className="flex h-full flex-col rounded-[1.9rem] border border-[#d7e7ea] bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_28px_60px_-30px_rgba(16,42,49,0.24)]"
+                className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-[#d7e7ea] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-[0_28px_60px_-30px_rgba(16,42,49,0.24)]"
               >
-                <h3 className="text-xl font-semibold tracking-[-0.03em] text-[#10242b]">
-                  {program.name}
-                </h3>
-                <p className="mt-3 flex-1 text-sm font-medium leading-7 text-[#455e67]">
-                  {program.body}
-                </p>
-                <Link
-                  href={program.href}
-                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#0b7c87] transition hover:text-[#0f9aa8]"
-                >
-                  Learn more <ArrowUpRightIcon className="h-4 w-4" />
-                </Link>
+                <div className="relative aspect-[16/11] overflow-hidden">
+                  <Image
+                    src={program.image.src}
+                    alt={program.image.alt}
+                    width={1200}
+                    height={825}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                    style={{ objectPosition: program.image.position ?? "center center" }}
+                  />
+                </div>
+                <div className="flex flex-1 flex-col p-6">
+                  <h3 className="text-xl font-semibold tracking-[-0.03em] text-[#10242b]">
+                    {program.name}
+                  </h3>
+                  <p className="mt-3 flex-1 text-sm font-medium leading-7 text-[#455e67]">
+                    {program.body}
+                  </p>
+                  <Link
+                    href={program.href}
+                    className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#0b7c87] transition hover:text-[#0f9aa8]"
+                  >
+                    Learn more <ArrowUpRightIcon className="h-4 w-4" />
+                  </Link>
+                </div>
               </article>
             ))}
           </div>
