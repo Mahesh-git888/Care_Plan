@@ -526,7 +526,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
             aria-label={`${vertical.name} intake chatbot`}
             className="absolute inset-0 flex md:inset-y-0 md:right-0 md:left-auto md:w-full md:max-w-md"
           >
-            <div className="flex h-full w-full flex-col bg-white shadow-2xl md:rounded-l-[2rem]">
+            <div className="flex h-full max-h-[100dvh] w-full flex-col bg-white shadow-2xl md:rounded-l-[2rem]">
               <div className="border-b border-slate-200 px-5 py-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -733,7 +733,9 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                     <div ref={scrollAnchorRef} />
                   </div>
 
-                  <div className="border-t border-slate-200 px-5 py-4">
+                  <div
+                    className="border-t border-slate-200 px-5 pt-4 pb-[max(2rem,calc(env(safe-area-inset-bottom)+1rem))]"
+                  >
                     {state.error ? (
                       <p className="mb-3 rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700">
                         {state.error}
