@@ -734,7 +734,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                   </div>
 
                   <div
-                    className="border-t border-slate-200 px-5 pt-4 pb-[max(2rem,calc(env(safe-area-inset-bottom)+1rem))]"
+                    className="border-t border-slate-200 px-5 pt-4 pb-[max(4.5rem,calc(env(safe-area-inset-bottom)+1rem))]"
                   >
                     {state.error ? (
                       <p className="mb-3 rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700">
@@ -770,7 +770,15 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                           }
                           placeholder={activeStep.placeholder}
                           inputMode={activeStep.key === "phone" ? "numeric" : undefined}
-                          autoComplete={activeStep.key === "phone" ? "tel" : undefined}
+                          autoComplete={
+                            activeStep.key === "phone"
+                              ? "tel"
+                              : activeStep.key === "name"
+                                ? "name"
+                                : activeStep.key === "city"
+                                  ? "address-level2"
+                                  : "off"
+                          }
                           className="w-full rounded-full border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400"
                         />
                         <button
