@@ -14,14 +14,14 @@ const DOCTORS: Doctor[] = [
     role: "Clinical Head, Primary · Preventive · Elderly Care",
     image: "/dr-kavitha.avif",
     alt: "Portrait of Dr. Kavitha S Manjunath",
-    bio: "22+ years across infectious disease, chronic disease, palliative and elderly care, including 11 at Portea, focused on palliative and elderly care alongside preventive and primary services. MBBS from Al Ameen Medical College, DNB in Family Medicine from The Bangalore Hospital, and a Certificate Course in Geriatric Medicine & Gerontology jointly awarded by Khaja Bandanwaz University and the Geriatric Society of India. Additional certifications in palliative care and sleep-study interpretation, and a member of the Indian Medical Association. Co-authors the elder-care and post-discharge protocols every Portea care manager works to.",
+    bio: "22+ years across infectious disease, chronic disease, palliative and elderly care, with 11 at Portea leading palliative and elderly care alongside preventive and primary services. MBBS (Al Ameen Medical College), DNB Family Medicine (The Bangalore Hospital), and a Certificate Course in Geriatric Medicine & Gerontology (Khaja Bandanwaz University with Geriatric Society of India). Also certified in palliative care and sleep-study interpretation; member of the Indian Medical Association, the Family Physician Association, and the Geriatric Society of India. Co-authors the elder-care and post-discharge protocols every Portea care manager works to.",
   },
   {
     name: "Dr. Allia Rahaman",
     role: "AVP, Medical · Quality · Training",
     image: "/dr-alia.avif",
     alt: "Portrait of Dr. Allia Rahaman",
-    bio: "14 years in chronic disease, emergency medicine and critical care. Trained at GB Pant Hospital and NRHM (A & N Islands) where she ran ICU duties for most of her tenure, then worked as Consultant Physician with V-Health by Aetna (CVS Health). Certified in Diabetes Management (BMJ Fortis) and in ACLS, BLS and PALS by the American Heart Association. Owns dementia-care protocol design at Portea South.",
+    bio: "14 years in chronic disease, emergency medicine and critical care. Trained at GB Pant Hospital and NRHM (A & N Islands) where she ran ICU duties for most of her tenure, then worked as Consultant Physician with V-Health by Aetna (CVS Health). Certified in Diabetes Management (BMJ Fortis) and in ACLS, BLS and PALS by the American Heart Association. Now leads medical operations, quality and care-manager training at Portea, and owns the dementia-care protocol design used across the network.",
   },
 ];
 

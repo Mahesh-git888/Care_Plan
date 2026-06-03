@@ -741,10 +741,19 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                     ) : null}
 
                     {activeStep && state.phase === "awaiting-input" ? (
-                      <form onSubmit={handleSubmit} className="space-y-3">
-                        <input
-                          key={activeStep.key}
-                          autoFocus
+                      <>
+                        <div className="mb-3">
+                          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#0b7c87]">
+                            Current question
+                          </p>
+                          <p className="mt-1 text-sm font-medium leading-6 text-slate-800">
+                            {activeStep.prompt}
+                          </p>
+                        </div>
+                        <form onSubmit={handleSubmit} className="space-y-3">
+                          <input
+                            key={activeStep.key}
+                            autoFocus
                           type={activeStep.type}
                           value={activeValue}
                           onChange={(event) =>
@@ -771,6 +780,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
                             : "Next"}
                         </button>
                       </form>
+                      </>
                     ) : null}
                   </div>
                 </>
