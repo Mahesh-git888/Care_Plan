@@ -530,18 +530,15 @@ export function HomePage() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87]">
             Care management
           </p>
-          <ul className="mt-5 space-y-3 text-sm font-medium leading-7 text-[#10242b]">
+          <ul className="mt-5 list-disc space-y-3 pl-5 text-sm font-medium leading-7 text-[#10242b] marker:text-[#0f9aa8]">
             {[
               "A dedicated care manager who knows your family inside out",
-              "Weekly check-ins with your doctor",
+              "2 doctor consults per month",
               "A doctor-designed care plan",
               "Coordination across all your services",
               "Your care team (caregivers, nurses, physiotherapists) trained on your family's case",
             ].map((line) => (
-              <li key={line} className="flex gap-3">
-                <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#0f9aa8]" />
-                <span>{line}</span>
-              </li>
+              <li key={line}>{line}</li>
             ))}
           </ul>
           <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
