@@ -236,7 +236,6 @@ export function HomePage() {
           <div className="grid gap-10 pb-14 pt-4 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-16 lg:pb-20 lg:pt-8">
             <div className="max-w-3xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-[#cfe4e7] bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87] shadow-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#0f9aa8]" />
                 India&apos;s largest home healthcare company · 2M+ patients served
               </span>
               <h1 className="mt-5 text-[2.7rem] font-semibold leading-[1] tracking-[-0.055em] text-[#0f2028] sm:text-[3.4rem] lg:text-[4.4rem]">
@@ -286,9 +285,9 @@ export function HomePage() {
 
               <div className="mt-7 flex flex-wrap gap-3">
                 {[
-                  "Designed by doctors",
-                  "Trained by Dementia India Alliance",
-                  "One care manager per family",
+                  "Fortnightly doctor consults",
+                  "Dedicated care manager",
+                  "Doctor-designed care plan",
                 ].map((pill) => (
                   <div
                     key={pill}
@@ -374,16 +373,22 @@ export function HomePage() {
             </h3>
             <p className="mt-4 text-base leading-8 text-white/90">
               Your Portea care manager is a licensed clinician who becomes your parent&apos;s
-              single point of contact. They assess needs, build a care plan, coordinate every
-              service, train your caregivers, and keep your family informed every week.
+              single point of contact.
             </p>
-            <p className="mt-4 text-base font-semibold leading-8 text-white">
-              They don&apos;t just check in. They run your parent&apos;s care.
-            </p>
-            <div className="mt-6 border-t border-white/20 pt-5">
-              <p className="text-sm text-white/80">Care management starts at</p>
-              <p className="text-3xl font-semibold tracking-[-0.03em]">₹1,999/month</p>
-            </div>
+            <ul className="mt-6 space-y-3 text-base leading-7 text-white">
+              {[
+                "Assesses your parent's needs",
+                "Builds a personalised care plan",
+                "Coordinates every service",
+                "Trains your caregivers",
+                "Keeps your family informed every week",
+              ].map((line) => (
+                <li key={line} className="flex gap-3">
+                  <CheckIcon className="mt-1 h-5 w-5 flex-none" />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
@@ -525,20 +530,24 @@ export function HomePage() {
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0b7c87]">
             Care management
           </p>
-          <p className="mt-2 text-4xl font-semibold tracking-[-0.03em] text-[#10242b]">
-            ₹1,999<span className="text-xl font-medium text-[#54727a]">/month</span>
-          </p>
-          <p className="mt-4 text-sm font-medium leading-7 text-[#455e67]">
-            A dedicated care manager who assesses your parent&apos;s needs, builds a personalized
-            care plan, coordinates all services, trains caregivers, and sends your family weekly
-            updates.
-          </p>
-          <p className="mt-3 text-sm font-medium leading-7 text-[#576b73]">
-            Clinical services, caregivers, and equipment are recommended based on your
-            parent&apos;s care plan and priced separately. Your care manager walks you through
-            everything before any cost is incurred.
-          </p>
-          <div className="mt-6">
+          <ul className="mt-5 space-y-3 text-sm font-medium leading-7 text-[#10242b]">
+            {[
+              "A dedicated care manager who knows your family inside out",
+              "Weekly check-ins with your doctor",
+              "A doctor-designed care plan",
+              "Coordination across all your services",
+              "Your care team (caregivers, nurses, physiotherapists) trained on your family's case",
+            ].map((line) => (
+              <li key={line} className="flex gap-3">
+                <CheckIcon className="mt-1 h-4 w-4 flex-none text-[#0f9aa8]" />
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
+            <p className="text-3xl font-semibold tracking-[-0.03em] text-[#10242b]">
+              ₹1,999<span className="text-lg font-medium text-[#54727a]">/month</span>
+            </p>
             <ChatbotTrigger
               vertical={elderCare}
               triggerClassName="inline-flex items-center justify-center gap-2 rounded-full bg-[#0f9aa8] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0b7c87]"
