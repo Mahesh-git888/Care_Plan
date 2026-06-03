@@ -42,7 +42,7 @@ export function HandwrittenNote({ note }: { note: AppreciationNote }) {
       </p>
 
       <p className="mt-3 text-center text-[0.7rem] uppercase tracking-[0.22em] text-[#8a6c3c]/80">
-        A real note received by Portea
+        Sent to our care manager
       </p>
     </figure>
   );

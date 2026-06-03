@@ -67,8 +67,8 @@ const STEPS = [
     body: "Fill a short form or call us. Share their health situation, location, and what support you're looking for.",
   },
   {
-    title: "Your care manager visits the home",
-    body: "A licensed clinician conducts a structured assessment: health, functional capacity, cognitive state, home safety.",
+    title: "A care manager calls you back",
+    body: "A doctor-led care manager calls you for a structured 20-minute conversation: health, mobility, daily routine, and what's needed at home. If a home visit is required for the assessment, they arrange it.",
   },
   {
     title: "They build a care plan",
@@ -320,7 +320,7 @@ export function HomePage() {
                   vertical={elderCare}
                   verticalOptions={verticalList}
                   headline="Get a free care assessment"
-                  helperText="Share three quick details. A doctor-led care manager will call you back within 12 hours."
+                  helperText="Share three quick details. A doctor-led care manager will be in touch shortly."
                 />
               </div>
             </div>
@@ -551,20 +551,20 @@ export function HomePage() {
       {/* Meet the doctors */}
       <DoctorsSection />
 
-      {/* A real note from a real family */}
+      {/* A note from a family we cared for */}
       <section id="reviews" className="bg-[#fdf8f3]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
           <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#a66a35]">
-                A real note from a real family
+                A note from a family we cared for
               </p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#3a2c14] sm:text-4xl">
                 The notes that mean the most are the ones we don&apos;t ask for.
               </h2>
               <p className="mt-4 text-base font-medium leading-8 text-[#5c4a2c]">
-                A real note of thanks from a family the Portea team supported. Names changed on
-                request; the words are their own.
+                A handwritten note from a family the Portea team supported. We changed the name on
+                request.
               </p>
               <div className="mt-7 rounded-[1.5rem] border border-[#e9d9c1] bg-white p-5 shadow-sm">
                 <p className="text-sm font-semibold text-[#5a4724]">What we promise every family</p>

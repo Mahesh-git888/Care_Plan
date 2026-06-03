@@ -494,9 +494,9 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
                 Speak with a care manager
               </p>
               <p className="mt-2 text-base font-medium text-[#10242b]">
-                Active inquiries get a call within{" "}
-                <span className="font-semibold text-[#ff5b2e]">12 hours</span>. Planning
-                ahead? Within 24 hours.
+                A care manager will be in touch{" "}
+                <span className="font-semibold text-[#ff5b2e]">shortly</span>. The first call
+                goes straight to your situation, no scripts.
               </p>
             </div>
           </div>
