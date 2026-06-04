@@ -34,6 +34,17 @@ export function ThankYouConversion() {
     };
 
     pushDataLayerEvent("generate_lead", payload as Record<string, unknown>);
+
+    // Google Ads conversion fire. Activates once Hiveminds shares the
+    // conversion label and we set NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL in
+    // Vercel. Until then this is a no-op (the label env var is empty).
+    const conversionLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL?.trim();
+    const googleAdsId = (process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? "AW-977307455").trim();
+    if (conversionLabel && typeof window.gtag === "function") {
+      window.gtag("event", "conversion", {
+        send_to: `${googleAdsId}/${conversionLabel}`,
+      });
+    }
   }, []);
   return null;
 }
