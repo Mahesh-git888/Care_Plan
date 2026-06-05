@@ -10,6 +10,7 @@ pnpm-debug.log*
 # Local env — never commit secrets
 .env
 .env.local
+.env.new
 .env.*.local
 
 # Local lead store (when PORTEA_LEADS_FILE points inside the repo)
