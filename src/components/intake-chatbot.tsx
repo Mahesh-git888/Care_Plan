@@ -26,6 +26,10 @@ type PersistedState = {
   messages: ChatMessage[];
   consentGiven: boolean;
   submittedAt: string | null;
+  // Set once the lead has been created early (as soon as we have name + phone).
+  // The final submit sends this back so the server patches the same row instead
+  // of inserting a duplicate. Null until the early capture succeeds.
+  leadId: string | null;
 };
 
 type FlowState = PersistedState & {
@@ -41,6 +45,7 @@ type FlowAction =
   | { type: "PROMPT_READY" }
   | { type: "ANSWER"; value: string }
   | { type: "CONSENT_TOGGLE"; value: boolean }
+  | { type: "EARLY_LEAD_CREATED"; leadId: string }
   | { type: "SUBMIT_START" }
   | { type: "SUBMIT_SUCCESS"; submittedAt: string }
   | { type: "SUBMIT_ERROR"; error: string }
@@ -66,6 +71,7 @@ function freshChat(open: boolean): FlowState {
     messages: [makeMessage("assistant", DIRECT_GREETING)],
     consentGiven: false,
     submittedAt: null,
+    leadId: null,
     isOpen: open,
     phase: "typing",
     error: null,
@@ -97,6 +103,7 @@ function sanitizePersistedState(raw: string | null): PersistedState {
     messages: [],
     consentGiven: false,
     submittedAt: null,
+    leadId: null,
   };
 
   if (!raw) return blank;
@@ -122,6 +129,7 @@ function sanitizePersistedState(raw: string | null): PersistedState {
         : [],
       consentGiven: Boolean(parsed.consentGiven),
       submittedAt: typeof parsed.submittedAt === "string" ? parsed.submittedAt : null,
+      leadId: typeof parsed.leadId === "string" ? parsed.leadId : null,
     };
   } catch {
     return blank;
@@ -145,6 +153,7 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
       messages: [],
       consentGiven: false,
       submittedAt: null,
+      leadId: null,
       isOpen: false,
       phase: "typing",
       error: null,
@@ -180,6 +189,7 @@ function createInitialState(storageKey: string, verticalSlug: string): FlowState
       ],
       consentGiven: quickForm.consentGiven,
       submittedAt: null,
+      leadId: null,
       isOpen: true,
       phase: currentStep >= TOTAL_STEPS ? "consent" : "typing",
       error: null,
@@ -256,6 +266,11 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
     }
     case "CONSENT_TOGGLE":
       return { ...state, consentGiven: action.value, error: null };
+    case "EARLY_LEAD_CREATED":
+      // Ignore a late-arriving early-capture id once the lead is already
+      // submitted, or if one is somehow already set.
+      if (state.submittedAt || state.leadId) return state;
+      return { ...state, leadId: action.leadId };
     case "SUBMIT_START":
       return { ...state, phase: "submitting", error: null };
     case "SUBMIT_SUCCESS":
@@ -284,6 +299,7 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
         fields: mergedFields,
         consentGiven: action.consentGiven,
         submittedAt: null,
+        leadId: null,
         currentStep: nextStepIdx,
         messages: [makeMessage("assistant", intro)],
         isOpen: true,
@@ -298,6 +314,7 @@ function reducer(state: FlowState, action: FlowAction): FlowState {
         messages: [],
         consentGiven: false,
         submittedAt: null,
+        leadId: null,
         isOpen: true,
         phase: "typing",
         error: null,
@@ -322,6 +339,8 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
   );
   const [variant] = useState(() => (Math.random() < 0.5 ? "flow_a" : "flow_b"));
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
+  // Guards the early-capture POST so a re-render mid-flight can't fire it twice.
+  const earlyCaptureInFlightRef = useRef(false);
 
   // Inline editing on the review screen.
   const [editingKey, setEditingKey] = useState<IntakeFieldKey | null>(null);
@@ -340,6 +359,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
       messages: state.messages,
       consentGiven: state.consentGiven,
       submittedAt: state.submittedAt,
+      leadId: state.leadId,
     };
     window.localStorage.setItem(storageKey, JSON.stringify(persisted));
   }, [
@@ -348,6 +368,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
     state.messages,
     state.consentGiven,
     state.submittedAt,
+    state.leadId,
     storageKey,
   ]);
 
@@ -390,6 +411,67 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
     return () => window.removeEventListener("portea:open-chatbot", handler as EventListener);
   }, [vertical.slug]);
 
+  // Early lead capture. The moment we have a name and a valid phone, create the
+  // lead in the background with placeholders for whatever the visitor has not
+  // reached yet. Every step of friction has dropoffs, so as soon as we have a
+  // name and number that lead must be saved. The server returns its id, which
+  // the final submit sends back so the same row is patched (no duplicate).
+  useEffect(() => {
+    if (!state.isOpen || state.leadId || state.submittedAt) return;
+    if (earlyCaptureInFlightRef.current) return;
+    const name = state.fields.name?.trim();
+    const phone = state.fields.phone?.trim();
+    if (!name || !phone || !isValidIndianMobile(phone)) return;
+
+    earlyCaptureInFlightRef.current = true;
+    let cancelled = false;
+    const run = async () => {
+      try {
+        const response = await fetch(getIntakeApiUrl(), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            partial: true,
+            full_name: name,
+            phone,
+            city: state.fields.city || undefined,
+            vertical: vertical.slug,
+            ab_variant: variant,
+            elder_name: state.fields.elderName || undefined,
+            condition: state.fields.condition || undefined,
+            needs: state.fields.needs || undefined,
+            relationship: state.fields.relationship || undefined,
+            consent_given: state.consentGiven,
+            attribution: readAttribution(),
+          }),
+        });
+        const result = (await response.json()) as { patient_id?: string; error?: string };
+        if (!response.ok) throw new Error(result.error || "early capture failed");
+        if (!cancelled && result.patient_id) {
+          dispatch({ type: "EARLY_LEAD_CREATED", leadId: result.patient_id });
+        }
+      } catch (err) {
+        // Non-fatal: the final submit still creates the lead if this failed.
+        // eslint-disable-next-line no-console
+        console.warn("[intake] early lead capture failed", err);
+      } finally {
+        earlyCaptureInFlightRef.current = false;
+      }
+    };
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    state.isOpen,
+    state.leadId,
+    state.submittedAt,
+    state.fields,
+    state.consentGiven,
+    vertical.slug,
+    variant,
+  ]);
+
   // Submit when entering the submitting phase.
   useEffect(() => {
     if (state.phase !== "submitting") return;
@@ -400,6 +482,9 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            // Patch the early-captured row when we have its id; otherwise this
+            // creates the lead fresh.
+            lead_id: state.leadId ?? undefined,
             full_name: state.fields.name,
             phone: state.fields.phone,
             city: state.fields.city,
@@ -454,7 +539,7 @@ export function IntakeChatbot({ vertical }: { vertical: VerticalConfig }) {
     return () => {
       cancelled = true;
     };
-  }, [state.phase, state.fields, vertical.slug, variant, router]);
+  }, [state.phase, state.fields, state.leadId, vertical.slug, variant, router]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

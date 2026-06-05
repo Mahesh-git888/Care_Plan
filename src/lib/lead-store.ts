@@ -245,6 +245,64 @@ export async function updateLead(update: LeadUpdate): Promise<boolean> {
   return rowCount > 0;
 }
 
+// Patch the intake-side fields of an existing lead. Used by the intake route
+// when the chatbot first captures name + phone early (a partial create) and
+// then comes back to fill in the remaining details once the visitor finishes.
+// Only fields that are explicitly provided (not undefined) are overwritten, so
+// the early placeholders survive for anything the visitor never reached.
+export type LeadIntakeUpdate = {
+  id: string;
+  full_name?: string;
+  phone?: string;
+  city?: string;
+  vertical?: string;
+  situation?: string;
+  ab_variant?: string;
+  elder_name?: string;
+  condition?: string;
+  needs?: string;
+  relationship?: string;
+  consent_given?: boolean;
+  attribution?: LeadAttribution;
+};
+
+export async function updateLeadIntake(update: LeadIntakeUpdate): Promise<boolean> {
+  const sets: string[] = [];
+  const params: unknown[] = [];
+  let i = 1;
+  const set = (col: string, val: unknown) => {
+    sets.push(`${col} = $${i++}`);
+    params.push(val);
+  };
+
+  if (update.full_name !== undefined) set("full_name", update.full_name);
+  if (update.phone !== undefined) set("phone", update.phone);
+  if (update.city !== undefined) set("city", update.city);
+  if (update.vertical !== undefined) set("vertical", update.vertical);
+  if (update.situation !== undefined) set("situation", update.situation);
+  if (update.ab_variant !== undefined) set("ab_variant", update.ab_variant);
+  if (update.elder_name !== undefined) set("elder_name", update.elder_name);
+  if (update.condition !== undefined) set("condition", update.condition);
+  if (update.needs !== undefined) set("needs", update.needs);
+  if (update.relationship !== undefined) set("relationship", update.relationship);
+  if (update.consent_given !== undefined) set("consent_given", update.consent_given);
+  if (update.attribution !== undefined) {
+    sets.push(`attribution = $${i++}::jsonb`);
+    params.push(JSON.stringify(update.attribution));
+  }
+
+  if (sets.length === 0) return false;
+
+  sets.push(`updated_at = now()`);
+  params.push(update.id);
+
+  const rowCount = await execute(
+    `UPDATE leads SET ${sets.join(", ")} WHERE id = $${i}`,
+    params,
+  );
+  return rowCount > 0;
+}
+
 // Save a transcript and the time it was generated. Used by the transcribe
 // route after Gemini returns successfully.
 export async function updateLeadTranscript(
