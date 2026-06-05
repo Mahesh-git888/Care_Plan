@@ -1,10 +1,13 @@
 // Google Tag Manager helper.
 //
-// The container ID below is the live Portea container. NEXT_PUBLIC_GTM_ID can
-// override it from the environment (useful for switching it off in local
-// development by setting the var to an empty string).
+// GTM is OFF by default: no container loads unless NEXT_PUBLIC_GTM_ID is
+// explicitly set to a real container id. Google Ads tracking is handled
+// separately by the direct gtag.js tag (see google-ads-provider.tsx), so the
+// site does not depend on a GTM container. To run GA4/remarketing through a
+// container later, set NEXT_PUBLIC_GTM_ID to a Portea-owned (or agency)
+// container id.
 
-const DEFAULT_GTM_ID = "GTM-MQGX3H46";
+const DEFAULT_GTM_ID = "";
 
 export const GTM_ID = (process.env.NEXT_PUBLIC_GTM_ID ?? DEFAULT_GTM_ID).trim();
 

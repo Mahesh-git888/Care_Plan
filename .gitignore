@@ -18,3 +18,5 @@ portea-leads.jsonl
 
 .vercel
 .env*.local
+
+.vercel
