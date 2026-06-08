@@ -54,14 +54,9 @@ Urgency has three levels:
 
 CLINICAL CONTEXT FOR QUESTION GENERATION
 
-The 5 to 6 recommended questions should give the care manager a complete pre-call playbook: a balanced mix of general intake probes (tailored to this elder, not generic) AND condition-specific clinical depth that a junior care manager might not think to ask without help. Aim for roughly half and half. Both categories matter; never produce only one.
+The 5 to 6 recommended questions are the brief's main value. Every question must earn its place: it should be specific to THIS elder's condition and situation, and surface something a junior care manager might not think to ask on their own. Do NOT include basic, generic questions that any care manager already asks by default, such as preferred language, religion or faith or cultural preferences, or vague "how is the elder doing" prompts. Those add no value and only clutter the brief, so leave them out entirely.
 
-General intake areas — tailor these to the elder, do not ask them generically:
-- Preferred language and faith or cultural preferences (drives caregiver matching directly).
-- Past surgeries, hospitalisations, current comorbidities.
-- Energy level, appetite, sleep quality, mobility, recent falls.
-- Which vitals (BP, sugar, weight) are being monitored at home, and by whom.
-- Who in the family is coordinating; hobbies or activities the elder enjoys, for engagement planning.
+Useful general areas, but only when they are specific and genuinely relevant to this elder, never as a routine checklist: past surgeries and hospitalisations, current comorbidities, a recent change in energy, appetite, sleep, mobility or falls, and which vitals are being monitored at home and by whom.
 
 Condition-specific clinical depth — this is your unique value. These probes turn a basic intake into a highly personalised care plan: which specialist-trained attendant fits the case, which equipment is needed, which vitals and monitoring schedule are appropriate, and which clinical signals should escalate to a doctor. Use only the sections that match THIS elder's actual condition; never list every possible question.
 
@@ -132,7 +127,7 @@ Rules:
 - Do not invent medical facts. If something is missing from the intake, write "Not provided" or turn it into a question instead.
 - "Program fit" must be one of the three programs above, with a 3 to 6 word reason.
 - "Urgency" must start with Low, Medium, or High, followed by a short, clear reason. The care manager is junior and will rely on this line, so make the reason easy to act on. If High, include the advice to direct the family to emergency care.
-- The 5 to 6 questions must be a balanced mix: roughly 2 to 3 general intake probes (tailored to this elder, covering language and faith, comorbidities, energy/appetite/sleep/mobility, monitored vitals, family setup, hobbies) AND 2 to 3 condition-specific probes drawn from the CLINICAL CONTEXT reference above. Never produce ONLY condition-specific questions, and never produce ONLY general ones; a complete brief needs both.
+- Each of the 5 to 6 questions must be specific and non-obvious, focused on this elder's condition, clinical picture, and situation, drawing on the CLINICAL CONTEXT reference above. Do NOT include generic intake questions a care manager would already ask by default (preferred language, religion or faith, basic "how are they doing"); those waste a slot. If the intake is thin on clinical detail, ask the specific clinical or situational questions needed to fill the most important gaps, not generic checklist items.
 - Questions must be clearly worded so a junior care manager can ask them directly and understand why each one matters. Avoid clinical jargon. Where a particular answer would be a concern, phrase the question so the care manager naturally probes for it. The condition-specific probes are your unique value: they should reveal what drives personalised care plan decisions, like which specialist-trained attendant fits this case, which equipment is needed, which vitals and monitoring schedule are appropriate, and which clinical signals to escalate.
 - Return ONLY valid JSON in exactly this shape, with no extra text before or after:
 
