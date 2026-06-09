@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { AdminHeaderActions } from "@/components/admin-header-actions";
 import { isAdminAuthed, isAdminConfigured } from "@/lib/admin-auth";
 import { readLeads, type LeadRecord } from "@/lib/lead-store";
+import { getPageViewStats, type PageViewStats } from "@/lib/page-views";
 
 export const metadata: Metadata = {
   title: "Portea Marketing Analytics",
@@ -87,6 +88,13 @@ export default async function MarketingAnalyticsPage() {
     );
   }
 
+  let pv: PageViewStats = { total: 0, byCampaign: {} };
+  try {
+    pv = await getPageViewStats();
+  } catch {
+    // The page_views table may not exist yet on first run; degrade gracefully.
+  }
+
   const clicks = all.filter((l) => l.kind !== "intake");
   const intakes = all.filter((l) => l.kind === "intake");
 
@@ -103,6 +111,13 @@ export default async function MarketingAnalyticsPage() {
   }
   for (const l of all) {
     bump(l.attribution?.utm_campaign || "(organic / direct)", l.kind);
+  }
+  // Surface campaigns that have views but no leads yet, so paid traffic that
+  // isn't converting is still visible in the table.
+  for (const camp of Object.keys(pv.byCampaign)) {
+    if (!byCampaign.has(camp)) {
+      byCampaign.set(camp, { campaign: camp, intakes: 0, calls: 0, whatsapp: 0 });
+    }
   }
   const rollups = Array.from(byCampaign.values()).sort(
     (a, b) => b.intakes + b.calls + b.whatsapp - (a.intakes + a.calls + a.whatsapp),
@@ -133,7 +148,8 @@ export default async function MarketingAnalyticsPage() {
 
       <section className="mx-auto max-w-7xl space-y-8 px-6 py-8">
         {/* Stat cards */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+          <StatCard label="LANDING PAGE VIEWS" value={pv.total} color="#0b7c87" />
           <StatCard label="INTAKE FORMS" value={intakes.length} color="#0f9aa8" />
           <StatCard label="CALL CLICKS" value={callCount} color="#ea580c" />
           <StatCard label="WHATSAPP CLICKS" value={waCount} color="#16a34a" />
@@ -154,31 +170,42 @@ export default async function MarketingAnalyticsPage() {
                 <thead className="bg-[#f7fbfb] text-left text-xs font-semibold uppercase tracking-[0.12em] text-[#0b7c87]">
                   <tr>
                     <th className="px-4 py-3">Campaign</th>
+                    <th className="px-4 py-3 text-right">Views</th>
                     <th className="px-4 py-3 text-right">Intakes</th>
                     <th className="px-4 py-3 text-right">Call clicks</th>
                     <th className="px-4 py-3 text-right">WhatsApp clicks</th>
                     <th className="px-4 py-3 text-right">Total</th>
+                    <th className="px-4 py-3 text-right">Lead rate</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#eaf2f4]">
                   {rollups.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-4 py-6 text-center text-sm text-[#7a8c92]">
+                      <td colSpan={7} className="px-4 py-6 text-center text-sm text-[#7a8c92]">
                         No events yet.
                       </td>
                     </tr>
                   ) : (
-                    rollups.map((r) => (
-                      <tr key={r.campaign} className="align-top">
-                        <td className="px-4 py-3 font-semibold">{r.campaign}</td>
-                        <td className="px-4 py-3 text-right">{r.intakes}</td>
-                        <td className="px-4 py-3 text-right">{r.calls}</td>
-                        <td className="px-4 py-3 text-right">{r.whatsapp}</td>
-                        <td className="px-4 py-3 text-right font-semibold">
-                          {r.intakes + r.calls + r.whatsapp}
-                        </td>
-                      </tr>
-                    ))
+                    rollups.map((r) => {
+                      const views = pv.byCampaign[r.campaign] ?? 0;
+                      const leadRate =
+                        views > 0
+                          ? `${((r.intakes / views) * 100).toFixed(1)}%`
+                          : "—";
+                      return (
+                        <tr key={r.campaign} className="align-top">
+                          <td className="px-4 py-3 font-semibold">{r.campaign}</td>
+                          <td className="px-4 py-3 text-right">{views || "—"}</td>
+                          <td className="px-4 py-3 text-right">{r.intakes}</td>
+                          <td className="px-4 py-3 text-right">{r.calls}</td>
+                          <td className="px-4 py-3 text-right">{r.whatsapp}</td>
+                          <td className="px-4 py-3 text-right font-semibold">
+                            {r.intakes + r.calls + r.whatsapp}
+                          </td>
+                          <td className="px-4 py-3 text-right">{leadRate}</td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>

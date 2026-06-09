@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 
 import { GoogleAdsProvider } from "@/components/google-ads-provider";
+import { PageViewTracker } from "@/components/page-view-tracker";
 import { ScrollTracker } from "@/components/scroll-tracker";
 import { TrackingProvider } from "@/components/tracking-provider";
 
@@ -113,6 +114,7 @@ export default function RootLayout({
       <body>
         <GoogleAdsProvider />
         <TrackingProvider />
+        <PageViewTracker />
         <ScrollTracker />
         {children}
         <Script

@@ -3,11 +3,13 @@ import { randomUUID, createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 
 import { appendLead, type LeadAttribution } from "@/lib/lead-store";
+import { recordPageView } from "@/lib/page-views";
 
 type TrackPayload = {
-  kind?: "call_click" | "whatsapp_click";
+  kind?: "call_click" | "whatsapp_click" | "page_view";
   vertical?: string;
   target?: string;
+  path?: string;
   attribution?: LeadAttribution;
 };
 
@@ -25,6 +27,22 @@ export async function POST(request: Request) {
   }
 
   const kind = body.kind;
+
+  // Landing-page view: increment the aggregate counter (no row in leads).
+  if (kind === "page_view") {
+    try {
+      await recordPageView({
+        path: body.path ?? "/",
+        vertical: body.vertical,
+        utmCampaign: body.attribution?.utm_campaign,
+      });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn("[track] failed to record page view", err);
+    }
+    return new NextResponse(null, { status: 204 });
+  }
+
   if (kind !== "call_click" && kind !== "whatsapp_click") {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
