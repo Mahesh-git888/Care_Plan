@@ -5,7 +5,12 @@ import { redirect } from "next/navigation";
 import { AdminHeaderActions } from "@/components/admin-header-actions";
 import { isAdminAuthed, isAdminConfigured } from "@/lib/admin-auth";
 import { readLeads, type LeadRecord } from "@/lib/lead-store";
-import { getPageViewStats, type PageViewStats } from "@/lib/page-views";
+import {
+  getPageViewBreakdown,
+  getPageViewStats,
+  type PageViewBreakdown,
+  type PageViewStats,
+} from "@/lib/page-views";
 
 export const metadata: Metadata = {
   title: "Portea Marketing Analytics",
@@ -116,6 +121,22 @@ export default async function MarketingAnalyticsPage({
     // The page_views table may not exist yet on first run; degrade gracefully.
   }
 
+  let breakdown: PageViewBreakdown = { byDay: [], byHour: [] };
+  try {
+    breakdown = await getPageViewBreakdown(cutoffIso);
+  } catch {
+    // Degrade gracefully if the page_views table isn't ready.
+  }
+  const hourMap = new Map(breakdown.byHour.map((h) => [h.hour, h.views]));
+  const byHourRows = Array.from({ length: 24 }, (_, h) => ({
+    label: formatHour(h),
+    value: hourMap.get(h) ?? 0,
+  }));
+  const byDayRows = breakdown.byDay.map((d) => ({
+    label: d.day.slice(5),
+    value: d.views,
+  }));
+
   const ranged = cutoff
     ? all.filter((l) => {
         const t = new Date(l.created_at).getTime();
@@ -205,6 +226,21 @@ export default async function MarketingAnalyticsPage({
           <StatCard label="CALL CLICKS" value={callCount} color="#ea580c" />
           <StatCard label="WHATSAPP CLICKS" value={waCount} color="#16a34a" />
           <StatCard label="TOTAL EVENTS" value={ranged.length} color="#10242b" />
+        </div>
+
+        {/* Views over time */}
+        <div>
+          <h2 className="text-lg font-semibold tracking-[-0.02em]">
+            Landing page views over time
+          </h2>
+          <p className="mt-1 text-sm text-[#7a8c92]">
+            When visitors land, in IST. Read the peak hours to time campaigns.
+            Reflects the range selected above.
+          </p>
+          <div className="mt-4 grid gap-6 lg:grid-cols-2">
+            <BreakdownCard title="By day" rows={byDayRows} />
+            <BreakdownCard title="By hour of day (IST)" rows={byHourRows} />
+          </div>
         </div>
 
         {/* Campaign roll-up */}
@@ -328,6 +364,54 @@ export default async function MarketingAnalyticsPage({
         </div>
       </section>
     </main>
+  );
+}
+
+function formatHour(h: number): string {
+  const am = h < 12;
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12} ${am ? "AM" : "PM"}`;
+}
+
+function BreakdownCard({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: { label: string; value: number }[];
+}) {
+  const max = Math.max(1, ...rows.map((r) => r.value));
+  const total = rows.reduce((s, r) => s + r.value, 0);
+  return (
+    <div className="rounded-2xl border border-[#e2e8eb] bg-white p-4 shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7a8c92]">
+        {title}
+      </p>
+      {total === 0 ? (
+        <p className="py-6 text-center text-sm text-[#7a8c92]">
+          No views in this range yet.
+        </p>
+      ) : (
+        <ul className="mt-3 space-y-1.5">
+          {rows.map((r) => (
+            <li key={r.label} className="flex items-center gap-3">
+              <span className="w-14 shrink-0 text-xs font-medium text-[#445d66]">
+                {r.label}
+              </span>
+              <div className="relative h-4 flex-1 overflow-hidden rounded bg-[#f1f6f7]">
+                <div
+                  className="absolute inset-y-0 left-0 rounded bg-[#0f9aa8]"
+                  style={{ width: `${(r.value / max) * 100}%` }}
+                />
+              </div>
+              <span className="w-8 shrink-0 text-right text-xs font-semibold text-[#10242b]">
+                {r.value}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 

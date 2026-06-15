@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npx tsc *)",
       "Bash(node_modules/.bin/tsc --noEmit)",
-      "WebFetch(domain:claude.ai)"
+      "WebFetch(domain:claude.ai)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Add by-day and by-hour landing-page view breakdown \\(IST\\) *)",
+      "Bash(git push *)",
+      "Bash(npx vercel *)"
     ]
   }
 }

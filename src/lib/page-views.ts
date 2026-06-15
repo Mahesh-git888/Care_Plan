@@ -52,3 +52,38 @@ export async function getPageViewStats(sinceIso?: string): Promise<PageViewStats
   }
   return { total: Number(totalRows[0]?.total ?? 0), byCampaign };
 }
+
+export type PageViewBreakdown = {
+  byDay: { day: string; views: number }[];
+  byHour: { hour: number; views: number }[];
+};
+
+// Landing-page views split by calendar day and by hour-of-day, both in IST
+// (Asia/Kolkata) so the busiest hours read as local time, not UTC. Used by the
+// marketing dashboard to time campaigns. Respects the same optional sinceIso
+// window as getPageViewStats.
+export async function getPageViewBreakdown(
+  sinceIso?: string,
+): Promise<PageViewBreakdown> {
+  const since = sinceIso ?? null;
+  const dayRows = await query<{ day: string; views: number }>(
+    `SELECT to_char((bucket AT TIME ZONE 'Asia/Kolkata')::date, 'YYYY-MM-DD') AS day,
+            SUM(views)::int AS views
+     FROM page_views
+     WHERE ($1::timestamptz IS NULL OR bucket >= $1)
+     GROUP BY 1 ORDER BY 1`,
+    [since],
+  );
+  const hourRows = await query<{ hour: number; views: number }>(
+    `SELECT EXTRACT(HOUR FROM (bucket AT TIME ZONE 'Asia/Kolkata'))::int AS hour,
+            SUM(views)::int AS views
+     FROM page_views
+     WHERE ($1::timestamptz IS NULL OR bucket >= $1)
+     GROUP BY 1 ORDER BY 1`,
+    [since],
+  );
+  return {
+    byDay: dayRows.map((r) => ({ day: r.day, views: Number(r.views) })),
+    byHour: hourRows.map((r) => ({ hour: Number(r.hour), views: Number(r.views) })),
+  };
+}
