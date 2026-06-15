@@ -132,20 +132,38 @@ export function ensureSchema(): Promise<void> {
       await p.query(
         `CREATE INDEX IF NOT EXISTS login_audit_ts_idx ON login_audit (ts DESC);`,
       );
-      // Aggregate landing-page view counter. One row per (day, path, campaign)
-      // incremented on each view, so it stays tiny regardless of traffic and
-      // never pollutes the leads table. The empty-string defaults keep the
-      // primary key valid (Postgres treats NULLs in a PK as distinct).
+      // Aggregate landing-page view counter, bucketed by the hour so the
+      // marketing dashboard can filter by hour / day / week. One row per
+      // (hour, path, vertical, utm_campaign); stays tiny regardless of traffic
+      // and never pollutes the leads table.
+      //
+      // Migrate the earlier day-bucketed shape (empty on every deployment) to
+      // the hourly shape. Idempotent: only fires while the old `day` column
+      // still exists, so it runs at most once.
+      await p.query(`
+        DO $$
+        BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_name = 'page_views' AND column_name = 'day'
+          ) THEN
+            DROP TABLE IF EXISTS page_views;
+          END IF;
+        END $$;
+      `);
       await p.query(`
         CREATE TABLE IF NOT EXISTS page_views (
-          day           DATE NOT NULL,
+          bucket        TIMESTAMPTZ NOT NULL,
           path          TEXT NOT NULL,
           vertical      TEXT NOT NULL DEFAULT '',
           utm_campaign  TEXT NOT NULL DEFAULT '',
           views         BIGINT NOT NULL DEFAULT 0,
-          PRIMARY KEY (day, path, vertical, utm_campaign)
+          PRIMARY KEY (bucket, path, vertical, utm_campaign)
         );
       `);
+      await p.query(
+        `CREATE INDEX IF NOT EXISTS page_views_bucket_idx ON page_views (bucket DESC);`,
+      );
     })();
   }
   return schemaReady;

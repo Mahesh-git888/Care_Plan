@@ -49,7 +49,19 @@ function kindBadge(kind: LeadRecord["kind"]) {
   );
 }
 
-export default async function MarketingAnalyticsPage() {
+const RANGES: { key: string; label: string; hours: number | null }[] = [
+  { key: "1h", label: "Last hour", hours: 1 },
+  { key: "24h", label: "Last 24h", hours: 24 },
+  { key: "7d", label: "Last 7 days", hours: 24 * 7 },
+  { key: "30d", label: "Last 30 days", hours: 24 * 30 },
+  { key: "all", label: "All time", hours: null },
+];
+
+export default async function MarketingAnalyticsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ range?: string }>;
+}) {
   if (!isAdminConfigured()) {
     return (
       <main className="mx-auto max-w-3xl px-6 py-16 text-[#10242b]">
@@ -65,6 +77,15 @@ export default async function MarketingAnalyticsPage() {
   if (!(await isAdminAuthed())) {
     redirect("/admin/login");
   }
+
+  const sp = await searchParams;
+  const activeRange = RANGES.find((r) => r.key === sp?.range)?.key ?? "all";
+  const activeDef = RANGES.find((r) => r.key === activeRange)!;
+  const cutoff =
+    activeDef.hours != null
+      ? new Date(Date.now() - activeDef.hours * 3_600_000)
+      : null;
+  const cutoffIso = cutoff?.toISOString();
 
   let all: LeadRecord[] = [];
   let loadError: string | null = null;
@@ -90,13 +111,20 @@ export default async function MarketingAnalyticsPage() {
 
   let pv: PageViewStats = { total: 0, byCampaign: {} };
   try {
-    pv = await getPageViewStats();
+    pv = await getPageViewStats(cutoffIso);
   } catch {
     // The page_views table may not exist yet on first run; degrade gracefully.
   }
 
-  const clicks = all.filter((l) => l.kind !== "intake");
-  const intakes = all.filter((l) => l.kind === "intake");
+  const ranged = cutoff
+    ? all.filter((l) => {
+        const t = new Date(l.created_at).getTime();
+        return !Number.isNaN(t) && t >= cutoff.getTime();
+      })
+    : all;
+
+  const clicks = ranged.filter((l) => l.kind !== "intake");
+  const intakes = ranged.filter((l) => l.kind === "intake");
 
   // Roll up by utm_campaign
   type Roll = { campaign: string; intakes: number; calls: number; whatsapp: number };
@@ -109,7 +137,7 @@ export default async function MarketingAnalyticsPage() {
     if (k === "whatsapp_click") r.whatsapp++;
     byCampaign.set(c, r);
   }
-  for (const l of all) {
+  for (const l of ranged) {
     bump(l.attribution?.utm_campaign || "(organic / direct)", l.kind);
   }
   // Surface campaigns that have views but no leads yet, so paid traffic that
@@ -147,13 +175,36 @@ export default async function MarketingAnalyticsPage() {
       </header>
 
       <section className="mx-auto max-w-7xl space-y-8 px-6 py-8">
+        {/* Time range filter */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#7a8c92]">
+            Range
+          </span>
+          {RANGES.map((r) => {
+            const active = r.key === activeRange;
+            return (
+              <Link
+                key={r.key}
+                href={`/admin/analytics?range=${r.key}`}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+                  active
+                    ? "bg-[#0f9aa8] text-white shadow-sm"
+                    : "border border-[#d7e7ea] bg-white text-[#0b7c87] hover:bg-[#f7fbfb]"
+                }`}
+              >
+                {r.label}
+              </Link>
+            );
+          })}
+        </div>
+
         {/* Stat cards */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
           <StatCard label="LANDING PAGE VIEWS" value={pv.total} color="#0b7c87" />
           <StatCard label="INTAKE FORMS" value={intakes.length} color="#0f9aa8" />
           <StatCard label="CALL CLICKS" value={callCount} color="#ea580c" />
           <StatCard label="WHATSAPP CLICKS" value={waCount} color="#16a34a" />
-          <StatCard label="TOTAL EVENTS" value={all.length} color="#10242b" />
+          <StatCard label="TOTAL EVENTS" value={ranged.length} color="#10242b" />
         </div>
 
         {/* Campaign roll-up */}

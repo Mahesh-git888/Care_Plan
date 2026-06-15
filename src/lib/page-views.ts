@@ -17,9 +17,9 @@ export async function recordPageView(input: {
   const vertical = (input.vertical || "").slice(0, 64);
   const campaign = (input.utmCampaign || "").slice(0, 128);
   await execute(
-    `INSERT INTO page_views (day, path, vertical, utm_campaign, views)
-     VALUES (CURRENT_DATE, $1, $2, $3, 1)
-     ON CONFLICT (day, path, vertical, utm_campaign)
+    `INSERT INTO page_views (bucket, path, vertical, utm_campaign, views)
+     VALUES (date_trunc('hour', now()), $1, $2, $3, 1)
+     ON CONFLICT (bucket, path, vertical, utm_campaign)
      DO UPDATE SET views = page_views.views + 1`,
     [path, vertical, campaign],
   );
@@ -30,12 +30,20 @@ export type PageViewStats = {
   byCampaign: Record<string, number>;
 };
 
-export async function getPageViewStats(): Promise<PageViewStats> {
+// sinceIso limits the stats to views on or after that timestamp. Pass
+// undefined for all-time.
+export async function getPageViewStats(sinceIso?: string): Promise<PageViewStats> {
+  const since = sinceIso ?? null;
   const totalRows = await query<{ total: number }>(
-    `SELECT COALESCE(SUM(views), 0)::int AS total FROM page_views`,
+    `SELECT COALESCE(SUM(views), 0)::int AS total FROM page_views
+     WHERE ($1::timestamptz IS NULL OR bucket >= $1)`,
+    [since],
   );
   const campRows = await query<{ utm_campaign: string; views: number }>(
-    `SELECT utm_campaign, SUM(views)::int AS views FROM page_views GROUP BY utm_campaign`,
+    `SELECT utm_campaign, SUM(views)::int AS views FROM page_views
+     WHERE ($1::timestamptz IS NULL OR bucket >= $1)
+     GROUP BY utm_campaign`,
+    [since],
   );
   const byCampaign: Record<string, number> = {};
   for (const r of campRows) {
