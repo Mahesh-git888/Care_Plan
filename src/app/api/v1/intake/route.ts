@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 
 import { isValidIndianMobile, normalizePhone } from "@/lib/chatbot";
 import { verticals, type VerticalSlug } from "@/data/verticals";
@@ -203,8 +203,10 @@ export async function POST(request: Request) {
 
   // Best-effort team alert (no patient details, just program + city + link).
   // Fires the moment a lead is born, matching "notify us as soon as we have a
-  // name and number". No-op until the email env vars are set.
-  void notifyNewLead({ vertical, city });
+  // name and number". Runs via after() so the serverless function stays alive
+  // until the email actually sends — a plain fire-and-forget gets frozen on
+  // return and the SMTP send is cut off. No-op until the email env vars are set.
+  after(() => notifyNewLead({ vertical, city }));
 
   return NextResponse.json({
     patient_id: patientId,

@@ -67,6 +67,9 @@ export async function notifyNewLead(input: {
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: { user: gmailUser, pass: gmailPass.replace(/\s+/g, "") },
+        connectionTimeout: 8000,
+        greetingTimeout: 8000,
+        socketTimeout: 8000,
       });
       await transporter.sendMail({
         from: `Portea Leads <${gmailUser}>`,
