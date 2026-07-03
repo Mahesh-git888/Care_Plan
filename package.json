@@ -11,7 +11,9 @@
   "dependencies": {
     "@google/genai": "^2.6.0",
     "@vercel/blob": "^2.4.0",
+    "docx": "^9.7.1",
     "next": "latest",
+    "nodemailer": "^9.0.3",
     "pg": "^8.13.1",
     "react": "latest",
     "react-dom": "latest"
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
+    "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.11.10",
     "@types/react": "latest",
     "@types/react-dom": "latest",

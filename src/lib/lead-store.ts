@@ -8,6 +8,7 @@ import { execute, query } from "@/lib/db";
 import {
   LIFECYCLE_STATUSES,
   type AiBrief,
+  type CarePlan,
   type LeadAttribution,
   type LeadRecord,
   type LifecycleStatus,
@@ -17,6 +18,7 @@ import {
 export {
   LIFECYCLE_STATUSES,
   type AiBrief,
+  type CarePlan,
   type LeadAttribution,
   type LeadKind,
   type LeadRecord,
@@ -54,6 +56,9 @@ type LeadRow = {
   call_observations: string | null;
   call_transcript: string | null;
   call_transcript_at: Date | string | null;
+  care_plan: CarePlan | null;
+  care_plan_at: Date | string | null;
+  care_plan_notes: string | null;
 };
 
 function toIso(value: Date | string | null | undefined): string | undefined {
@@ -92,6 +97,9 @@ function rowToLead(row: LeadRow): LeadRecord {
     call_observations: row.call_observations ?? undefined,
     call_transcript: row.call_transcript ?? undefined,
     call_transcript_at: toIso(row.call_transcript_at),
+    care_plan: row.care_plan ?? undefined,
+    care_plan_at: toIso(row.care_plan_at),
+    care_plan_notes: row.care_plan_notes ?? undefined,
   };
 }
 
@@ -321,6 +329,19 @@ export async function updateLeadBrief(id: string, brief: AiBrief): Promise<boole
   const rowCount = await execute(
     `UPDATE leads SET ai_brief = $1::jsonb, ai_brief_at = now() WHERE id = $2`,
     [JSON.stringify(brief), id],
+  );
+  return rowCount > 0;
+}
+
+// Persist a generated care plan plus the doctor's notes it was built from.
+export async function updateLeadCarePlan(
+  id: string,
+  plan: CarePlan,
+  notes: string,
+): Promise<boolean> {
+  const rowCount = await execute(
+    `UPDATE leads SET care_plan = $1::jsonb, care_plan_at = now(), care_plan_notes = $2, updated_at = now() WHERE id = $3`,
+    [JSON.stringify(plan), notes.trim() || null, id],
   );
   return rowCount > 0;
 }

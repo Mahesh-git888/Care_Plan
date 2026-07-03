@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
   LIFECYCLE_STATUSES,
   type AiBrief,
+  type CarePlan,
   type LeadRecord,
   type LifecycleStatus,
 } from "@/lib/lead-types";
@@ -538,6 +539,12 @@ function LeadDetailPanel({
   const [briefLoading, setBriefLoading] = useState(false);
   const [briefError, setBriefError] = useState<string | null>(null);
 
+  // Feature 3: AI care plan.
+  const [carePlan, setCarePlan] = useState<CarePlan | undefined>(lead.care_plan);
+  const [carePlanNotes, setCarePlanNotes] = useState<string>(lead.care_plan_notes ?? "");
+  const [carePlanLoading, setCarePlanLoading] = useState(false);
+  const [carePlanError, setCarePlanError] = useState<string | null>(null);
+
   // Feature 2: post-call recording, transcript, observations.
   const [recordingUrl, setRecordingUrl] = useState(lead.call_recording_url ?? "");
   const [observations, setObservations] = useState(lead.call_observations ?? "");
@@ -728,6 +735,34 @@ function LeadDetailPanel({
       );
     } finally {
       setBriefLoading(false);
+    }
+  }
+
+  async function handleGenerateCarePlan() {
+    setCarePlanLoading(true);
+    setCarePlanError(null);
+    try {
+      const res = await fetch("/api/admin/leads/care-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: lead.id, notes: carePlanNotes }),
+      });
+      const body = (await res.json()) as {
+        ok?: boolean;
+        care_plan?: CarePlan;
+        error?: string;
+      };
+      if (!res.ok || !body.ok || !body.care_plan) {
+        throw new Error(body.error || "Could not generate the care plan.");
+      }
+      setCarePlan(body.care_plan);
+      onPatch({ ...lead, care_plan: body.care_plan, care_plan_notes: carePlanNotes });
+    } catch (err) {
+      setCarePlanError(
+        err instanceof Error ? err.message : "Could not generate the care plan.",
+      );
+    } finally {
+      setCarePlanLoading(false);
     }
   }
 
@@ -998,6 +1033,103 @@ function LeadDetailPanel({
                 <p className="mt-1 text-xs text-[#7a8c92]">
                   Add a new note via the &quot;Quick note&quot; field in the Care manager update box below.
                 </p>
+              </div>
+            ) : null}
+          </div>
+
+          {/* Care plan (Feature 3) */}
+          <div className="space-y-3 rounded-2xl border border-[#e2e8eb] p-5">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-sm font-semibold text-[#10242b]">Care plan</h3>
+              {carePlan ? (
+                <button
+                  type="button"
+                  onClick={handleGenerateCarePlan}
+                  disabled={carePlanLoading}
+                  className="text-xs font-semibold text-[#0b7c87] hover:underline disabled:opacity-50"
+                >
+                  {carePlanLoading ? "Working..." : "Regenerate"}
+                </button>
+              ) : null}
+            </div>
+
+            <p className="text-xs text-[#7a8c92]">
+              Paste the doctor&apos;s notes / clinical brief. The plan also draws on the
+              intake, transcript, and observations above. A clinician should review the
+              draft before sharing.
+            </p>
+
+            <textarea
+              value={carePlanNotes}
+              onChange={(e) => setCarePlanNotes(e.target.value)}
+              rows={5}
+              placeholder="Doctor's clinical notes / brief (diagnosis, timeline, current status, services, equipment, special requests)..."
+              className="w-full rounded-lg border border-[#d7e7ea] bg-white px-3 py-2 text-sm"
+            />
+
+            <button
+              type="button"
+              onClick={handleGenerateCarePlan}
+              disabled={carePlanLoading}
+              className="rounded-full bg-[#0f9aa8] px-4 py-2 text-sm font-semibold text-white hover:bg-[#0b7c87] disabled:opacity-50"
+            >
+              {carePlanLoading
+                ? "Generating..."
+                : carePlan
+                  ? "Regenerate care plan"
+                  : "Generate care plan"}
+            </button>
+
+            {carePlanError ? (
+              <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                {carePlanError}
+              </p>
+            ) : null}
+
+            {carePlan ? (
+              <div className="space-y-3 rounded-xl border border-[#e2e8eb] bg-[#f7fbfb] p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-[#10242b]">{carePlan.title}</p>
+                    <p className="text-xs text-[#7a8c92]">{carePlan.subtitle}</p>
+                  </div>
+                  <a
+                    href={`/api/admin/leads/care-plan.docx?id=${encodeURIComponent(lead.id)}`}
+                    className="flex-none rounded-full bg-[#10242b] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0b1a20]"
+                  >
+                    Download .docx
+                  </a>
+                </div>
+                {carePlan.care_goals.length ? (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#7a8c92]">
+                      Care goals
+                    </p>
+                    <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-[#10242b]">
+                      {carePlan.care_goals.slice(0, 6).map((g, i) => (
+                        <li key={i}>{g}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+                {carePlan.gaps.length ? (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#b45309]">
+                      To confirm at first visit
+                    </p>
+                    <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-[#7a4a12]">
+                      {carePlan.gaps.slice(0, 6).map((g, i) => (
+                        <li key={i}>{g}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+                {carePlan.generated_by === "stub" ? (
+                  <p className="text-xs text-[#a0adb2]">
+                    Sample plan. Live AI generation activates once the Gemini / Vertex key
+                    is configured.
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </div>

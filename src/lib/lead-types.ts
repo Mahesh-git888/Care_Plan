@@ -47,6 +47,34 @@ export type AiBrief = {
   generated_by?: string;
 };
 
+// AI-generated care plan (Feature 3). The model fills these structured fields
+// from the doctor's notes + intake + transcript + observations; the app renders
+// them into a Portea-branded .docx. Mirrors the portea-care-plan skill.
+export type CarePlanRow = { label: string; value: string };
+export type CarePlanService = { service: string; plan: string; details: string };
+export type CarePlanEquipment = { equipment: string; source: string; status: string };
+export type CarePlanSymptom = { symptom: string; assessment: string; management: string };
+export type CarePlanEscalation = { trigger: string; action: string };
+
+export type CarePlan = {
+  // palliative | post-discharge | dementia | elder-care | cancer | recovery
+  vertical: string;
+  title: string;
+  subtitle: string;
+  patient_info: CarePlanRow[];
+  clinical_summary: CarePlanRow[];
+  care_goals: string[];
+  service_plan: CarePlanService[];
+  equipment: CarePlanEquipment[];
+  symptom_protocol: CarePlanSymptom[];
+  escalation_protocol: CarePlanEscalation[];
+  communication: CarePlanRow[];
+  // Fields the brief did not provide, surfaced so the care team can complete
+  // them at the first visit.
+  gaps: string[];
+  generated_by?: string;
+};
+
 export type LeadRecord = {
   id: string;
   kind: LeadKind;
@@ -79,4 +107,8 @@ export type LeadRecord = {
   call_observations?: string;
   call_transcript?: string;
   call_transcript_at?: string;
+  // Feature 3: AI care plan.
+  care_plan?: CarePlan;
+  care_plan_at?: string;
+  care_plan_notes?: string;
 };

@@ -10,6 +10,7 @@ import {
   maskPhone,
   type LeadAttribution,
 } from "@/lib/lead-store";
+import { notifyNewLead } from "@/lib/notify";
 
 type IntakePayload = {
   full_name?: string;
@@ -199,6 +200,11 @@ export async function POST(request: Request) {
     utm_source: body.attribution?.utm_source ?? null,
     utm_campaign: body.attribution?.utm_campaign ?? null,
   });
+
+  // Best-effort team alert (no patient details, just program + city + link).
+  // Fires the moment a lead is born, matching "notify us as soon as we have a
+  // name and number". No-op until the email env vars are set.
+  void notifyNewLead({ vertical, city });
 
   return NextResponse.json({
     patient_id: patientId,

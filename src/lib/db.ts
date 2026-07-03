@@ -94,6 +94,12 @@ export function ensureSchema(): Promise<void> {
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS call_observations TEXT;`);
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS call_transcript TEXT;`);
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS call_transcript_at TIMESTAMPTZ;`);
+      // Feature 3: AI-generated care plan. care_plan holds the structured plan
+      // (rendered to a branded .docx on download); care_plan_notes holds the
+      // doctor's free-text brief used to generate it.
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS care_plan JSONB;`);
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS care_plan_at TIMESTAMPTZ;`);
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS care_plan_notes TEXT;`);
       await p.query(`
         CREATE TABLE IF NOT EXISTS users (
           id                    TEXT PRIMARY KEY,
