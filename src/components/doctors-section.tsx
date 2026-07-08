@@ -31,7 +31,7 @@ export function DoctorsSection({ verticalLabel }: { verticalLabel?: string }) {
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-10">
         <div className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#0b7c87]">
-            The doctors behind your{verticalLabel ? ` ${verticalLabel.toLowerCase()}` : "ir"} care plan
+            The doctors behind your{verticalLabel ? ` ${verticalLabel.toLowerCase()}` : ""} care plan
           </p>
           <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#10242b] sm:text-4xl">
             The doctors who write every care plan.

@@ -124,7 +124,7 @@ const sharedFaqs: FaqItem[] = [
   {
     question: "Is Portea available in our city?",
     answer:
-      "We operate in 40+ Indian cities including Bangalore, Mumbai, Delhi NCR, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad, Jaipur and Chandigarh. If we do not cover your pin code directly, your care manager will say so honestly on the first call.",
+      "We operate in 135+ Indian cities including Bangalore, Mumbai, Delhi NCR, Hyderabad, Chennai, Pune, Kolkata, Ahmedabad, Jaipur and Chandigarh. If we do not cover your pin code directly, your care manager will say so honestly on the first call.",
   },
 ];
 
@@ -201,7 +201,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     shortName: "Elder care",
     metaTitle: "Elder Care at Home in India · Doctor-Designed | Portea",
     metaDescription:
-      "Portea Elder Care: a trained caregiver at home, one MBBS care manager who knows your parent's case, twice-a-week WhatsApp updates. Mobility, hygiene, meals, medications. 40+ cities.",
+      "Portea Elder Care: a trained caregiver at home, one MBBS care manager who knows your parent's case, twice-a-week WhatsApp updates. Mobility, hygiene, meals, medications. 135+ cities.",
     keywords: [
       "elder care at home",
       "home caregiver for parents",
@@ -588,7 +588,7 @@ export const verticals: Record<VerticalSlug, VerticalConfig> = {
     shortName: "Post-discharge care",
     metaTitle: "Post-Hospital Recovery Care at Home in India | Portea",
     metaDescription:
-      "Structured recovery support after surgery, stroke or hospitalisation. Nursing, physiotherapy, mobility and medication management, coordinated by one doctor-led care manager in 40+ Indian cities.",
+      "Structured recovery support after surgery, stroke or hospitalisation. Nursing, physiotherapy, mobility and medication management, coordinated by one doctor-led care manager in 135+ Indian cities.",
     keywords: [
       "post hospital discharge care",
       "post surgery home care",

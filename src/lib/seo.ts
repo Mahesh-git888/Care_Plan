@@ -11,7 +11,7 @@ export function buildVerticalMetadata(vertical: VerticalConfig): Metadata {
   const ogImage = vertical.images[0]?.src ?? "/elder-care-1.webp";
 
   return {
-    title: vertical.metaTitle,
+    title: { absolute: vertical.metaTitle },
     description: vertical.metaDescription,
     keywords: vertical.keywords,
     alternates: { canonical: path },
@@ -47,7 +47,7 @@ export function serviceLd(vertical: VerticalConfig) {
     name: `Portea ${vertical.name}`,
     description: vertical.metaDescription,
     url: `${SITE_URL}/${vertical.slug}`,
-    telephone: "+91-1800-121-2323",
+    telephone: "+91 91871 16003",
     areaServed: "IN",
     medicalSpecialty: ["Geriatrics", "Home Care", "Rehabilitation"],
     serviceType: vertical.name,

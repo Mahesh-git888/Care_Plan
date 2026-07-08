@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     template: "%s | Portea",
   },
   description:
-    "Doctor-designed home care for elders, dementia, and post-hospital recovery. One care manager, trained caregivers, weekly updates. Trusted by 1 million+ families across 40+ Indian cities.",
+    "Doctor-designed managed home care for elders, dementia and post-hospital recovery. One care manager per family, trained caregivers, weekly updates. 135+ cities.",
   keywords: [
     "elder care at home",
     "dementia care India",
@@ -94,7 +94,7 @@ const organizationLd = {
   logo: `${SITE_URL}/portea-logo.svg`,
   description:
     "Portea provides doctor-designed managed home care for elders, dementia patients, and post-discharge recovery across India.",
-  telephone: "+91-1800-121-2323",
+  telephone: "+91 91871 16003",
   areaServed: "IN",
   medicalSpecialty: ["Geriatrics", "Home Care", "Rehabilitation"],
   sameAs: ["https://www.portea.com"],

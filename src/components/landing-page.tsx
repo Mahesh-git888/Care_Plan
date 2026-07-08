@@ -99,7 +99,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
       <div className="gradient-banner text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-2 text-xs font-semibold sm:px-6 lg:px-10">
           <p className="truncate">
-            Doctor-designed home care · One care manager per family · 40+ Indian cities
+            Doctor-designed home care · One care manager per family · 135+ Indian cities
           </p>
           <a href={phone.href} className="hidden items-center gap-2 sm:inline-flex">
             <PhoneIcon className="h-3.5 w-3.5" />
@@ -510,7 +510,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
             <BrandLogo />
             <p className="mt-4 max-w-md text-sm leading-7 text-white/70">
               Portea is India&apos;s largest organised home healthcare provider, with doctor-led
-              elder care, dementia care and post-hospital recovery in 40+ cities.
+              elder care, dementia care and post-hospital recovery in 135+ cities.
             </p>
           </div>
           <div>

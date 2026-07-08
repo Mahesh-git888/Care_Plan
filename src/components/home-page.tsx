@@ -123,7 +123,7 @@ const SERVICES = [
   },
 ];
 
-const FAQS = [
+export const FAQS = [
   {
     q: "What does the care manager actually do?",
     a: "Your care manager is a licensed clinician (a physiotherapist or nurse with geriatric training). They visit your parent's home, conduct a structured health and safety assessment, identify exactly which services are needed, build a personalized care plan, and then coordinate everything: scheduling providers, training caregivers on your parent's specific condition, and sending your family WhatsApp updates every week. If something changes, like a fall, a new diagnosis or a medication change, they adjust the care plan.",
@@ -503,7 +503,7 @@ export function HomePage() {
                     href={program.href}
                     className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#0b7c87] transition hover:text-[#0f9aa8]"
                   >
-                    Learn more <ArrowUpRightIcon className="h-4 w-4" />
+                    Learn about {program.name} <ArrowUpRightIcon className="h-4 w-4" />
                   </Link>
                 </div>
               </article>
