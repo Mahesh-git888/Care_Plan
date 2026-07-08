@@ -6,7 +6,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { getPhoneContact, getWhatsAppContact } from "@/lib/contact";
 
 export const metadata: Metadata = {
-  title: "Elder Care Cost and Pricing in India | Portea",
+  title: "Elder Care Cost and Pricing in India",
   description:
     "Portea managed care is ₹1,999/month for a dedicated care manager and two doctor consults. Caregivers, clinical services and equipment are billed as per your care plan.",
   keywords: [
