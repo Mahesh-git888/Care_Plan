@@ -308,6 +308,7 @@ export function HomePage() {
                     alt={elderCare.images[0].alt}
                     width={1400}
                     height={980}
+                    sizes="(max-width: 1024px) 92vw, 600px"
                     className="h-full w-full object-cover"
                     style={{ objectPosition: elderCare.images[0].position ?? "center center" }}
                     priority
