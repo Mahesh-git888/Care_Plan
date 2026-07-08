@@ -8,7 +8,7 @@ import { TrackingProvider } from "@/components/tracking-provider";
 
 import "./globals.css";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.portea.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://care.portea.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

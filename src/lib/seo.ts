@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import type { VerticalConfig } from "@/data/verticals";
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.portea.com";
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://care.portea.com";
 
 export function buildVerticalMetadata(vertical: VerticalConfig): Metadata {
   const path = `/${vertical.slug}`;
