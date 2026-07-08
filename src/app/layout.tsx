@@ -12,6 +12,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://care.porte
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  verification: {
+    google: "z6GI8J7yo0kQhEAFqZoIT4Q_lyF6z9-7hSwkcZ6f-ow",
+  },
   title: {
     default: "Portea Managed Elder Care | Doctor-Designed Home Care in India",
     template: "%s | Portea",
