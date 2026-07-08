@@ -29,9 +29,13 @@ export function GoogleAdsProvider() {
   if (!GOOGLE_ADS_ENABLED) return null;
   return (
     <>
+      {/* Defer the heavy gtag.js file to lazyOnload so its ~0.8s of JS eval
+          stays out of the mobile LCP window. The tiny init snippet below stays
+          afterInteractive, so window.gtag exists early and a /thank-you
+          conversion queues into dataLayer and fires once gtag.js loads. */}
       <Script
         id="google-ads-gtag-src"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
       />
       <Script id="google-ads-gtag-init" strategy="afterInteractive">
