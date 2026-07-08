@@ -35,7 +35,7 @@ const HOME_NAV_LINKS = [
   { href: "#how-it-works", label: "How it works" },
   { href: "#services", label: "Services" },
   { href: "#programs", label: "Programs" },
-  { href: "#pricing", label: "Pricing" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 const PROBLEMS = [

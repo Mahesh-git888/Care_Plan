@@ -45,6 +45,26 @@ const faqLd = {
   })),
 };
 
+const physiciansLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Physician",
+      name: "Dr. Kavitha S Manjunath",
+      jobTitle: "Clinical Head, Primary, Preventive and Elderly Care",
+      medicalSpecialty: ["Geriatric", "PrimaryCare"],
+      worksFor: { "@type": "Organization", name: "Portea Medical", url: SITE_URL },
+    },
+    {
+      "@type": "Physician",
+      name: "Dr. Allia Rahaman",
+      jobTitle: "AVP, Medical, Quality and Training",
+      medicalSpecialty: ["Emergency", "InternalMedicine"],
+      worksFor: { "@type": "Organization", name: "Portea Medical", url: SITE_URL },
+    },
+  ],
+};
+
 export default function RootPage() {
   return (
     <>
@@ -66,6 +86,12 @@ export default function RootPage() {
         type="application/ld+json"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
+      <Script
+        id="ld-physicians"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(physiciansLd) }}
       />
     </>
   );

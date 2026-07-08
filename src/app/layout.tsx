@@ -76,10 +76,6 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  icons: {
-    icon: "/portea-logo.svg",
-    apple: "/portea-logo.svg",
-  },
 };
 
 export const viewport: Viewport = {
