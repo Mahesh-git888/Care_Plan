@@ -48,11 +48,6 @@ function tenDigit(phone?: string | null): string {
   return (phone ?? "").replace(/\D/g, "").slice(-10);
 }
 
-// Wrap a value in the single-element array the ops webhook expects.
-function w(v?: string | null): [string] {
-  return [v == null ? "" : String(v)];
-}
-
 export type SalesForwardResult = {
   ok: boolean;
   // "ok" | "skipped:no-url" | "skipped:no-phone" | "http:<code>" | "error:<name>"
@@ -88,27 +83,35 @@ export async function forwardLeadToSales(
     ? `https://care.portea.com${attr.landing_path}`
     : `https://care.portea.com/${vertical}`.replace(/\/$/, "");
 
-  const payload: Record<string, [string]> = {
-    name: w(clean(lead.full_name) || "Unknown"),
-    mobile: w(mobile),
-    city: w(clean(lead.city)),
-    service: w(service),
-    category: w("sales"),
-    subcategory: w("general"),
-    brandId: w(process.env.SALES_BRAND_ID?.trim() || "1"),
-    comments: w(comments),
-    page_name: w(`care.portea.com ${program}`.trim()),
-    page_url: w(pageUrl),
-    unique_id_for_lead: w(lead.id),
-    utm_source: w(attr.utm_source),
-    utm_medium: w(attr.utm_medium),
-    utm_campaign: w(attr.utm_campaign),
-    utm_term: w(attr.utm_term),
-    utm_content: w(attr.utm_content),
-    gclid: w(attr.gclid),
-    variant: w(lead.ab_variant),
-    terms: w(CONSENT_TEXT),
-  };
+  // The ops endpoint is a CodeIgniter controller that reads form fields from
+  // $_POST and stores them json_encoded — which is why every value in the
+  // sample logs is a single-element array (PHP turns `field[]=x` into ["x"]).
+  // So we must POST application/x-www-form-urlencoded using the `field[]=value`
+  // array notation, NOT a JSON body. A JSON body leaves $_POST empty and the
+  // endpoint answers 400.
+  const fields: Array<[string, string]> = [
+    ["name", clean(lead.full_name) || "Unknown"],
+    ["mobile", mobile],
+    ["city", clean(lead.city)],
+    ["service", service],
+    ["category", "sales"],
+    ["subcategory", "general"],
+    ["brandId", process.env.SALES_BRAND_ID?.trim() || "1"],
+    ["comments", comments],
+    ["page_name", `care.portea.com ${program}`.trim()],
+    ["page_url", pageUrl],
+    ["unique_id_for_lead", lead.id],
+    ["utm_source", attr.utm_source ?? ""],
+    ["utm_medium", attr.utm_medium ?? ""],
+    ["utm_campaign", attr.utm_campaign ?? ""],
+    ["utm_term", attr.utm_term ?? ""],
+    ["utm_content", attr.utm_content ?? ""],
+    ["gclid", attr.gclid ?? ""],
+    ["variant", lead.ab_variant ?? ""],
+    ["terms", CONSENT_TEXT],
+  ];
+  const form = new URLSearchParams();
+  for (const [key, value] of fields) form.append(`${key}[]`, value);
 
   const token = process.env.SALES_WEBHOOK_TOKEN?.trim();
 
@@ -116,13 +119,24 @@ export async function forwardLeadToSales(
     const res = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify(payload),
+      body: form.toString(),
       signal: AbortSignal.timeout(8_000),
     });
-    return { ok: res.ok, status: res.ok ? "ok" : `http:${res.status}` };
+    if (res.ok) return { ok: true, status: "ok" };
+    // Capture a snippet of the endpoint's error so the failure is diagnosable
+    // from the dashboard / DB (sales_forward_status) without digging in logs.
+    let detail = "";
+    try {
+      detail = (await res.text()).replace(/\s+/g, " ").trim().slice(0, 140);
+    } catch {
+      /* body unreadable; the status code alone still tells us something */
+    }
+    // eslint-disable-next-line no-console
+    console.warn("[forward-to-sales] webhook non-2xx", res.status, detail);
+    return { ok: false, status: `http:${res.status}${detail ? ` ${detail}` : ""}` };
   } catch (err) {
     const name = err instanceof Error ? err.name : "error";
     // eslint-disable-next-line no-console
