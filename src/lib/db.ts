@@ -100,6 +100,14 @@ export function ensureSchema(): Promise<void> {
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS care_plan JSONB;`);
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS care_plan_at TIMESTAMPTZ;`);
       await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS care_plan_notes TEXT;`);
+      // Lead routing by source. Paid leads (Google gclid or a paid utm_medium)
+      // are forwarded to the sales team's ops webhook and flagged here; organic
+      // leads stay with the care team and trigger the usual email alert.
+      // routed_to: 'sales' | 'care_team'. sales_forward_status records the
+      // webhook outcome ('ok' | 'http:500' | 'error:timeout' | 'skipped:no-url').
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS routed_to TEXT;`);
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS sales_forwarded_at TIMESTAMPTZ;`);
+      await p.query(`ALTER TABLE leads ADD COLUMN IF NOT EXISTS sales_forward_status TEXT;`);
       await p.query(`
         CREATE TABLE IF NOT EXISTS users (
           id                    TEXT PRIMARY KEY,

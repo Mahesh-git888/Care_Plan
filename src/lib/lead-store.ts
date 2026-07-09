@@ -11,6 +11,7 @@ import {
   type CarePlan,
   type LeadAttribution,
   type LeadRecord,
+  type LeadRoutedTo,
   type LifecycleStatus,
 } from "@/lib/lead-types";
 
@@ -22,6 +23,7 @@ export {
   type LeadAttribution,
   type LeadKind,
   type LeadRecord,
+  type LeadRoutedTo,
   type LifecycleStatus,
 } from "@/lib/lead-types";
 
@@ -59,6 +61,9 @@ type LeadRow = {
   care_plan: CarePlan | null;
   care_plan_at: Date | string | null;
   care_plan_notes: string | null;
+  routed_to: string | null;
+  sales_forwarded_at: Date | string | null;
+  sales_forward_status: string | null;
 };
 
 function toIso(value: Date | string | null | undefined): string | undefined {
@@ -100,6 +105,9 @@ function rowToLead(row: LeadRow): LeadRecord {
     care_plan: row.care_plan ?? undefined,
     care_plan_at: toIso(row.care_plan_at),
     care_plan_notes: row.care_plan_notes ?? undefined,
+    routed_to: (row.routed_to as LeadRecord["routed_to"]) ?? undefined,
+    sales_forwarded_at: toIso(row.sales_forwarded_at),
+    sales_forward_status: row.sales_forward_status ?? undefined,
   };
 }
 
@@ -307,6 +315,26 @@ export async function updateLeadIntake(update: LeadIntakeUpdate): Promise<boolea
   const rowCount = await execute(
     `UPDATE leads SET ${sets.join(", ")} WHERE id = $${i}`,
     params,
+  );
+  return rowCount > 0;
+}
+
+// Record how a lead was routed. For paid leads forwarded to the sales team's
+// ops webhook, routedTo is "sales", forwardStatus is the webhook outcome, and
+// sales_forwarded_at is stamped. For organic leads, routedTo is "care_team".
+export async function markLeadRouted(
+  id: string,
+  routedTo: LeadRoutedTo,
+  forwardStatus?: string,
+): Promise<boolean> {
+  const rowCount = await execute(
+    `UPDATE leads
+        SET routed_to = $1,
+            sales_forward_status = $2,
+            sales_forwarded_at = CASE WHEN $1 = 'sales' THEN now() ELSE sales_forwarded_at END,
+            updated_at = now()
+      WHERE id = $3`,
+    [routedTo, forwardStatus ?? null, id],
   );
   return rowCount > 0;
 }

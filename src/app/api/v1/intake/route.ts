@@ -7,9 +7,13 @@ import { verticals, type VerticalSlug } from "@/data/verticals";
 import {
   appendLead,
   updateLeadIntake,
+  getLeadById,
+  markLeadRouted,
   maskPhone,
   type LeadAttribution,
 } from "@/lib/lead-store";
+import { classifyLeadSource } from "@/lib/lead-source";
+import { forwardLeadToSales } from "@/lib/forward-to-sales";
 import { notifyNewLead } from "@/lib/notify";
 
 type IntakePayload = {
@@ -40,6 +44,62 @@ const PENDING = "Awaiting details";
 
 function isVerticalSlug(value: string): value is VerticalSlug {
   return value in verticals;
+}
+
+// A completed lead is routed by source:
+//  - paid   → forwarded to the sales team's ops webhook, flagged routed_to=sales.
+//  - organic → stays with the care team; emailed unless it was already alerted
+//    at partial-capture time (so organic leads are never double-emailed).
+// Re-reads the lead so the forward payload reflects the final merged row (esp.
+// on the partial → complete patch path). Best-effort; never throws.
+async function routeCompletedLead(leadId: string, alreadyAlerted: boolean) {
+  try {
+    const lead = await getLeadById(leadId);
+    if (!lead) return;
+
+    if (classifyLeadSource(lead.attribution) === "paid") {
+      const result = await forwardLeadToSales(lead);
+      if (result.ok) {
+        await markLeadRouted(leadId, "sales", result.status);
+        return;
+      }
+      // Forward not delivered (webhook unset, HTTP error, or timeout). Never
+      // drop a paid lead: fall back to the care team, record why, and alert.
+      await markLeadRouted(leadId, "care_team", result.status);
+      if (!alreadyAlerted) {
+        await notifyNewLead({ vertical: lead.vertical, city: lead.city });
+      }
+      return;
+    }
+
+    await markLeadRouted(leadId, "care_team");
+    if (!alreadyAlerted) {
+      await notifyNewLead({ vertical: lead.vertical, city: lead.city });
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn("[intake] routing failed (non-fatal)", err);
+  }
+}
+
+// Early "new lead" alert fired the moment we have a name + phone (partial
+// capture). Only organic leads are emailed here; paid leads wait for a
+// completed submit (with consent + city) before being forwarded to sales,
+// because the ops webhook overrides DND on the number.
+async function earlyLeadAlert(
+  leadId: string,
+  attribution: LeadAttribution | undefined,
+  vertical: string,
+  city: string,
+) {
+  try {
+    if (classifyLeadSource(attribution) === "paid") return;
+    await markLeadRouted(leadId, "care_team");
+    await notifyNewLead({ vertical, city });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn("[intake] early alert failed (non-fatal)", err);
+  }
 }
 
 export async function POST(request: Request) {
@@ -139,6 +199,13 @@ export async function POST(request: Request) {
           partial,
           phone: maskPhone(normalizedPhone),
         });
+        // A patch that completes the lead (not another partial) is the point at
+        // which we route it. The partial-create already sent the organic early
+        // alert, so pass alreadyAlerted=true to avoid a second email; paid leads
+        // are forwarded to sales here (their first external send).
+        if (!partial) {
+          after(() => routeCompletedLead(leadId, true));
+        }
         return NextResponse.json({
           patient_id: leadId,
           status: "new",
@@ -201,12 +268,18 @@ export async function POST(request: Request) {
     utm_campaign: body.attribution?.utm_campaign ?? null,
   });
 
-  // Best-effort team alert (no patient details, just program + city + link).
-  // Fires the moment a lead is born, matching "notify us as soon as we have a
-  // name and number". Runs via after() so the serverless function stays alive
-  // until the email actually sends — a plain fire-and-forget gets frozen on
-  // return and the SMTP send is cut off. No-op until the email env vars are set.
-  after(() => notifyNewLead({ vertical, city }));
+  // Route the fresh lead by source. Runs via after() so the serverless function
+  // stays alive until the email/webhook actually completes — a plain
+  // fire-and-forget gets frozen on return and the outbound call is cut off.
+  //  - Partial capture (name + phone only): organic leads get the early "new
+  //    lead" email; paid leads wait for a completed submit before forwarding.
+  //  - Completed submit in one shot: route now (paid → sales webhook, organic →
+  //    care team + email). alreadyAlerted=false since there was no prior partial.
+  if (partial) {
+    after(() => earlyLeadAlert(patientId, body.attribution, vertical, city));
+  } else {
+    after(() => routeCompletedLead(patientId, false));
+  }
 
   return NextResponse.json({
     patient_id: patientId,
