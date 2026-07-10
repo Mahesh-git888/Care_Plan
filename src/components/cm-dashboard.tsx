@@ -831,6 +831,10 @@ function LeadDetailPanel({
                     </p>
                   ) : null}
                 </>
+              ) : lead.attribution?.gclid ? (
+                // A Google Ads click carries a gclid but often no utm_source.
+                // Showing "organic" here would contradict the routing badge.
+                <span className="font-semibold">google ads · gclid</span>
               ) : (
                 <span className="text-[#7a8c92]">organic / direct</span>
               )}
