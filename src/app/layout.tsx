@@ -13,7 +13,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://care.porte
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   verification: {
-    google: "z6GI8J7yo0kQhEAFqZoIT4Q_lyF6z9-7hSwkcZ6f-ow",
+    // One token per Search Console property. Old tokens stay: removing one
+    // unverifies whichever property it belongs to.
+    google: [
+      "z6GI8J7yo0kQhEAFqZoIT4Q_lyF6z9-7hSwkcZ6f-ow",
+      "W7r5t5ppEARDYxRvPwJ_nDppiHIv0bL7qn56Hxq2Za0",
+    ],
   },
   title: {
     default: "Portea Managed Elder Care | Doctor-Designed Home Care in India",
