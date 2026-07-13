@@ -206,7 +206,9 @@ export async function POST(request: Request) {
   // name and number". Runs via after() so the serverless function stays alive
   // until the email actually sends — a plain fire-and-forget gets frozen on
   // return and the SMTP send is cut off. No-op until the email env vars are set.
-  after(() => notifyNewLead({ vertical, city }));
+  after(() =>
+    notifyNewLead({ vertical, city, name: fullName, phone: normalizedPhone }),
+  );
 
   return NextResponse.json({
     patient_id: patientId,

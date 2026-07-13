@@ -1,13 +1,13 @@
 // Best-effort "new lead" alert to the internal team.
 //
-// PRIVACY BY DESIGN: this deliberately contains NO patient details — no name,
-// phone, condition, or elder name. Only the program + city + a link to the
-// secured dashboard. The sensitive data stays in the authenticated DB; this is
-// just a "go look" trigger, so nothing sensitive ever reaches a third-party
-// mail provider or an inbox.
+// Includes the lead's name + phone so a care manager can call back straight
+// from the alert. Deliberately still leaves out clinical detail (condition,
+// elder name) — those stay in the authenticated dashboard. Recipients are
+// internal Portea addresses; the contact fields do pass through the mail
+// provider, which is an accepted tradeoff for faster callbacks.
 //
-// No-op unless RESEND_API_KEY + LEAD_ALERT_FROM + LEAD_ALERT_TO are set, so it
-// is safe to deploy before the email account is configured. Server-side only.
+// No-op unless a mail provider (Gmail/Brevo/Resend) + LEAD_ALERT_TO are set, so
+// it is safe to deploy before the email account is configured. Server-side only.
 
 const PROGRAM_LABELS: Record<string, string> = {
   "elder-care": "Elder care",
@@ -18,6 +18,8 @@ const PROGRAM_LABELS: Record<string, string> = {
 export async function notifyNewLead(input: {
   vertical?: string;
   city?: string;
+  name?: string;
+  phone?: string;
 }): Promise<void> {
   const gmailUser = process.env.GMAIL_USER?.trim();
   const gmailPass = process.env.GMAIL_APP_PASSWORD?.trim();
@@ -45,17 +47,26 @@ export async function notifyNewLead(input: {
     (process.env.LEAD_ALERT_DASHBOARD_URL?.trim() || "https://care.portea.com") +
     "/admin/leads";
 
-  const subject = `New Portea lead — ${program}, ${city}`;
+  const name =
+    input.name && input.name.trim() && input.name !== "Awaiting details"
+      ? input.name.trim()
+      : "Name to confirm";
+  const phone =
+    input.phone && input.phone.trim() && input.phone !== "Awaiting details"
+      ? input.phone.trim()
+      : "Phone to confirm";
+
+  const subject = `New Portea lead — ${name}, ${program}, ${city}`;
   const text = [
     "A new lead just came in.",
     "",
+    `Name: ${name}`,
+    `Phone: ${phone}`,
     `Program: ${program}`,
     `City: ${city}`,
     "",
-    "Open the dashboard to see the details:",
+    "Open the dashboard for full details (condition, needs, care plan):",
     dashUrl,
-    "",
-    "For privacy, no patient details are included in this alert — they live only in the secured dashboard.",
   ].join("\n");
 
   try {
