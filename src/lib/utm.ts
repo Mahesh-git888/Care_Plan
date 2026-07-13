@@ -22,6 +22,10 @@ export type LeadAttribution = {
   utm_term?: string;
   utm_content?: string;
   gclid?: string;
+  // Google's newer click ids (iOS / consent mode) and Microsoft Ads' click id.
+  gbraid?: string;
+  wbraid?: string;
+  msclkid?: string;
   fbclid?: string;
   referrer?: string;
   landing_path?: string;
@@ -42,6 +46,9 @@ const TRACKED_PARAMS: Array<keyof LeadAttribution> = [
   "utm_term",
   "utm_content",
   "gclid",
+  "gbraid",
+  "wbraid",
+  "msclkid",
   "fbclid",
 ];
 

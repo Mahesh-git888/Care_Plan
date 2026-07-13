@@ -20,7 +20,16 @@ const PAID_MEDIUM =
 
 export function classifyLeadSource(attr?: LeadAttribution | null): LeadSource {
   if (!attr) return "organic";
-  if (attr.gclid && attr.gclid.trim()) return "paid";
+  // Any ad-click identifier means a paid click. Google now often sends gbraid
+  // or wbraid instead of gclid (iOS / consent mode); msclkid is Microsoft Ads.
+  if (
+    (attr.gclid && attr.gclid.trim()) ||
+    (attr.gbraid && attr.gbraid.trim()) ||
+    (attr.wbraid && attr.wbraid.trim()) ||
+    (attr.msclkid && attr.msclkid.trim())
+  ) {
+    return "paid";
+  }
   const medium = attr.utm_medium?.trim();
   if (medium && PAID_MEDIUM.test(medium)) return "paid";
   return "organic";
