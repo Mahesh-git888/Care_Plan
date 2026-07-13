@@ -30,6 +30,7 @@ import { MobileMenu } from "@/components/mobile-menu";
 import { StatsStrip } from "@/components/stats-strip";
 import { verticalList } from "@/data/verticals";
 import { getPhoneContact, getWhatsAppContact } from "@/lib/contact";
+import { SourceHeroButtons, SourcePhoneBarLink } from "@/components/source-contact";
 
 const HOME_NAV_LINKS = [
   { href: "#how-it-works", label: "How it works" },
@@ -152,10 +153,13 @@ export const FAQS = [
 
 export function HomePage() {
   const [elderCare, dementiaCare, postDischargeCare] = verticalList;
+  // Organic contact for the footer (kept static for NAP/SEO consistency). The
+  // announcement bar, mobile menu and hero swap to the sales line for paid
+  // visitors via the client components below.
+  const homeWhatsAppMessage =
+    "Hi Portea, I'd like a free care assessment for my parent.";
   const phone = getPhoneContact();
-  const whatsapp = getWhatsAppContact(
-    "Hi Portea, I'd like a free care assessment for my parent.",
-  );
+  const whatsapp = getWhatsAppContact(homeWhatsAppMessage);
 
   // Specialized programs reuse the vertical images so the cards look like the
   // previous version's program cards.
@@ -194,10 +198,7 @@ export function HomePage() {
           <p className="truncate">
             India&apos;s largest home healthcare company · One care manager per family · 135+ Indian cities
           </p>
-          <a href={phone.href} className="hidden items-center gap-2 sm:inline-flex">
-            <PhoneIcon className="h-3.5 w-3.5" />
-            <span>{phone.label}</span>
-          </a>
+          <SourcePhoneBarLink className="hidden items-center gap-2 sm:inline-flex" />
         </div>
       </div>
 
@@ -220,12 +221,7 @@ export function HomePage() {
               triggerContent={<span>Get a care assessment</span>}
             />
           </nav>
-          <MobileMenu
-            links={HOME_NAV_LINKS}
-            phoneHref={phone.href}
-            phoneLabel={phone.label}
-            whatsappHref={whatsapp?.href}
-          />
+          <MobileMenu links={HOME_NAV_LINKS} whatsAppMessage={homeWhatsAppMessage} />
         </div>
       </header>
 
@@ -257,24 +253,7 @@ export function HomePage() {
                     </>
                   }
                 />
-                <a
-                  href={phone.href}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#0f9aa8] bg-white px-6 py-4 text-sm font-semibold text-[#0b7c87] transition hover:border-[#0b7c87] hover:bg-[#f0fafb]"
-                >
-                  <PhoneIcon className="h-4 w-4" />
-                  Call {phone.label}
-                </a>
-                {whatsapp ? (
-                  <a
-                    href={whatsapp.href}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#25d366] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(37,211,102,0.85)] transition hover:bg-[#1da851]"
-                  >
-                    <WhatsAppIcon className="h-4 w-4 text-white" />
-                    WhatsApp us
-                  </a>
-                ) : null}
+                <SourceHeroButtons whatsAppMessage={homeWhatsAppMessage} />
               </div>
 
               <p className="mt-4 text-sm font-medium text-[#54727a]">

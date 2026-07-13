@@ -22,7 +22,8 @@ import {
 } from "@/components/ui-icons";
 import { StatsStrip } from "@/components/stats-strip";
 import { verticalList, type VerticalConfig } from "@/data/verticals";
-import { getPhoneContact, getWhatsAppContact } from "@/lib/contact";
+import { getPhoneContact } from "@/lib/contact";
+import { SourcePhoneBarLink } from "@/components/source-contact";
 
 // In-page sections a visitor can jump to from the mobile hamburger menu.
 const VERTICAL_NAV_LINKS = [
@@ -87,8 +88,9 @@ function Stars() {
 
 export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
   const [primaryImage, secondaryImage] = vertical.images;
+  // Organic contact for the footer (kept static for NAP/SEO). CTAs swap to the
+  // sales line for paid visitors via the client contact components.
   const phone = getPhoneContact();
-  const whatsapp = getWhatsAppContact(vertical.whatsAppMessage);
 
   return (
     <main className="min-h-screen bg-[#f4f9fa] pb-24 text-[#10242b]">
@@ -101,10 +103,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
           <p className="truncate">
             Doctor-designed home care · One care manager per family · 135+ Indian cities
           </p>
-          <a href={phone.href} className="hidden items-center gap-2 sm:inline-flex">
-            <PhoneIcon className="h-3.5 w-3.5" />
-            <span>{phone.label}</span>
-          </a>
+          <SourcePhoneBarLink className="hidden items-center gap-2 sm:inline-flex" />
         </div>
       </div>
 
@@ -160,9 +159,7 @@ export function LandingPage({ vertical }: { vertical: VerticalConfig }) {
 
             <MobileMenu
               links={VERTICAL_NAV_LINKS}
-              phoneHref={phone.href}
-              phoneLabel={phone.label}
-              whatsappHref={whatsapp?.href}
+              whatsAppMessage={vertical.whatsAppMessage}
             />
           </header>
 

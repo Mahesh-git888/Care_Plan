@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { ChatbotTrigger } from "@/components/chatbot-trigger";
 import { ChatIcon, PhoneIcon, WhatsAppIcon } from "@/components/ui-icons";
 import type { VerticalConfig } from "@/data/verticals";
-import { getPhoneContact, getWhatsAppContact } from "@/lib/contact";
+import { useSourceContact } from "@/lib/use-source-contact";
 
 function BaseButton({
   href,
@@ -46,8 +46,7 @@ export function ContactActions({
   vertical: VerticalConfig;
   compact?: boolean;
 }) {
-  const phone = getPhoneContact();
-  const whatsapp = getWhatsAppContact(vertical.whatsAppMessage);
+  const { phone, whatsapp } = useSourceContact(vertical.whatsAppMessage);
 
   return (
     <div className={compact ? "space-y-3" : "space-y-5"}>
@@ -84,8 +83,7 @@ export function ContactActions({
 }
 
 export function FloatingContactButtons({ vertical }: { vertical: VerticalConfig }) {
-  const phone = getPhoneContact();
-  const whatsapp = getWhatsAppContact(vertical.whatsAppMessage);
+  const { phone, whatsapp } = useSourceContact(vertical.whatsAppMessage);
   const [open, setOpen] = useState(false);
   // Tucks the floating button out of the way while the visitor scrolls, so it
   // never sits on top of the text. It slides back when scrolling stops or the
