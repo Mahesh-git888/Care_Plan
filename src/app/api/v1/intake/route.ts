@@ -67,7 +67,12 @@ async function routeCompletedLead(leadId: string, alreadyAlerted: boolean) {
       // drop a paid lead: fall back to the care team, record why, and alert.
       await markLeadRouted(leadId, "care_team", result.status);
       if (!alreadyAlerted) {
-        await notifyNewLead({ vertical: lead.vertical, city: lead.city });
+        await notifyNewLead({
+          vertical: lead.vertical,
+          city: lead.city,
+          name: lead.full_name,
+          phone: lead.phone,
+        });
       }
       return;
     }
@@ -91,11 +96,13 @@ async function earlyLeadAlert(
   attribution: LeadAttribution | undefined,
   vertical: string,
   city: string,
+  name: string,
+  phone: string,
 ) {
   try {
     if (classifyLeadSource(attribution) === "paid") return;
     await markLeadRouted(leadId, "care_team");
-    await notifyNewLead({ vertical, city });
+    await notifyNewLead({ vertical, city, name, phone });
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn("[intake] early alert failed (non-fatal)", err);
@@ -276,7 +283,9 @@ export async function POST(request: Request) {
   //  - Completed submit in one shot: route now (paid → sales webhook, organic →
   //    care team + email). alreadyAlerted=false since there was no prior partial.
   if (partial) {
-    after(() => earlyLeadAlert(patientId, body.attribution, vertical, city));
+    after(() =>
+      earlyLeadAlert(patientId, body.attribution, vertical, city, fullName, normalizedPhone),
+    );
   } else {
     after(() => routeCompletedLead(patientId, false));
   }
