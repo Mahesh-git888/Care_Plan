@@ -3,17 +3,17 @@
 import { useEffect, useState } from "react";
 
 import { MenuIcon, PhoneIcon, WhatsAppIcon } from "@/components/ui-icons";
+import { useSourceContact } from "@/lib/use-source-contact";
 
 type NavLink = { href: string; label: string };
 
 type Props = {
   links: NavLink[];
-  phoneHref: string;
-  phoneLabel: string;
-  whatsappHref?: string;
+  whatsAppMessage?: string;
 };
 
-export function MobileMenu({ links, phoneHref, phoneLabel, whatsappHref }: Props) {
+export function MobileMenu({ links, whatsAppMessage }: Props) {
+  const { phone, whatsapp } = useSourceContact(whatsAppMessage);
   const [open, setOpen] = useState(false);
 
   // Lock background scroll while the drawer is open.
@@ -85,17 +85,17 @@ export function MobileMenu({ links, phoneHref, phoneLabel, whatsappHref }: Props
 
             <div className="space-y-3 border-t border-slate-200 px-5 py-4">
               <a
-                href={phoneHref}
+                href={phone.href}
                 data-track="call"
                 onClick={() => setOpen(false)}
                 className="flex items-center justify-center gap-2 rounded-full bg-[#0f9aa8] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0b7c87]"
               >
                 <PhoneIcon className="h-4 w-4" />
-                Call {phoneLabel}
+                Call {phone.label}
               </a>
-              {whatsappHref ? (
+              {whatsapp ? (
                 <a
-                  href={whatsappHref}
+                  href={whatsapp.href}
                   target="_blank"
                   rel="noreferrer noopener"
                   onClick={() => setOpen(false)}

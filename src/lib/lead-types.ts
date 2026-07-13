@@ -12,6 +12,10 @@ export type LeadAttribution = {
   utm_term?: string;
   utm_content?: string;
   gclid?: string;
+  // Google's newer click ids (iOS / consent mode) and Microsoft Ads' click id.
+  gbraid?: string;
+  wbraid?: string;
+  msclkid?: string;
   fbclid?: string;
   referrer?: string;
   landing_path?: string;
@@ -111,4 +115,12 @@ export type LeadRecord = {
   care_plan?: CarePlan;
   care_plan_at?: string;
   care_plan_notes?: string;
+  // Lead routing by source. Paid leads are forwarded to the sales team's ops
+  // webhook and shown with a "Sent to sales team" badge; organic leads stay
+  // with the care team. sales_forward_status records the webhook outcome.
+  routed_to?: LeadRoutedTo;
+  sales_forwarded_at?: string;
+  sales_forward_status?: string;
 };
+
+export type LeadRoutedTo = "sales" | "care_team";

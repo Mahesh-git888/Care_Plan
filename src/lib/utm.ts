@@ -22,6 +22,10 @@ export type LeadAttribution = {
   utm_term?: string;
   utm_content?: string;
   gclid?: string;
+  // Google's newer click ids (iOS / consent mode) and Microsoft Ads' click id.
+  gbraid?: string;
+  wbraid?: string;
+  msclkid?: string;
   fbclid?: string;
   referrer?: string;
   landing_path?: string;
@@ -33,7 +37,7 @@ export const ATTRIBUTION_COOKIE = "portea_attribution_v2";
 // migrate so anyone mid-funnel today does not lose their GCLID overnight.
 const LEGACY_SESSION_KEY = "portea-attribution-v1";
 
-const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
+const ONE_MONTH_SECONDS = 60 * 60 * 24 * 30;
 
 const TRACKED_PARAMS: Array<keyof LeadAttribution> = [
   "utm_source",
@@ -42,6 +46,9 @@ const TRACKED_PARAMS: Array<keyof LeadAttribution> = [
   "utm_term",
   "utm_content",
   "gclid",
+  "gbraid",
+  "wbraid",
+  "msclkid",
   "fbclid",
 ];
 
@@ -52,7 +59,7 @@ function writeCookie(value: string) {
   const parts = [
     `${ATTRIBUTION_COOKIE}=${encodeURIComponent(value)}`,
     `Path=/`,
-    `Max-Age=${ONE_YEAR_SECONDS}`,
+    `Max-Age=${ONE_MONTH_SECONDS}`,
     `SameSite=Lax`,
   ];
   if (isSecure) parts.push("Secure");

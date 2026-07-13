@@ -28,7 +28,18 @@ export async function notifyNewLead(input: {
   const from = process.env.LEAD_ALERT_FROM?.trim() || gmailUser || "";
   const toRaw = process.env.LEAD_ALERT_TO?.trim();
   const hasProvider = Boolean((gmailUser && gmailPass) || brevoKey || resendKey);
-  if (!hasProvider || !from || !toRaw) return;
+  if (!hasProvider || !from || !toRaw) {
+    // Say why we are skipping. A silent no-op here looks identical to a
+    // delivered email, which makes a misconfigured environment hard to spot.
+    // Names only, never the secret values.
+    // eslint-disable-next-line no-console
+    console.warn("[notify] skipped, email not configured", {
+      hasProvider,
+      hasFrom: Boolean(from),
+      hasTo: Boolean(toRaw),
+    });
+    return;
+  }
 
   const to = toRaw
     .split(",")
