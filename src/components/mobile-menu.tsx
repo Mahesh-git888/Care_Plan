@@ -98,6 +98,7 @@ export function MobileMenu({ links, whatsAppMessage }: Props) {
                   href={whatsapp.href}
                   target="_blank"
                   rel="noreferrer noopener"
+                  data-hide-on-paid=""
                   onClick={() => setOpen(false)}
                   className="flex items-center justify-center gap-2 rounded-full bg-[#25d366] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1da851]"
                 >

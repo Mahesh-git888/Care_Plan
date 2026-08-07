@@ -136,6 +136,7 @@ export default function PricingPage() {
               </Link>
               <a
                 href={wa.href}
+                data-hide-on-paid=""
                 className="flex-1 rounded-full border border-[#cfe3e6] bg-white px-5 py-3 text-center text-sm font-semibold text-[#0b7c87] transition hover:bg-[#f2fafb]"
               >
                 WhatsApp us

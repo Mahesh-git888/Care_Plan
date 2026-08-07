@@ -17,8 +17,9 @@ import { readAttribution } from "@/lib/utm";
 
 // Paid if the current URL carries an ad click id / paid medium (first landing,
 // before the attribution cookie is written) OR the persisted cookie says so
-// (return visits and client-side navigation).
-function detectSource(): ContactSource {
+// (return visits and client-side navigation). Exported so the global
+// LeadSourceFlag can tag the page without duplicating the logic.
+export function detectLeadSource(): ContactSource {
   if (typeof window === "undefined") return "organic";
   const params = new URL(window.location.href).searchParams;
   const fromUrl = {
@@ -36,7 +37,7 @@ export function useSourceContact(whatsAppMessage?: string) {
   const [source, setSource] = useState<ContactSource>("organic");
 
   useEffect(() => {
-    setSource(detectSource());
+    setSource(detectLeadSource());
   }, []);
 
   return {

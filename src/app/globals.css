@@ -128,3 +128,11 @@ a {
     radial-gradient(60% 40% at 0% 0%, rgba(15, 154, 168, 0.16) 0%, transparent 55%),
     linear-gradient(180deg, #fdf8f3 0%, #fbfdfd 60%, #f3f9fa 100%);
 }
+
+/* TEMPORARY: hide the WhatsApp CTAs for paid-ad visitors, because the sales
+   line has no WhatsApp set up yet. Organic visitors still see WhatsApp.
+   LeadSourceFlag sets data-lead-source on <html> on the client.
+   To bring WhatsApp back for paid visitors later, delete this one rule. */
+:root[data-lead-source="paid"] [data-hide-on-paid] {
+  display: none !important;
+}

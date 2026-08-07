@@ -13,11 +13,13 @@ function BaseButton({
   children,
   kind = "secondary",
   ariaLabel,
+  hideOnPaid = false,
 }: {
   href: string;
   children: ReactNode;
   kind?: "primary" | "secondary" | "whatsapp";
   ariaLabel?: string;
+  hideOnPaid?: boolean;
 }) {
   const className =
     kind === "primary"
@@ -33,6 +35,7 @@ function BaseButton({
       aria-label={ariaLabel}
       target={href.startsWith("http") ? "_blank" : undefined}
       rel={href.startsWith("http") ? "noreferrer noopener" : undefined}
+      {...(hideOnPaid ? { "data-hide-on-paid": "" } : {})}
     >
       {children}
     </a>
@@ -68,7 +71,7 @@ export function ContactActions({
         </BaseButton>
 
         {whatsapp ? (
-          <BaseButton href={whatsapp.href} kind="whatsapp" ariaLabel="WhatsApp a Portea care manager">
+          <BaseButton href={whatsapp.href} kind="whatsapp" ariaLabel="WhatsApp a Portea care manager" hideOnPaid>
             <WhatsAppIcon className="h-4 w-4 text-white" />
             <span>WhatsApp us</span>
           </BaseButton>
@@ -143,6 +146,7 @@ export function FloatingContactButtons({ vertical }: { vertical: VerticalConfig 
                   href={whatsapp.href}
                   target="_blank"
                   rel="noreferrer noopener"
+                  data-hide-on-paid=""
                   className="inline-flex items-center gap-3 rounded-full bg-[#25d366] px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-[#1da851]"
                   aria-label="WhatsApp Portea"
                 >

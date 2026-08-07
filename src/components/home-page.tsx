@@ -651,7 +651,7 @@ export function HomePage() {
                 </a>
               </li>
               {whatsapp ? (
-                <li>
+                <li data-hide-on-paid="">
                   <a
                     href={whatsapp.href}
                     target="_blank"

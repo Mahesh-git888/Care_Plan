@@ -38,6 +38,7 @@ export function SourceHeroButtons({
         href={whatsapp.href}
         target="_blank"
         rel="noreferrer noopener"
+        data-hide-on-paid=""
         className="inline-flex items-center gap-2 rounded-full bg-[#25d366] px-6 py-4 text-sm font-semibold text-white shadow-[0_18px_40px_-22px_rgba(37,211,102,0.85)] transition hover:bg-[#1da851]"
       >
         <WhatsAppIcon className="h-4 w-4 text-white" />
