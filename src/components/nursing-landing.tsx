@@ -142,8 +142,8 @@ export function NursingLanding() {
           </Reveal>
           <Reveal>
             <div className="overflow-hidden rounded-[1.75rem] border border-white bg-white p-2.5 shadow-[0_30px_60px_-28px_rgba(16,42,49,0.28)]">
-              <div className="relative aspect-[16/12] overflow-hidden rounded-[1.35rem]">
-                <Image src="/elder-care-1.webp" alt="A Portea caregiver supporting an elder at home" fill sizes="(max-width: 1024px) 92vw, 520px" className="object-cover" priority />
+              <div className="relative aspect-[16/9] overflow-hidden rounded-[1.35rem]">
+                <Image src="/nursing-hero.png" alt="A Portea caregiver in uniform sitting with a smiling elderly woman at home" fill sizes="(max-width: 1024px) 92vw, 520px" className="object-cover" priority />
               </div>
             </div>
           </Reveal>

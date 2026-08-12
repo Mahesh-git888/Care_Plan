@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     description:
       "Background-verified, clinically trained caregivers managed by a dedicated health manager. 135+ Indian cities.",
     images: [
-      { url: "/elder-care-1.webp", width: 1200, height: 630, alt: "A Portea caregiver supporting an elder at home" },
+      { url: "/nursing-hero.png", width: 1200, height: 630, alt: "A Portea caregiver supporting an elder at home" },
     ],
   },
   twitter: {
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: TITLE,
     description:
       "Background-verified, clinically trained caregivers managed by a dedicated health manager.",
-    images: ["/elder-care-1.webp"],
+    images: ["/nursing-hero.png"],
   },
 };
 
