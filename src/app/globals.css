@@ -129,28 +129,6 @@ a {
     linear-gradient(180deg, #fdf8f3 0%, #fbfdfd 60%, #f3f9fa 100%);
 }
 
-/* Subtle scroll-reveal for the nursing landing page. Content is always in the
-   DOM (crawlers read it regardless of opacity); this only softens its entrance.
-   Defaults to visible without JS via the <noscript> override on the page, and
-   is disabled entirely for reduced-motion users. */
-.reveal {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  will-change: opacity, transform;
-}
-.reveal.reveal-in {
-  opacity: 1;
-  transform: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
 /* TEMPORARY: hide the WhatsApp CTAs for paid-ad visitors, because the sales
    line has no WhatsApp set up yet. Organic visitors still see WhatsApp.
    LeadSourceFlag sets data-lead-source on <html> on the client.
